@@ -22,8 +22,4 @@
         android:name="is.hi.afk6.hbv2.ui.slideshow.SlideshowFragment"
         android:label="@string/menu_slideshow"
         tools:layout="@layout/fragment_slideshow" />
-    <fragment
-        android:id="@+id/nac_user"
-        android:name="is.hi.afk6.hbv2.ui.user.UserFragment"
-        android:label="@string/menu_user" />
 </navigation>
