@@ -10,5 +10,8 @@
     <string name="menu_home">Home</string>
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
-    <string name="menu_user">User Home</string>
+
+    <string name="login_text">Skrá inn</string>
+    <string name="login_email">Tölvupóstur</string>
+    <string name="login_password">Lykilorð</string>
 </resources>
