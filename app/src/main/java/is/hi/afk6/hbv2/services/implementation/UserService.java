@@ -1,14 +1,10 @@
 package is.hi.afk6.hbv2.services.implementation;
 
-import android.os.AsyncTask;
-import android.util.Log;
-
 import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import is.hi.afk6.hbv2.entities.LoginDTO;
