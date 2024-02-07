@@ -3,10 +3,7 @@ package is.hi.afk6.hbv2.services.networking;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import android.content.Context;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,7 +15,7 @@ import java.io.IOException;
 @RunWith(AndroidJUnit4.class)
 public class APIServiceTest {
     @Test
-    public void testGetRequest() {
+    public void testGetRequest() throws JSONException {
         ApiService apiService = new ApiService();
         JSONObject object;
 
@@ -30,6 +27,8 @@ public class APIServiceTest {
             throw new RuntimeException(e);
         }
 
-        assertNotNull(object);
+        System.out.println(object);
+
+        assertEquals(object.getString("id"), "1");
     }
 }
