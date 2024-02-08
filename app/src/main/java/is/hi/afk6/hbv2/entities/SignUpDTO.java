@@ -1,5 +1,12 @@
 package is.hi.afk6.hbv2.entities;
 
+/**
+ * Class to hold Sign Up information for Users.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 08/01/2024
+ * @version 1.0
+ */
 public class SignUpDTO
 {
     private String name;
@@ -9,9 +16,22 @@ public class SignUpDTO
     private String email;
     private String password;
 
+    /**
+     * Create a new empty SignUp object.
+     */
     public SignUpDTO() {
     }
 
+    /**
+     * Create a new SignUp object.
+     *
+     * @param name        Name of User.
+     * @param ssn         SSN of User.
+     * @param phoneNumber Phone number of User
+     * @param address     Address of User
+     * @param email       E-mail of User.
+     * @param password    Password of User.
+     */
     public SignUpDTO(String name, String ssn, String phoneNumber, String address, String email, String password) {
         this.name = name;
         this.ssn = ssn;

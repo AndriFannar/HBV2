@@ -3,6 +3,13 @@ package is.hi.afk6.hbv2.entities;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class for Questionnaires.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 08/01/2024
+ * @version 1.0
+ */
 public class Questionnaire
 {
     private Long id;
@@ -11,6 +18,9 @@ public class Questionnaire
     private boolean displayOnForm;
     private List<WaitingListRequest> waitingListRequests;
 
+    /**
+     * Create a new empty Questionnaire.
+     */
     public Questionnaire()
     {
         this.questions = new ArrayList<>();
@@ -18,6 +28,15 @@ public class Questionnaire
         this.displayOnForm = false;
     }
 
+    /**
+     * Create a new Questionnaire.
+     *
+     * @param id                  Unique ID of Questionnaire.
+     * @param name                Name of Questionnaire.
+     * @param questions           Questions belonging to the Questionnaire.
+     * @param displayOnForm       Display this Questionnaire on registration form.
+     * @param waitingListRequests WaitingListRequests that have been assigned this Questionnaire.
+     */
     public Questionnaire(Long id, String name, List<Question> questions, boolean displayOnForm, List<WaitingListRequest> waitingListRequests) {
         this.id = id;
         this.name = name;
@@ -26,6 +45,11 @@ public class Questionnaire
         this.waitingListRequests = waitingListRequests;
     }
 
+    /**
+     * Create a new Questionnaire.
+     *
+     * @param name Name of Questionnaire.
+     */
     public Questionnaire(String name) {
         this.name = name;
 

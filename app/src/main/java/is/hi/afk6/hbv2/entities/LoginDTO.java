@@ -13,7 +13,7 @@ public class LoginDTO
     private String password;
 
     /**
-     * Create a new LoginDTO object.
+     * Create a new empty LoginDTO object.
      */
     public LoginDTO()
     {

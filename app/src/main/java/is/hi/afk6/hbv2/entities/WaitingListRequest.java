@@ -4,6 +4,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to hold Waiting List Request information.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 08/01/2024
+ * @version 1.0
+ */
 public class WaitingListRequest
 {
     private Long id;
@@ -16,9 +23,25 @@ public class WaitingListRequest
     private List<Integer> questionnaireAnswers;
     private double grade;
 
+    /**
+     * Create a new empty WaitingListRequest.
+     */
     public WaitingListRequest() {
     }
 
+    /**
+     * Create a new WaitingListRequest.
+     *
+     * @param id                   Unique ID of the WaitingListRequest.
+     * @param patient              Patient (User) making the WaitingListRequest.
+     * @param staff                Staff member (User) assigned to the WaitingListRequest.
+     * @param description          Description of Users (patient's) problem.
+     * @param status               Status of WaitingListRequest.
+     * @param dateOfRequest        Date of WaitingListRequest creation.
+     * @param questionnaire        Assigned Questionnaire.
+     * @param questionnaireAnswers User answers to assigned Questionnaire.
+     * @param grade                Priority grade of WaitingListRequest.
+     */
     public WaitingListRequest(Long id, User patient, User staff, String description, boolean status, LocalDate dateOfRequest, Questionnaire questionnaire, List<Integer> questionnaireAnswers, double grade) {
         this.id = id;
         this.patient = patient;
@@ -31,6 +54,14 @@ public class WaitingListRequest
         this.grade = grade;
     }
 
+    /**
+     * Create a new WaitingListRequest.
+     *
+     * @param patient              Patient (User) making the WaitingListRequest.
+     * @param staff                Staff member (User) assigned to the WaitingListRequest.
+     * @param description          Description of Users (patient's) problem.
+     * @param questionnaire        Assigned Questionnaire.
+     */
     public WaitingListRequest(User patient, User staff, String description, Questionnaire questionnaire) {
         this.patient = patient;
         this.staff = staff;

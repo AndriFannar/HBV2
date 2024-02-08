@@ -18,11 +18,20 @@ public class Question
     private List<Questionnaire> questionnaires;
     private Integer answer;
 
+    /**
+     * Create a new empty Question.
+     */
     public Question()
     {
         this.questionnaires = new ArrayList<>();
     }
 
+    /**
+     * Create a new Question.
+     *
+     * @param questionString String for question to ask.
+     * @param weight         Weight of the Question.
+     */
     public Question(String questionString, double weight) {
         this.questionString = questionString;
         this.weight = weight;
@@ -30,6 +39,15 @@ public class Question
         this.questionnaires = new ArrayList<>();
     }
 
+    /**
+     * Create a new Question.
+     *
+     * @param id             Unique ID of Question.
+     * @param questionString String for question to ask.
+     * @param weight         Weight of the Question.
+     * @param questionnaires Questionnaires that Question belongs in.
+     * @param answer         User selected answer.
+     */
     public Question(Long id, String questionString, double weight, List<Questionnaire> questionnaires, Integer answer) {
         this.id = id;
         this.questionString = questionString;

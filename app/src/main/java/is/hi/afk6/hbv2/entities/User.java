@@ -2,6 +2,13 @@ package is.hi.afk6.hbv2.entities;
 
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
+/**
+ * Class to hold User information.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 07/01/2024
+ * @version 1.0
+ */
 public class User
 {
     // Variables.
@@ -22,6 +29,29 @@ public class User
     public User()
     {
         role = UserRole.USER;
+    }
+
+    /**
+     * Create a new User.
+     *
+     * @param id             Unique ID of User.
+     * @param name           Name of User.
+     * @param email          E-mail of User.
+     * @param ssn            SSN of User.
+     * @param phoneNumber    Phone number of User.
+     * @param address        Address of User.
+     * @param specialization Specialization of User.
+     * @param role           Role of User.
+     */
+    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, UserRole role) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.ssn = ssn;
+        this.phoneNumber = phoneNumber;
+        this.address = address;
+        this.specialization = specialization;
+        this.role = role;
     }
 
     public Long getId() {
