@@ -2,7 +2,6 @@ package is.hi.afk6.hbv2.ui.home;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,18 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-
 import is.hi.afk6.hbv2.databinding.FragmentHomeBinding;
 import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.services.implementation.ApiService;
-import is.hi.afk6.hbv2.services.implementation.UserService;
+import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
+import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
 public class HomeFragment extends Fragment {
 
@@ -44,7 +36,7 @@ public class HomeFragment extends Fragment {
                 LoginDTO loginInfo = new LoginDTO(binding.loginEmail.getText().toString(),
                                                   binding.loginPassword.getText().toString());
 
-                UserService userService = new UserService();
+                UserServiceImplementation userService = new UserServiceImplementation(new APIServiceImplementation());
                 User returnUser = userService.logInUser(loginInfo);
 
                 binding.textLogin.setTextColor(Color.BLACK);

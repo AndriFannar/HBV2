@@ -12,19 +12,17 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
 import is.hi.afk6.hbv2.entities.LoginDTO;
-import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.services.implementation.ApiService;
+import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 
 @RunWith(AndroidJUnit4.class)
 public class APIServiceTest {
     @Test
     public void testGetRequest()
     {
-        ApiService apiService = new ApiService();
+        APIServiceImplementation apiService = new APIServiceImplementation();
         JSONObject object;
 
         try
@@ -49,7 +47,7 @@ public class APIServiceTest {
             LoginDTO logIn = new LoginDTO(email, "Lykilord123");
             JSONObject logInJson = new JSONObject(new Gson().toJson(logIn));
 
-            ApiService apiService = new ApiService();
+            APIServiceImplementation apiService = new APIServiceImplementation();
             JSONObject object = apiService.postRequestAsync("user/login", logInJson).get();
 
             assertEquals(object.getString("email"), email);

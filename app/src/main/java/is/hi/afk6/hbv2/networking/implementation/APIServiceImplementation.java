@@ -1,28 +1,37 @@
-package is.hi.afk6.hbv2.services.implementation;
+package is.hi.afk6.hbv2.networking.implementation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.json.*;
 
-import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class ApiService
+import is.hi.afk6.hbv2.networking.APIService;
+
+/**
+ * Connect to an API and make Get, Post, Put & Delete requests.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 07/02/2024
+ * @version 1.0
+ */
+public class APIServiceImplementation implements APIService
 {
+    // Base API URL.
     private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
 
     private final ExecutorService executorService;
 
-    public ApiService()
+    /**
+     * Create a new API Service.
+     */
+    public APIServiceImplementation()
     {
         executorService = Executors.newFixedThreadPool(5);
     }
@@ -95,5 +104,15 @@ public class ApiService
                 return new JSONObject(inline.toString());
             }
         });
+    }
+
+    @Override
+    public Future<JSONObject> putRequestAsync(String urlExtension, JSONObject object) {
+        return null;
+    }
+
+    @Override
+    public Future<JSONObject> deleteRequestAsync(String urlExtension) {
+        return null;
     }
 }
