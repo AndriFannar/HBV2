@@ -1,25 +1,41 @@
 package is.hi.afk6.hbv2.entities;
 
+/**
+ * Class to hold Login information for Users.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 07/01/2024
+ * @version 1.0
+ */
 public class LoginDTO
 {
-    private String username;
+    private String email;
     private String password;
 
+    /**
+     * Create a new LoginDTO object.
+     */
     public LoginDTO()
     {
     }
 
-    public LoginDTO(String username, String password) {
-        this.username = username;
+    /**
+     * Create a new LoginDTO object.
+     *
+     * @param email    E-mail of User to login.
+     * @param password Password of User to login.
+     */
+    public LoginDTO(String email, String password) {
+        this.email    = email;
         this.password = password;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getPassword() {

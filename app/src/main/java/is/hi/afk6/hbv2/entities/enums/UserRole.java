@@ -1,5 +1,12 @@
 package is.hi.afk6.hbv2.entities.enums;
 
+/**
+ * Enum for User Roles.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @since 07/01/2024
+ * @version 1.0
+ */
 public enum UserRole
 {
     USER("Notandi", false, false),
@@ -14,8 +21,8 @@ public enum UserRole
     UserRole(String displayString, boolean staffMember, boolean elevatedUser)
     {
         this.displayString = displayString;
-        this.staffMember = staffMember;
-        this.elevatedUser = elevatedUser;
+        this.staffMember   = staffMember;
+        this.elevatedUser  = elevatedUser;
     }
 
     public String getDisplayString()
