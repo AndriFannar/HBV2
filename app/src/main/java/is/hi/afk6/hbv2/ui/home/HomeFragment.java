@@ -42,7 +42,6 @@ public class HomeFragment extends Fragment {
                 binding.textLogin.setTextColor(Color.BLACK);
                 String text = "Velkomin/nn " + returnUser.getName();
                 binding.textLogin.setText(text);
-
             }
         });
 
