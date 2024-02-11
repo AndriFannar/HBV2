@@ -3,6 +3,7 @@ package is.hi.afk6.hbv2.services;
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
@@ -20,7 +21,7 @@ public interface UserService
      *
      * @return Saved User.
      */
-    public User saveNewUser();
+    public User saveNewUser(SignUpDTO signUpInfo);
 
     /**
      * Gets all saved Users.

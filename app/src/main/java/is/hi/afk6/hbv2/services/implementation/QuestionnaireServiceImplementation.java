@@ -15,7 +15,8 @@ import is.hi.afk6.hbv2.services.QuestionnaireService;
 public class QuestionnaireServiceImplementation implements QuestionnaireService
 {
     @Override
-    public Questionnaire saveNewQuestionnaire(Questionnaire questionnaire) {
+    public Questionnaire saveNewQuestionnaire(Questionnaire questionnaire)
+    {
         return null;
     }
 
