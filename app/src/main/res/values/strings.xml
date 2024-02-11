@@ -8,6 +8,19 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
+
+    <string name="login_text">Skrá inn</string>
+    <string name="login_email">Tölvupóstur</string>
+    <string name="login_password">Lykilorð</string>
+
+    <string name="signup_text">Búa til aðgang</string>
+    <string name="signup_name">Nafn</string>
+    <string name="signup_ssn">Kennitala</string>
+    <string name="signup_phoneNumber">Símanúmer</string>
+    <string name="signup_address">Heimilisfang</string>
+    <string name="signup_email">Tölvupóstur</string>
+    <string name="signup_password">Lykilorð</string>
+    <string name="signup_confirm">Stofna aðgang</string>
+
+    <string name="user_homepage_test">Heimaskjár notanda</string>
 </resources>
