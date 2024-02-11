@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
@@ -33,9 +34,29 @@ public class UserServiceImplementation implements UserService
 
 
     @Override
-    public User saveNewUser() {
+    public User saveNewUser(SignUpDTO signUpInfo)
+    {
+        String signUpJSON = new Gson().toJson(signUpInfo);
+
+        try
+        {
+            JSONObject signUpJsonObject = new JSONObject(signUpJSON);
+
+            JSONObject userJson = apiService.postRequestAsync("user/signUp", signUpJsonObject).get();
+
+            if (userJson != null)
+            {
+                return new Gson().fromJson(userJson.toString(), User.class);
+            }
+
+        } catch (JSONException | ExecutionException | InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
+
 
     @Override
     public List<User> getAllUsers() {
