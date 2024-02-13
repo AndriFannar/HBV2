@@ -4,6 +4,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.json.*;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -89,19 +90,33 @@ public class APIServiceImplementation implements APIService
 
             int responseCode = connection.getResponseCode();
 
-            if (responseCode != HttpURLConnection.HTTP_OK) {
+            if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_BAD_REQUEST) {
                 throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
             } else {
-                StringBuilder inline = new StringBuilder();
-                Scanner scanner = new Scanner(connection.getInputStream());
+                InputStream inputStream = null;
 
-                while (scanner.hasNext()) {
-                    inline.append(scanner.nextLine());
+                if (responseCode == HttpURLConnection.HTTP_OK)
+                    inputStream = connection.getInputStream();
+                else if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
+                    inputStream = connection.getErrorStream();
+
+                if (inputStream != null)
+                {
+                    StringBuilder inline = new StringBuilder();
+                    Scanner scanner = new Scanner(inputStream);
+
+                    while (scanner.hasNext()) {
+                        inline.append(scanner.nextLine());
+                    }
+
+                    scanner.close();
+
+                    return new JSONObject(inline.toString());
                 }
-
-                scanner.close();
-
-                return new JSONObject(inline.toString());
+                else
+                {
+                    throw new RuntimeException("Error reading response from API.");
+                }
             }
         });
     }

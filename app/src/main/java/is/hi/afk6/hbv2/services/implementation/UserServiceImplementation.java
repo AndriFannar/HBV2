@@ -1,14 +1,17 @@
 package is.hi.afk6.hbv2.services.implementation;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
@@ -94,7 +97,7 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public User logInUser(LoginDTO login)
+    public ResponseWrapper<User> logInUser(LoginDTO login)
     {
         String loginJson = new Gson().toJson(login);
 
@@ -102,11 +105,13 @@ public class UserServiceImplementation implements UserService
         {
             JSONObject loginJsonObject = new JSONObject(loginJson);
 
-            JSONObject userJson = apiService.postRequestAsync("user/login", loginJsonObject).get();
+            JSONObject returnJson = apiService.postRequestAsync("user/login", loginJsonObject).get();
 
-            if (userJson != null)
+            if (returnJson != null)
             {
-                return new Gson().fromJson(userJson.toString(), User.class);
+                Gson gson = new Gson();
+                Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
+                return gson.fromJson(returnJson.toString(), responseType);
             }
 
         } catch (JSONException | ExecutionException | InterruptedException e)

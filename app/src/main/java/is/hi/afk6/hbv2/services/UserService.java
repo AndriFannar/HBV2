@@ -3,6 +3,7 @@ package is.hi.afk6.hbv2.services;
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
@@ -84,5 +85,5 @@ public interface UserService
      * @param login Login info of User to find.
      * @return      User that matches the Login info, if any.
      */
-    public User logInUser(LoginDTO login);
+    public ResponseWrapper<User> logInUser(LoginDTO login);
 }

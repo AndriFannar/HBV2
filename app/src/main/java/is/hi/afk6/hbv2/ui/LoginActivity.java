@@ -8,7 +8,9 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import is.hi.afk6.hbv2.databinding.ActivityLoginBinding;
+import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
@@ -33,18 +35,34 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
+                binding.contentLogin.loginError.setVisibility(View.INVISIBLE);
+
                 LoginDTO loginInfo = new LoginDTO(binding.contentLogin.loginEmail.getText().toString(),
                         binding.contentLogin.loginPassword.getText().toString());
 
-                User returnUser = userService.logInUser(loginInfo);
+                ResponseWrapper<User> returnUser = userService.logInUser(loginInfo);
 
                 binding.contentLogin.textLogin.setTextColor(Color.BLACK);
-                String text = "Velkomin/nn " + returnUser.getName();
-                binding.contentLogin.textLogin.setText(text);
 
-                Intent intent = new Intent(LoginActivity.this, UserHomepageActivity.class);
+                ErrorResponse errorResponse = returnUser.getErrorResponse();
 
-                startActivity(intent);
+                if (errorResponse != null)
+                {
+                    String error = errorResponse.getErrorDetails().get("Villa við innskráningu");
+                    binding.contentLogin.loginError.setText(error);
+                    binding.contentLogin.loginError.setVisibility(View.VISIBLE);
+                }
+                else
+                {
+                    User loggedInUser = returnUser.getData();
+
+                    String text = "Velkomin/nn " + loggedInUser.getName();
+                    binding.contentLogin.textLogin.setText(text);
+
+                    Intent intent = new Intent(LoginActivity.this, UserHomepageActivity.class);
+
+                    startActivity(intent);
+                }
             }
         });
 
