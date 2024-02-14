@@ -26,6 +26,7 @@ public class SignUpActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
+        // Create a new UserService.
         userService = new UserServiceImplementation(new APIServiceImplementation());
 
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
@@ -42,6 +43,7 @@ public class SignUpActivity extends AppCompatActivity
 
     private void signUp()
     {
+        // Hide errors.
         binding.contentSignUp.signupNameError.setVisibility(View.INVISIBLE);
         binding.contentSignUp.signupSsnError.setVisibility(View.INVISIBLE);
         binding.contentSignUp.signupPhoneNumberError.setVisibility(View.INVISIBLE);
@@ -49,6 +51,7 @@ public class SignUpActivity extends AppCompatActivity
         binding.contentSignUp.signupEmailError.setVisibility(View.INVISIBLE);
         binding.contentSignUp.signupPasswordError.setVisibility(View.INVISIBLE);
 
+        // Create a SignUpDTO from user input.
         SignUpDTO signUpInfo = new SignUpDTO(binding.contentSignUp.signupName.getText().toString(),
                                              binding.contentSignUp.signupSsn.getText().toString(),
                                              binding.contentSignUp.signupPhoneNumber.getText().toString(),
@@ -56,12 +59,15 @@ public class SignUpActivity extends AppCompatActivity
                                              binding.contentSignUp.signupEmail.getText().toString(),
                                              binding.contentSignUp.signupPassword.getText().toString());
 
+        // Send SignUp info to API and wait for a response.
         ResponseWrapper<User> returnUser = userService.saveNewUser(signUpInfo);
 
+        // Get ErrorResponse from ResponseWrapper.
         ErrorResponse errorResponse = returnUser.getErrorResponse();
 
         if (errorResponse != null)
         {
+            // If ErrorResponse is not null, display relevant errors.
             String nameError = errorResponse.getErrorDetails().get("name");
             if (nameError != null)
             {
@@ -105,12 +111,15 @@ public class SignUpActivity extends AppCompatActivity
             }
             else
             {
+                // If no errors, get User from Wrapper.
                 User loggedInUser = returnUser.getData();
 
+                // Show welcome text.
                 binding.contentSignUp.signupText.setTextColor(Color.BLACK);
                 String text = "Velkomin/nn " + loggedInUser.getName();
                 binding.contentSignUp.signupText.setText(text);
 
+                // Go to UserHomepage.
                 Intent intent = new Intent(SignUpActivity.this, UserHomepageActivity.class);
 
                 startActivity(intent);

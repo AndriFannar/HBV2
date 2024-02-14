@@ -2,9 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="UserServiceImplementationTest">
-        <State />
-      </entry>
       <entry key="app">
         <State />
       </entry>
@@ -15,6 +12,9 @@
         <State />
       </entry>
       <entry key="testUpdateUserSuccessful()">
+        <State />
+      </entry>
+      <entry key="testUpdateUserUnsuccessful()">
         <State />
       </entry>
     </value>

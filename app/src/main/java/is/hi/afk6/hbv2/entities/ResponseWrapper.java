@@ -1,13 +1,13 @@
 package is.hi.afk6.hbv2.entities;
 
 /**
- * Response Wrapper that contains data from API.
+ * Response Wrapper that contains data returned from API, or an ErrorResponse with a detailed error message.
  *
  * @author  Andri Fannar Kristjánsson, afk6@hi.is.
  * @since   2024-02-13
  * @version 1.0
  *
- * @param <T> Object to return if successful.
+ * @param <T> Object returned from API if request was successful.
  */
 public class ResponseWrapper<T>
 {

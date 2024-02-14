@@ -162,6 +162,9 @@ public class APIServiceImplementation implements APIService
 
                     scanner.close();
 
+                    if (inline.length() == 0)
+                        return new JSONObject();
+
                     return new JSONObject(inline.toString());
                 }
                 else

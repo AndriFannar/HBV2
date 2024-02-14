@@ -1,6 +1,7 @@
 package is.hi.afk6.hbv2.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -15,6 +16,7 @@ import org.junit.runner.RunWith;
 
 import java.util.concurrent.ExecutionException;
 
+import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
@@ -50,7 +52,7 @@ public class UserServiceImplementationTest
     {
         User user = userService.getUserByID(8L);
 
-        String newName = "Andri2";
+        String newName = "Andri";
         user.setName(newName);
 
         userService.updateUser(user.getId(), user);
@@ -58,5 +60,21 @@ public class UserServiceImplementationTest
         User updatedUser = userService.getUserByID(8L);
 
         assertEquals(user.getName(), updatedUser.getName());
+    }
+
+    @Test
+    public void testUpdateUserUnsuccessful()
+    {
+        User user = userService.getUserByID(8L);
+
+        String newName = "";
+        user.setName(newName);
+
+        ErrorResponse errorResponse = userService.updateUser(user.getId(), user);
+
+        User updatedUser = userService.getUserByID(8L);
+
+        assertNotEquals(user.getName(), updatedUser.getName());
+        assertNotNull(errorResponse.getErrorDetails());
     }
 }
