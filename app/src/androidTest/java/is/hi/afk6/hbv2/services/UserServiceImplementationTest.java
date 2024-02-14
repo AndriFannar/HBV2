@@ -32,38 +32,31 @@ public class UserServiceImplementationTest
         userService = new UserServiceImplementation(new APIServiceImplementation());
     }
 
-    /*@Test
-    public void testGetRequest()
-    {
-        APIServiceImplementation apiService = new APIServiceImplementation();
-        JSONObject object;
-
-        try
-        {
-            object = apiService.getRequestAsync("user/viewUser/1").get();
-
-            assertEquals(object.getString("id"), "1");
-        }
-        catch (ExecutionException | InterruptedException | JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }*/
-
 
     @Test
-    public void testPostRequest()
+    public void testLogInExists()
     {
-
-        String email = "sus@hi.is";
+        String email = "afk6@hi.is";
         LoginDTO logIn = new LoginDTO(email, "Lykilord123");
         ResponseWrapper<User> response = userService.logInUser(logIn);
 
         User user = response.getData();
 
-        System.out.println("Error: " + response.getErrorResponse());
-        System.out.println("Data: " + response.getData());
-        System.out.println("User: " + user);
-        //assertEquals(object.getString("email"), email);
+        assertEquals(user.getEmail(), email);
+    }
+
+    @Test
+    public void testUpdateUserSuccessful()
+    {
+        User user = userService.getUserByID(8L);
+
+        String newName = "Andri2";
+        user.setName(newName);
+
+        userService.updateUser(user.getId(), user);
+
+        User updatedUser = userService.getUserByID(8L);
+
+        assertEquals(user.getName(), updatedUser.getName());
     }
 }

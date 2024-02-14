@@ -10,6 +10,7 @@ import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.SignUpDTO;
@@ -37,7 +38,7 @@ public class UserServiceImplementation implements UserService
 
 
     @Override
-    public User saveNewUser(SignUpDTO signUpInfo)
+    public ResponseWrapper<User> saveNewUser(SignUpDTO signUpInfo)
     {
         String signUpJSON = new Gson().toJson(signUpInfo);
 
@@ -45,11 +46,13 @@ public class UserServiceImplementation implements UserService
         {
             JSONObject signUpJsonObject = new JSONObject(signUpJSON);
 
-            JSONObject userJson = apiService.postRequestAsync("user/signUp", signUpJsonObject).get();
+            JSONObject returnJson = apiService.postRequestAsync("user/signUp", signUpJsonObject).get();
 
-            if (userJson != null)
+            if (returnJson != null)
             {
-                return new Gson().fromJson(userJson.toString(), User.class);
+                Gson gson = new Gson();
+                Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
+                return gson.fromJson(returnJson.toString(), responseType);
             }
 
         } catch (JSONException | ExecutionException | InterruptedException e)
@@ -67,7 +70,23 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public User getUserByID(Long id) {
+    public User getUserByID(Long userID)
+    {
+        try
+        {
+            JSONObject returnJson = apiService.getRequestAsync("user/viewUser/" + userID).get();
+
+            if (returnJson != null)
+            {
+                Gson gson = new Gson();
+                Type responseType = new TypeToken<User>() {}.getType();
+                return gson.fromJson(returnJson.toString(), responseType);
+            }
+
+        } catch (ExecutionException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         return null;
     }
 
@@ -87,13 +106,34 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public void updateUserByID(Long userID, User updatedUser) {
+    public ErrorResponse updateUser(Long requestingUserID, User updatedUser)
+    {
+        String userJson = new Gson().toJson(updatedUser);
 
+        try
+        {
+            JSONObject updatedUserJson = new JSONObject(userJson);
+
+            JSONObject returnJson = apiService.putRequestAsync("user/updateUser/" + requestingUserID, updatedUserJson).get();
+
+            if (returnJson != null)
+            {
+                Gson gson = new Gson();
+                Type responseType = new TypeToken<ErrorResponse>() {}.getType();
+                return gson.fromJson(returnJson.toString(), responseType);
+            }
+        } catch (JSONException | ExecutionException | InterruptedException e)
+        {
+            throw new RuntimeException(e);
+        }
+
+        return null;
     }
 
     @Override
-    public void deleteUserByID(Long userID) {
-
+    public void deleteUserByID(Long userID)
+    {
+        apiService.deleteRequestAsync("user/deleteUser/" + userID);
     }
 
     @Override

@@ -42,13 +42,11 @@ public class LoginActivity extends AppCompatActivity
 
                 ResponseWrapper<User> returnUser = userService.logInUser(loginInfo);
 
-                binding.contentLogin.textLogin.setTextColor(Color.BLACK);
-
                 ErrorResponse errorResponse = returnUser.getErrorResponse();
 
                 if (errorResponse != null)
                 {
-                    String error = errorResponse.getErrorDetails().get("Villa við innskráningu");
+                    String error = errorResponse.getErrorDetails().get("login");
                     binding.contentLogin.loginError.setText(error);
                     binding.contentLogin.loginError.setVisibility(View.VISIBLE);
                 }
@@ -56,6 +54,7 @@ public class LoginActivity extends AppCompatActivity
                 {
                     User loggedInUser = returnUser.getData();
 
+                    binding.contentLogin.textLogin.setTextColor(Color.BLACK);
                     String text = "Velkomin/nn " + loggedInUser.getName();
                     binding.contentLogin.textLogin.setText(text);
 

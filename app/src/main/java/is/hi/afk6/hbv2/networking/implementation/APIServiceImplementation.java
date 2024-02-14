@@ -26,6 +26,7 @@ public class APIServiceImplementation implements APIService
 {
     // Base API URL.
     private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
+    private final String API_PASS = "[Test]";
 
     private final ExecutorService executorService;
 
@@ -44,7 +45,7 @@ public class APIServiceImplementation implements APIService
             URL url = new URL((API_URL + urlExtension));
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", "[Test]");
+            connection.setRequestProperty("X-API-KEY", API_PASS);
             connection.setRequestMethod("GET");
             connection.connect();
 
@@ -79,7 +80,7 @@ public class APIServiceImplementation implements APIService
             URL url = new URL((API_URL + urlExtension));
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", "[Test]");
+            connection.setRequestProperty("X-API-KEY", API_PASS);
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
@@ -122,12 +123,87 @@ public class APIServiceImplementation implements APIService
     }
 
     @Override
-    public Future<JSONObject> putRequestAsync(String urlExtension, JSONObject object) {
-        return null;
+    public Future<JSONObject> putRequestAsync(String urlExtension, JSONObject object)
+    {
+        return executorService.submit(() ->
+        {
+            URL url = new URL((API_URL + urlExtension));
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("X-API-KEY", API_PASS);
+            connection.setRequestProperty("Content-Type", "application/json");
+            connection.setRequestMethod("PUT");
+            connection.setDoOutput(true);
+            connection.connect();
+
+            OutputStream outputStream = connection.getOutputStream();
+            outputStream.write(object.toString().getBytes(UTF_8));
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_BAD_REQUEST) {
+                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
+            } else {
+                InputStream inputStream = null;
+
+                if (responseCode == HttpURLConnection.HTTP_OK)
+                    inputStream = connection.getInputStream();
+                else if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
+                    inputStream = connection.getErrorStream();
+
+                if (inputStream != null)
+                {
+                    StringBuilder inline = new StringBuilder();
+                    Scanner scanner = new Scanner(inputStream);
+
+                    while (scanner.hasNext()) {
+                        inline.append(scanner.nextLine());
+                    }
+
+                    scanner.close();
+
+                    return new JSONObject(inline.toString());
+                }
+                else
+                {
+                    throw new RuntimeException("Error reading response from API.");
+                }
+            }
+        });
     }
 
     @Override
-    public Future<JSONObject> deleteRequestAsync(String urlExtension) {
-        return null;
+    public Future<JSONObject> deleteRequestAsync(String urlExtension)
+    {
+        return executorService.submit(() ->
+        {
+            URL url = new URL((API_URL + urlExtension));
+
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("X-API-KEY", API_PASS);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+
+            if (responseCode != HttpURLConnection.HTTP_OK)
+            {
+                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
+            }
+            else
+            {
+                StringBuilder inline = new StringBuilder();
+                Scanner scanner = new Scanner(connection.getInputStream());
+
+                while (scanner.hasNext())
+                {
+                    inline.append(scanner.nextLine());
+                }
+
+                scanner.close();
+
+                return new JSONObject(inline.toString());
+            }
+        });
     }
 }
