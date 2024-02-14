@@ -68,6 +68,16 @@
             android:inputType="textPassword"
             android:autofillHints="password"/>
 
+        <TextView
+            android:id="@+id/login_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_text"
+            android:textAlignment="center"
+            android:textColor="#F44336"
+            android:textSize="20sp"
+            android:visibility="invisible" />
+
         <Button
             android:id="@+id/login_confirm"
             android:layout_width="match_parent"
