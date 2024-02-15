@@ -43,7 +43,7 @@ public class APIServiceImplementation implements APIService
             URL url = new URL((API_URL + urlExtension));
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", "[Test]");
+            connection.setRequestProperty("X-API-KEY", "Kclj6G!2$CRpnOog");
             connection.setRequestMethod("GET");
             connection.connect();
 
@@ -78,7 +78,7 @@ public class APIServiceImplementation implements APIService
             URL url = new URL((API_URL + urlExtension));
 
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", "[Test]");
+            connection.setRequestProperty("X-API-KEY", "Kclj6G!2$CRpnOog");
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);
