@@ -79,6 +79,7 @@ public class EditUserFragment extends Fragment {
         ErrorResponse errorResponse = userService.updateUser(user.getId(), user);
 
         if(errorResponse != null){
+            edit_setup();
             errorResponse_input(errorResponse);
         } else {
             FragmentManager fragmentManager = getParentFragmentManager();
