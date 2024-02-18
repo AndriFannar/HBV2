@@ -23,4 +23,15 @@
     <string name="signup_confirm">Stofna aðgang</string>
 
     <string name="user_homepage_test">Heimaskjár notanda</string>
+    <string name="user_name">"Notandi: "</string>
+    <string name="phoneNumber">"Símanúmer: "</string>
+    <string name="address">"Heimilisfang: "</string>
+    <string name="email">"Netfang: "</string>
+    <string name="edit_confirm">Uppfæra</string>
+    <string name="edit_error_name">Nafn ólölegt</string>
+    <string name="edit_error_phoneNr">Símanúmer ólölegt</string>
+    <string name="edit_error_address">Heimilisfang ólölegt</string>
+    <string name="edit_error_email">Netfang ólölegt</string>
+    <string name="edit_text">Breyta upplýsingum\n</string>
+    <string name="name">Nafn</string>
 </resources>
