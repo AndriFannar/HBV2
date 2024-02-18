@@ -1,5 +1,10 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
 /**
@@ -9,7 +14,7 @@ import is.hi.afk6.hbv2.entities.enums.UserRole;
  * @since 07/01/2024
  * @version 1.0
  */
-public class User
+public class User implements Parcelable
 {
     // Variables.
     private Long id;
@@ -52,6 +57,23 @@ public class User
         this.address = address;
         this.specialization = specialization;
         this.role = role;
+    }
+
+    /**
+     * Create a new User from Parcel.
+     *
+     * @param in Parcel to create User from.
+     */
+    private User(Parcel in)
+    {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.email = in.readString();
+        this.ssn = in.readString();
+        this.phoneNumber = in.readString();
+        this.address = in.readString();
+        this.specialization = in.readString();
+        this.role = UserRole.values()[in.readInt()];
     }
 
     public Long getId() {
@@ -131,4 +153,35 @@ public class User
                 ", role=" + role +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(ssn);
+        dest.writeString(phoneNumber);
+        dest.writeString(address);
+        dest.writeString(specialization);
+        dest.writeInt(role.ordinal());
+    }
+
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>()
+    {
+        public User createFromParcel(Parcel in)
+        {
+            return new User(in);
+        }
+
+        public User[] newArray(int size)
+        {
+            return new User[size];
+        }
+    };
 }

@@ -36,11 +36,10 @@ public class UserServiceImplementationTest
 
 
     @Test
-    public void testLogInExists()
-    {
+    public void testLogInExists() throws ExecutionException, InterruptedException {
         String email = "afk6@hi.is";
         LoginDTO logIn = new LoginDTO(email, "Lykilord123");
-        ResponseWrapper<User> response = userService.logInUser(logIn);
+        ResponseWrapper<User> response = userService.logInUser(logIn).get();
 
         User user = response.getData();
 

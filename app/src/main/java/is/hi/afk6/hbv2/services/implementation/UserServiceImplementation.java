@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
@@ -148,19 +149,25 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public ResponseWrapper<User> logInUser(LoginDTO login)
+    public Future<ResponseWrapper<User>> logInUser(LoginDTO login)
     {
         // Convert LogIn data to String.
         String loginJson = new Gson().toJson(login);
 
+        JSONObject loginJsonObject;
+
         try
         {
             // Convert String to JSONObject.
-            JSONObject loginJsonObject = new JSONObject(loginJson);
+            loginJsonObject = new JSONObject(loginJson);
+        }
+        catch (JSONException e)
+        {
+            throw new RuntimeException(e);
+        }
 
-            // Send LogIn data as JSON to API, wait for a return.
-            JSONObject returnJson = apiService.postRequestAsync("user/login", loginJsonObject).get();
-
+        // Send LogIn data as JSON to API, wait for a return.
+        return apiService.postRequestAsync("user/login", loginJsonObject).thenApply(returnJson -> {
             if (returnJson != null)
             {
                 // If return is not empty, convert to ResponseWrapper<User>.
@@ -168,12 +175,7 @@ public class UserServiceImplementation implements UserService
                 Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
                 return gson.fromJson(returnJson.toString(), responseType);
             }
-
-        } catch (JSONException | ExecutionException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        return null;
+            return null;
+        });
     }
 }

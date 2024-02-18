@@ -1,6 +1,7 @@
 package is.hi.afk6.hbv2.services;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
@@ -87,5 +88,5 @@ public interface UserService
      * @return      ResponseWrapper containing User that corresponds with the log in info,
      *              or in case of errors, an ErrorResponse.
      */
-    public ResponseWrapper<User> logInUser(LoginDTO login);
+    public Future<ResponseWrapper<User>> logInUser(LoginDTO login);
 }

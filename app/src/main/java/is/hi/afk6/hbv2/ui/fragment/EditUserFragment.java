@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
+import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,11 +24,17 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 public class EditUserFragment extends Fragment {
     private FragmentEditUserBinding binding;
     private UserService userService;
-    private User user;
+    private User loggedInUser;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
+
+        if (getArguments() != null)
+        {
+            loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
+        }
+
         userService = new UserServiceImplementation(new APIServiceImplementation());
     }
 
@@ -36,14 +44,13 @@ public class EditUserFragment extends Fragment {
         binding = FragmentEditUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        user = userService.getUserByID(8L);
         edit_setup();
 
-        if(user != null){
-            binding.editName.setText(user.getName());
-            binding.editPhone.setText(user.getPhoneNumber());
-            binding.editAddress.setText(user.getAddress());
-            binding.editEmail.setText(user.getEmail());
+        if(loggedInUser != null){
+            binding.editName.setText(loggedInUser.getName());
+            binding.editPhone.setText(loggedInUser.getPhoneNumber());
+            binding.editAddress.setText(loggedInUser.getAddress());
+            binding.editEmail.setText(loggedInUser.getEmail());
         }
 
 
@@ -68,15 +75,15 @@ public class EditUserFragment extends Fragment {
      * Checks if the changes that are made are validated and allowed.
      */
     private void validateUpdate(){
-        if(user == null){
+        if(loggedInUser == null){
             return;
         }
-        user.setName(binding.editName.getText().toString());
-        user.setAddress(binding.editAddress.getText().toString());
-        user.setPhoneNumber(binding.editPhone.getText().toString());
-        user.setEmail(binding.editEmail.getText().toString());
+        loggedInUser.setName(binding.editName.getText().toString());
+        loggedInUser.setAddress(binding.editAddress.getText().toString());
+        loggedInUser.setPhoneNumber(binding.editPhone.getText().toString());
+        loggedInUser.setEmail(binding.editEmail.getText().toString());
 
-        ErrorResponse errorResponse = userService.updateUser(user.getId(), user);
+        ErrorResponse errorResponse = userService.updateUser(loggedInUser.getId(), loggedInUser);
 
         if(errorResponse != null){
             edit_setup();
@@ -84,7 +91,12 @@ public class EditUserFragment extends Fragment {
         } else {
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+
             UserFragment userFragment = new UserFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+            userFragment.setArguments(bundle);
+
             fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
             fragmentTransaction.commit();
         }

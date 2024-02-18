@@ -5,16 +5,10 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="testGetRequest()">
-        <State />
-      </entry>
       <entry key="testPostRequest()">
         <State />
       </entry>
       <entry key="testUpdateUserSuccessful()">
-        <State />
-      </entry>
-      <entry key="testUpdateUserUnsuccessful()">
         <State />
       </entry>
     </value>

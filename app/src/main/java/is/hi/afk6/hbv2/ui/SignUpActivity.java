@@ -65,65 +65,58 @@ public class SignUpActivity extends AppCompatActivity
         // Get ErrorResponse from ResponseWrapper.
         ErrorResponse errorResponse = returnUser.getErrorResponse();
 
-        if (errorResponse != null)
-        {
+        if (errorResponse != null) {
             // If ErrorResponse is not null, display relevant errors.
             String nameError = errorResponse.getErrorDetails().get("name");
-            if (nameError != null)
-            {
+            if (nameError != null) {
                 binding.contentSignUp.signupNameError.setText(nameError);
                 binding.contentSignUp.signupNameError.setVisibility(View.VISIBLE);
             }
 
             String ssnError = errorResponse.getErrorDetails().get("ssn");
-            if (ssnError != null)
-            {
+            if (ssnError != null) {
                 binding.contentSignUp.signupSsnError.setText(ssnError);
                 binding.contentSignUp.signupSsnError.setVisibility(View.VISIBLE);
             }
 
             String phoneError = errorResponse.getErrorDetails().get("phoneNumber");
-            if (phoneError != null)
-            {
+            if (phoneError != null) {
                 binding.contentSignUp.signupPhoneNumberError.setText(phoneError);
                 binding.contentSignUp.signupPhoneNumberError.setVisibility(View.VISIBLE);
             }
 
             String addressError = errorResponse.getErrorDetails().get("address");
-            if (addressError != null)
-            {
+            if (addressError != null) {
                 binding.contentSignUp.signupAddressError.setText(addressError);
                 binding.contentSignUp.signupAddressError.setVisibility(View.VISIBLE);
             }
 
             String emailError = errorResponse.getErrorDetails().get("email");
-            if (emailError != null)
-            {
+            if (emailError != null) {
                 binding.contentSignUp.signupEmailError.setText(emailError);
                 binding.contentSignUp.signupEmailError.setVisibility(View.VISIBLE);
             }
 
             String passwordError = errorResponse.getErrorDetails().get("password");
-            if (passwordError != null)
-            {
+            if (passwordError != null) {
                 binding.contentSignUp.signupPasswordError.setText(passwordError);
                 binding.contentSignUp.signupPasswordError.setVisibility(View.VISIBLE);
             }
-            else
-            {
-                // If no errors, get User from Wrapper.
-                User loggedInUser = returnUser.getData();
+        }
+        else
+        {
+            // If no errors, get User from Wrapper.
+            User loggedInUser = returnUser.getData();
 
-                // Show welcome text.
-                binding.contentSignUp.signupText.setTextColor(Color.BLACK);
-                String text = "Velkomin/nn " + loggedInUser.getName();
-                binding.contentSignUp.signupText.setText(text);
+            // Show welcome text.
+            binding.contentSignUp.signupText.setTextColor(Color.BLACK);
+            String text = "Velkomin/nn " + loggedInUser.getName();
+            binding.contentSignUp.signupText.setText(text);
 
-                // Go to UserHomepage.
-                Intent intent = new Intent(SignUpActivity.this, UserHomepageActivity.class);
+            // Go to UserHomepage.
+            Intent intent = UserHomepageActivity.newIntent(SignUpActivity.this, loggedInUser);
 
-                startActivity(intent);
-            }
+            startActivity(intent);
         }
     }
 }

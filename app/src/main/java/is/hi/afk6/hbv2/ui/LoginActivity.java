@@ -7,6 +7,8 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.util.concurrent.ExecutionException;
+
 import is.hi.afk6.hbv2.databinding.ActivityLoginBinding;
 import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
@@ -44,7 +46,12 @@ public class LoginActivity extends AppCompatActivity
                                                   binding.contentLogin.loginPassword.getText().toString());
 
                 // Try logging User in, wait for a response from API.
-                ResponseWrapper<User> returnUser = userService.logInUser(loginInfo);
+                ResponseWrapper<User> returnUser = null;
+                try {
+                    returnUser = userService.logInUser(loginInfo).get();
+                } catch (ExecutionException | InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
 
                 // Get the ErrorResponse from the Wrapper.
                 ErrorResponse errorResponse = returnUser.getErrorResponse();
@@ -68,8 +75,7 @@ public class LoginActivity extends AppCompatActivity
                     binding.contentLogin.textLogin.setText(text);
 
                     //Switch to UserHomepage.
-                    Intent intent = new Intent(LoginActivity.this, UserHomepageActivity.class);
-
+                    Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, loggedInUser);
                     startActivity(intent);
                 }
             }
