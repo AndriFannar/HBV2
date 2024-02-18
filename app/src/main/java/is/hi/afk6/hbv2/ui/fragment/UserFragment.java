@@ -51,9 +51,9 @@ public class UserFragment extends Fragment {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             EditUserFragment editUserFragment = new EditUserFragment();
 
-            Bundle args = new Bundle();
-            args.putLong("userId", user_id);
-            editUserFragment.setArguments(args);
+            Bundle bundle = new Bundle();
+            bundle.putLong("userId", user_id);
+            editUserFragment.setArguments(bundle);
 
             fragmentTransaction.replace(R.id.edit_fragment_container_view, editUserFragment);
             fragmentTransaction.addToBackStack(null); // Add transaction to back stack
