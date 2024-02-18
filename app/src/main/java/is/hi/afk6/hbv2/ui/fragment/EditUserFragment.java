@@ -28,6 +28,11 @@ public class EditUserFragment extends Fragment {
     public  void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
         userService = new UserServiceImplementation(new APIServiceImplementation());
+        if (getArguments() != null) {
+            long userId = getArguments().getLong("userId", -1);
+            user = userService.getUserByID(userId);
+        }
+
     }
 
     @Nullable
@@ -36,7 +41,6 @@ public class EditUserFragment extends Fragment {
         binding = FragmentEditUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        user = userService.getUserByID(8L);
         edit_setup();
 
         if(user != null){

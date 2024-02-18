@@ -20,6 +20,7 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
 public class UserFragment extends Fragment {
     private UserService userService;
+    private Long user_id;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
@@ -33,8 +34,9 @@ public class UserFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
         is.hi.afk6.hbv2.databinding.FragmentUserBinding binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        //Temp User Id
-        User user = userService.getUserByID(8L);
+        user_id = 8L;
+
+        User user = userService.getUserByID(user_id);
 
         if(user != null){
             binding.userName.setText(user.getName());
@@ -48,7 +50,13 @@ public class UserFragment extends Fragment {
             FragmentManager fragmentManager = getParentFragmentManager();
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             EditUserFragment editUserFragment = new EditUserFragment();
+
+            Bundle args = new Bundle();
+            args.putLong("userId", user_id);
+            editUserFragment.setArguments(args);
+
             fragmentTransaction.replace(R.id.edit_fragment_container_view, editUserFragment);
+            fragmentTransaction.addToBackStack(null); // Add transaction to back stack
             fragmentTransaction.commit();
         });
         return view;
