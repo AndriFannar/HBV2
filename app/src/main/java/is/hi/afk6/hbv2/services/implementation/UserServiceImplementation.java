@@ -79,7 +79,7 @@ public class UserServiceImplementation implements UserService
         try
         {
             // Fetch User with corresponding ID from API.
-            JSONObject returnJson = apiService.getRequestAsync("user/viewUser/" + userID).get();
+            JSONObject returnJson = apiService.getRequestAsync("user/view/" + userID).get();
 
             if (returnJson != null)
             {
@@ -123,7 +123,7 @@ public class UserServiceImplementation implements UserService
             JSONObject updatedUserJson = new JSONObject(userJson);
 
             // Send JSON data to API, wait for a return.
-            JSONObject returnJson = apiService.putRequestAsync("user/updateUser/" + requestingUserID, updatedUserJson).get();
+            JSONObject returnJson = apiService.putRequestAsync("user/update/" + requestingUserID, updatedUserJson).get();
 
             if (returnJson != null)
             {
@@ -144,7 +144,7 @@ public class UserServiceImplementation implements UserService
     public void deleteUserByID(Long userID)
     {
         // Request deletion of a User.
-        apiService.deleteRequestAsync("user/deleteUser/" + userID);
+        apiService.deleteRequestAsync("user/delete/" + userID);
     }
 
     @Override
