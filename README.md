@@ -1,2 +1,2 @@
-## HBV1 - Teymi 1
-# Sjúkraþjálfurnar biðlista app
+## HBV2 - Team 7
+# Physiotherapist Registration App

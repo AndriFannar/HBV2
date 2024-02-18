@@ -17,7 +17,6 @@ import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
-import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 
 /**
@@ -125,13 +124,14 @@ public class UserServiceImplementation implements UserService
             // Send JSON data to API, wait for a return.
             JSONObject returnJson = apiService.putRequestAsync("user/update/" + requestingUserID, updatedUserJson).get();
 
-            if (returnJson != null)
+            if (returnJson != null && returnJson.length() > 0)
             {
                 // If return is not empty, convert from JSON to ErrorResponse.
                 Gson gson = new Gson();
                 Type responseType = new TypeToken<ErrorResponse>() {}.getType();
                 return gson.fromJson(returnJson.toString(), responseType);
             }
+
         } catch (JSONException | ExecutionException | InterruptedException e)
         {
             throw new RuntimeException(e);
