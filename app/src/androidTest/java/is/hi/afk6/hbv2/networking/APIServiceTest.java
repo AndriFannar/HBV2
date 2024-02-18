@@ -1,4 +1,4 @@
-package is.hi.afk6.hbv2.services.networking;
+package is.hi.afk6.hbv2.networking;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
