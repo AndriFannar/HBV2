@@ -35,7 +35,6 @@ public class UserFragment extends Fragment {
         TextView users_name = view.findViewById(R.id.temp_name);
         //Temp User Id
         User user = userService.getUserByID(8L);
-        Log.i("Tag", user.getName());
 
         if(user != null){
             users_name.setText(user.getName());
