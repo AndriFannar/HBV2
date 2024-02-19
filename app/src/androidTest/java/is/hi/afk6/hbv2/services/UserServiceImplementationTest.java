@@ -5,22 +5,13 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import android.util.Log;
-
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import com.google.gson.Gson;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.ExecutionException;
-
 import is.hi.afk6.hbv2.HBV2Application;
-import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
@@ -75,18 +66,27 @@ public class UserServiceImplementationTest
     @Test
     public void testUpdateUserSuccessful()
     {
-        User user = userService.getUserByID(8L);
-
-        String newName = "Andri F";
-        user.setName(newName);
-
-        userService.updateUser(user.getId(), user, new APICallback<User>() {
+        userService.getUserByID(8L, new APICallback<User>() {
             @Override
             public void onComplete(ResponseWrapper<User> result)
             {
-                User updatedUser = userService.getUserByID(8L);
+                String newName = "Andri F";
+                User user = result.getData();
+                user.setName(newName);
 
-                assertEquals(user.getName(), updatedUser.getName());
+                userService.updateUser(user.getId(), user, new APICallback<User>() {
+                    @Override
+                    public void onComplete(ResponseWrapper<User> result)
+                    {
+                        userService.getUserByID(8L, new APICallback<User>() {
+                            @Override
+                            public void onComplete(ResponseWrapper<User> result)
+                            {
+                                assertEquals(user.getName(), result.getData().getName());
+                            }
+                        });
+                    }
+                });
             }
         });
     }
@@ -94,19 +94,29 @@ public class UserServiceImplementationTest
     @Test
     public void testUpdateUserUnsuccessful()
     {
-        User user = userService.getUserByID(8L);
-
-        String newName = "";
-        user.setName(newName);
-
-        userService.updateUser(user.getId(), user, new APICallback<User>() {
+        userService.getUserByID(8L, new APICallback<User>() {
             @Override
             public void onComplete(ResponseWrapper<User> result)
             {
-                User updatedUser = userService.getUserByID(8L);
+                User user = result.getData();
+                String newName = "";
+                user.setName(newName);
 
-                assertNotEquals(user.getName(), updatedUser.getName());
-                assertNotNull(result.getErrorResponse().getErrorDetails());
+                userService.updateUser(user.getId(), user, new APICallback<User>() {
+                    @Override
+                    public void onComplete(ResponseWrapper<User> result)
+                    {
+                        userService.getUserByID(8L, new APICallback<User>() {
+                            @Override
+                            public void onComplete(ResponseWrapper<User> result)
+                            {
+
+                                assertNotEquals(user.getName(), result.getData().getName());
+                                assertNotNull(result.getErrorResponse().getErrorDetails());
+                            }
+                        });
+                    }
+                });
             }
         });
     }

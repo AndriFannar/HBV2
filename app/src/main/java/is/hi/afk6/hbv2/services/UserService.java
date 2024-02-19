@@ -25,7 +25,7 @@ public interface UserService
      *
      * @return ResponseWrapper containing saved User, or in case of errors, an ErrorResponse.
      */
-    public ResponseWrapper<User> saveNewUser(SignUpDTO signUpInfo);
+    public void saveNewUser(SignUpDTO signUpInfo, APICallback<User> callback);
 
     /**
      * Gets all saved Users.
@@ -40,7 +40,7 @@ public interface UserService
      * @param userID Unique ID of User to fetch.
      * @return       User with corresponding ID, if any.
      */
-    public User getUserByID(Long userID);
+    public void getUserByID(Long userID, APICallback<User> callback);
 
     /**
      * Gets a User by E-mail.

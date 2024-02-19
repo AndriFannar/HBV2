@@ -8,12 +8,6 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="testLogInDoesNotExist()">
-        <State />
-      </entry>
-      <entry key="testLogInExists()">
-        <State />
-      </entry>
       <entry key="testUpdateUserSuccessful()">
         <State />
       </entry>

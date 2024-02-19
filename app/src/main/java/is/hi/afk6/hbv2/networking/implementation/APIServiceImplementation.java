@@ -79,8 +79,10 @@ public class APIServiceImplementation implements APIService
         }
         else
         {
-            InputStream inputStream = connection.getInputStream();
-            return parseNetworkResponse(inputStream);
+            if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
+                return parseNetworkResponse(connection.getErrorStream());
+
+            return parseNetworkResponse(connection.getInputStream());
         }
     }
 

@@ -89,16 +89,14 @@ public class EditUserFragment extends Fragment {
         loggedInUser.setPhoneNumber(binding.editPhone.getText().toString());
         loggedInUser.setEmail(binding.editEmail.getText().toString());
 
-        Log.println(Log.INFO, "Updating user...", "Going to enter UserService");
         userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
-            Log.println(Log.INFO, "onComplete", "Inside onComplete");
             ErrorResponse errorResponse = result.getErrorResponse();
 
             requireActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run()
                 {
-                    Log.println(Log.INFO, "Run", "Inside Run");
+                    Log.d("ErrorRespnse", "Error:" + errorResponse);
                     if(errorResponse != null){
                         edit_setup();
                         errorResponse_input(errorResponse);

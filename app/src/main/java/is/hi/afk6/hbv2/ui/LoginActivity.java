@@ -43,7 +43,6 @@ public class LoginActivity extends AppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Log.println(Log.INFO, "login", "Executing onClick");
                 // Hide errors.
                 binding.contentLogin.loginError.setVisibility(View.INVISIBLE);
                 binding.contentLogin.progressBar.setVisibility(View.VISIBLE);
@@ -51,6 +50,7 @@ public class LoginActivity extends AppCompatActivity
                 binding.contentLogin.loginConfirm.setClickable(false);
                 binding.contentLogin.signup.setClickable(false);
                 binding.contentLogin.loginEmail.setFocusable(false);
+                binding.contentLogin.loginPassword.setFocusable(false);
 
                 // Create a LogInDTO object from user input.
                 LoginDTO loginInfo = new LoginDTO(binding.contentLogin.loginEmail.getText().toString(),
@@ -62,17 +62,17 @@ public class LoginActivity extends AppCompatActivity
                     @Override
                     public void onComplete(ResponseWrapper<User> result)
                     {
-                        Log.println(Log.INFO, "login", "Data: " + result.getData());
-                        Log.println(Log.INFO, "login", "Error: " + result.getErrorResponse());
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run()
                             {
-                                Log.println(Log.INFO, "login", "Running on ui...");
                                 binding.contentLogin.progressBar.setVisibility(View.GONE);
                                 binding.contentLogin.loginConfirm.setAlpha(1f);
                                 binding.contentLogin.loginConfirm.setClickable(true);
                                 binding.contentLogin.signup.setClickable(true);
+                                binding.contentLogin.loginEmail.setFocusable(true);
+                                binding.contentLogin.loginPassword.setFocusable(true);
+
                                 if (result.getData() != null)
                                 {
                                     // If no error, get the User from the Wrapper.
@@ -89,10 +89,8 @@ public class LoginActivity extends AppCompatActivity
                                 }
                                 else
                                 {
-                                    Log.println(Log.INFO, "login", "Displaying errors");
                                     // Show error if it exists.
                                     String error = result.getErrorResponse().getErrorDetails().get("login");
-                                    Log.println(Log.INFO, "login", "Error is: " + error);
                                     binding.contentLogin.loginError.setText(error);
                                     binding.contentLogin.loginError.setVisibility(View.VISIBLE);
                                 }
