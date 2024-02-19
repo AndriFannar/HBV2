@@ -1,5 +1,6 @@
 package is.hi.afk6.hbv2.ui;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -8,12 +9,15 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 
+import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.databinding.ActivityLoginBinding;
 import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.callbacks.APICallback;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
@@ -29,7 +33,7 @@ public class LoginActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // Create a UserService.
-        userService = new UserServiceImplementation(new APIServiceImplementation());
+        userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
 
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
@@ -40,6 +44,10 @@ public class LoginActivity extends AppCompatActivity
             {
                 // Hide errors.
                 binding.contentLogin.loginError.setVisibility(View.INVISIBLE);
+                binding.contentLogin.progressBar.setVisibility(View.VISIBLE);
+                binding.contentLogin.loginConfirm.setAlpha(0.7f);
+                binding.contentLogin.loginConfirm.setClickable(false);
+                binding.contentLogin.signup.setClickable(false);
 
                 // Create a LogInDTO object from user input.
                 LoginDTO loginInfo = new LoginDTO(binding.contentLogin.loginEmail.getText().toString(),
@@ -47,37 +55,43 @@ public class LoginActivity extends AppCompatActivity
 
                 // Try logging User in, wait for a response from API.
                 ResponseWrapper<User> returnUser = null;
-                try {
-                    returnUser = userService.logInUser(loginInfo).get();
-                } catch (ExecutionException | InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
+                userService.logInUser(loginInfo, new APICallback<User>() {
+                    @Override
+                    public void onComplete(ResponseWrapper<User> result)
+                    {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run()
+                            {
+                                binding.contentLogin.progressBar.setVisibility(View.GONE);
+                                binding.contentLogin.loginConfirm.setAlpha(1f);
+                                binding.contentLogin.loginConfirm.setClickable(true);
+                                binding.contentLogin.signup.setClickable(true);
+                                if (result.getData() != null)
+                                {
+                                    // If no error, get the User from the Wrapper.
+                                    User loggedInUser = result.getData();
 
-                // Get the ErrorResponse from the Wrapper.
-                ErrorResponse errorResponse = returnUser.getErrorResponse();
+                                    // Show a welcome message.
+                                    binding.contentLogin.textLogin.setTextColor(Color.BLACK);
+                                    String text = "Velkomin/nn " + loggedInUser.getName();
+                                    binding.contentLogin.textLogin.setText(text);
 
-                // Check if the ErrorResponse contains an error.
-                if (errorResponse != null)
-                {
-                    // Show error if it exists.
-                    String error = errorResponse.getErrorDetails().get("login");
-                    binding.contentLogin.loginError.setText(error);
-                    binding.contentLogin.loginError.setVisibility(View.VISIBLE);
-                }
-                else
-                {
-                    // If no error, get the User from the Wrapper.
-                    User loggedInUser = returnUser.getData();
-
-                    // Show a welcome message.
-                    binding.contentLogin.textLogin.setTextColor(Color.BLACK);
-                    String text = "Velkomin/nn " + loggedInUser.getName();
-                    binding.contentLogin.textLogin.setText(text);
-
-                    //Switch to UserHomepage.
-                    Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, loggedInUser);
-                    startActivity(intent);
-                }
+                                    //Switch to UserHomepage.
+                                    Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, loggedInUser);
+                                    startActivity(intent);
+                                }
+                                else
+                                {
+                                    // Show error if it exists.
+                                    String error = result.getErrorResponse().getErrorDetails().get("login");
+                                    binding.contentLogin.loginError.setText(error);
+                                    binding.contentLogin.loginError.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
 
@@ -91,6 +105,5 @@ public class LoginActivity extends AppCompatActivity
                 startActivity(intent);
             }
         });
-
     }
 }

@@ -29,7 +29,7 @@ public interface APIService
      * @param object       JSONObject to post to API.
      * @return             JSONObject returned from API.
      */
-    public CompletableFuture<JSONObject> postRequestAsync(String urlExtension, JSONObject object);
+    public JSONObject postRequestAsync(String urlExtension, JSONObject object);
 
     /**
      * Performs an asynchronous put request with the specified URL.

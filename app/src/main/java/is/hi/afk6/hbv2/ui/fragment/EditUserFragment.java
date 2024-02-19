@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
 import is.hi.afk6.hbv2.entities.ErrorResponse;
@@ -35,7 +36,7 @@ public class EditUserFragment extends Fragment {
             loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
         }
 
-        userService = new UserServiceImplementation(new APIServiceImplementation());
+        userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
     }
 
     @Nullable

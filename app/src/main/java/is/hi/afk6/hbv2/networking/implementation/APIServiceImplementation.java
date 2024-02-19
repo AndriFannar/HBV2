@@ -110,22 +110,13 @@ public class APIServiceImplementation implements APIService
     }
 
     @Override
-    public CompletableFuture<JSONObject> postRequestAsync(String urlExtension, JSONObject object)
+    public JSONObject postRequestAsync(String urlExtension, JSONObject object)
     {
-        CompletableFuture<JSONObject> future = new CompletableFuture<>();
-
-        executorService.submit(() -> {
-            try
-            {
-                future.complete(makeNetworkRequest(urlExtension, "POST", object));
-            }
-            catch (Exception e)
-            {
-                future.completeExceptionally(e);
-            }
-        });
-
-        return future;
+        try {
+            return makeNetworkRequest(urlExtension, "POST", object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

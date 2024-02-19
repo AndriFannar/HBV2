@@ -8,6 +8,7 @@ import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
 /**
@@ -88,5 +89,5 @@ public interface UserService
      * @return      ResponseWrapper containing User that corresponds with the log in info,
      *              or in case of errors, an ErrorResponse.
      */
-    public Future<ResponseWrapper<User>> logInUser(LoginDTO login);
+    public void logInUser(LoginDTO login, APICallback<User> callback);
 }

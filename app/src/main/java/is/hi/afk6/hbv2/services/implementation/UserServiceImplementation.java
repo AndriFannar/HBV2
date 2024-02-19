@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.Future;
 
 import is.hi.afk6.hbv2.entities.ErrorResponse;
@@ -16,6 +17,7 @@ import is.hi.afk6.hbv2.entities.LoginDTO;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.UserService;
@@ -30,10 +32,12 @@ import is.hi.afk6.hbv2.services.UserService;
 public class UserServiceImplementation implements UserService
 {
     private final APIService apiService;
+    private final Executor executor;
 
-    public UserServiceImplementation(APIService apiService)
+    public UserServiceImplementation(APIService apiService, Executor executor)
     {
         this.apiService = apiService;
+        this.executor = executor;
     }
 
 
@@ -49,7 +53,7 @@ public class UserServiceImplementation implements UserService
             JSONObject signUpJsonObject = new JSONObject(signUpJSON);
 
             // Send info to API and get a return object.
-            JSONObject returnJson = apiService.postRequestAsync("user/signUp", signUpJsonObject).get();
+            JSONObject returnJson = apiService.postRequestAsync("user/signUp", signUpJsonObject);
 
             if (returnJson != null)
             {
@@ -59,7 +63,7 @@ public class UserServiceImplementation implements UserService
                 return gson.fromJson(returnJson.toString(), responseType);
             }
 
-        } catch (JSONException | ExecutionException | InterruptedException e)
+        } catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
@@ -149,8 +153,49 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public Future<ResponseWrapper<User>> logInUser(LoginDTO login)
+    public void logInUser(final LoginDTO login, final APICallback<User> callback)
     {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    // Convert LogIn data to String.
+                    String loginJson = new Gson().toJson(login);
+
+                    JSONObject loginJsonObject;
+
+                    try
+                    {
+                        // Convert String to JSONObject.
+                        loginJsonObject = new JSONObject(loginJson);
+                    }
+                    catch (JSONException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+
+                    // Send LogIn data as JSON to API, wait for a return.
+                    JSONObject returnJson = apiService.postRequestAsync("user/login", loginJsonObject);
+                    if (returnJson != null)
+                    {
+                        // If return is not empty, convert to ResponseWrapper<User>.
+                        Gson gson = new Gson();
+                        Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
+
+                        callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    }
+                }
+                catch (Exception e)
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse.setError("No response from API");
+                    ResponseWrapper<User> responseWrapper = new ResponseWrapper<>(errorResponse);
+                    callback.onComplete(responseWrapper);
+                }
+            }
+        });
+/*
         // Convert LogIn data to String.
         String loginJson = new Gson().toJson(login);
 
@@ -176,6 +221,6 @@ public class UserServiceImplementation implements UserService
                 return gson.fromJson(returnJson.toString(), responseType);
             }
             return null;
-        });
+        });*/
     }
 }

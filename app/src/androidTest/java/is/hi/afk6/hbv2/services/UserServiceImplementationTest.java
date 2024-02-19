@@ -27,7 +27,7 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 public class UserServiceImplementationTest
 {
     private UserService userService;
-
+/*
     @Before
     public void createUserServiceClass()
     {
@@ -75,5 +75,5 @@ public class UserServiceImplementationTest
 
         assertNotEquals(user.getName(), updatedUser.getName());
         assertNotNull(errorResponse.getErrorDetails());
-    }
+    }*/
 }

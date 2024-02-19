@@ -7,6 +7,7 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.databinding.ActivitySignUpBinding;
 import is.hi.afk6.hbv2.entities.ErrorResponse;
 import is.hi.afk6.hbv2.entities.ResponseWrapper;
@@ -27,7 +28,7 @@ public class SignUpActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         // Create a new UserService.
-        userService = new UserServiceImplementation(new APIServiceImplementation());
+        userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
 
         binding = ActivitySignUpBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
