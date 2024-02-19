@@ -3,6 +3,7 @@ package is.hi.afk6.hbv2.ui.fragment;
 import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +14,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import java.util.Objects;
+
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
 import is.hi.afk6.hbv2.entities.ErrorResponse;
+import is.hi.afk6.hbv2.entities.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.callbacks.APICallback;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
@@ -84,23 +89,36 @@ public class EditUserFragment extends Fragment {
         loggedInUser.setPhoneNumber(binding.editPhone.getText().toString());
         loggedInUser.setEmail(binding.editEmail.getText().toString());
 
-        ErrorResponse errorResponse = userService.updateUser(loggedInUser.getId(), loggedInUser);
+        Log.println(Log.INFO, "Updating user...", "Going to enter UserService");
+        userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
+            Log.println(Log.INFO, "onComplete", "Inside onComplete");
+            ErrorResponse errorResponse = result.getErrorResponse();
 
-        if(errorResponse != null){
-            edit_setup();
-            errorResponse_input(errorResponse);
-        } else {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    Log.println(Log.INFO, "Run", "Inside Run");
+                    if(errorResponse != null){
+                        edit_setup();
+                        errorResponse_input(errorResponse);
+                    } else {
+                        FragmentManager fragmentManager = getParentFragmentManager();
+                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-            UserFragment userFragment = new UserFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
-            userFragment.setArguments(bundle);
+                        UserFragment userFragment = new UserFragment();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+                        userFragment.setArguments(bundle);
 
-            fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
-            fragmentTransaction.commit();
-        }
+                        fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
+                        fragmentTransaction.commit();
+                    }
+                }
+            });
+        });
+
+
     }
 
     private void errorResponse_input(ErrorResponse errorResponse){

@@ -20,7 +20,7 @@ public interface APIService
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @return             JSONObject returned from API.
      */
-    public CompletableFuture<JSONObject> getRequestAsync(String urlExtension);
+    public JSONObject getRequest(String urlExtension);
 
     /**
      * Performs an asynchronous post request with the specified URL.
@@ -29,7 +29,7 @@ public interface APIService
      * @param object       JSONObject to post to API.
      * @return             JSONObject returned from API.
      */
-    public JSONObject postRequestAsync(String urlExtension, JSONObject object);
+    public JSONObject postRequest(String urlExtension, JSONObject object);
 
     /**
      * Performs an asynchronous put request with the specified URL.
@@ -38,7 +38,7 @@ public interface APIService
      * @param object       JSONObject to put to API.
      * @return             JSONObject returned from API.
      */
-    public CompletableFuture<JSONObject> putRequestAsync(String urlExtension, JSONObject object);
+    public JSONObject putRequest(String urlExtension, JSONObject object);
 
     /**
      * Performs an asynchronous delete request with the specified URL.
@@ -46,5 +46,5 @@ public interface APIService
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @return             JSONObject returned from API.
      */
-    public CompletableFuture<JSONObject> deleteRequestAsync(String urlExtension);
+    public JSONObject deleteRequest(String urlExtension);
 }

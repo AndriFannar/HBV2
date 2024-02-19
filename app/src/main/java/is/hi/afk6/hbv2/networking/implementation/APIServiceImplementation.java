@@ -9,10 +9,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import is.hi.afk6.hbv2.networking.APIService;
 
@@ -29,17 +25,15 @@ public class APIServiceImplementation implements APIService
     private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
     private final String API_PASS = "Kclj6G!2$CRpnOog";
 
-    // Base level Render host goes offline when not in use and takes quite some time to come back online.
+    // Long timeout since base level Render host goes offline when not in use
+    // and takes quite some time to come back online.
     private final int API_TIMEOUT = 240000;
-
-    private final ExecutorService executorService;
 
     /**
      * Create a new API Service.
      */
     public APIServiceImplementation()
     {
-        executorService = Executors.newFixedThreadPool(5);
     }
 
     private JSONObject parseNetworkResponse(InputStream inputStream) throws JSONException
@@ -91,26 +85,17 @@ public class APIServiceImplementation implements APIService
     }
 
     @Override
-    public CompletableFuture<JSONObject> getRequestAsync(String urlExtension)
+    public JSONObject getRequest(String urlExtension)
     {
-        CompletableFuture<JSONObject> future = new CompletableFuture<>();
-
-        executorService.submit(() -> {
-            try
-            {
-                future.complete(makeNetworkRequest(urlExtension, "GET", null));
-            }
-            catch (Exception e)
-            {
-                future.completeExceptionally(e);
-            }
-        });
-
-        return future;
+        try {
+            return makeNetworkRequest(urlExtension, "GET", null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public JSONObject postRequestAsync(String urlExtension, JSONObject object)
+    public JSONObject postRequest(String urlExtension, JSONObject object)
     {
         try {
             return makeNetworkRequest(urlExtension, "POST", object);
@@ -120,40 +105,22 @@ public class APIServiceImplementation implements APIService
     }
 
     @Override
-    public CompletableFuture<JSONObject> putRequestAsync(String urlExtension, JSONObject object)
+    public JSONObject putRequest(String urlExtension, JSONObject object)
     {
-        CompletableFuture<JSONObject> future = new CompletableFuture<>();
-
-        executorService.submit(() -> {
-            try
-            {
-                future.complete(makeNetworkRequest(urlExtension, "PUT", object));
-            }
-            catch (Exception e)
-            {
-                future.completeExceptionally(e);
-            }
-        });
-
-        return future;
+        try {
+            return makeNetworkRequest(urlExtension, "PUT", object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public CompletableFuture<JSONObject> deleteRequestAsync(String urlExtension)
+    public JSONObject deleteRequest(String urlExtension)
     {
-        CompletableFuture<JSONObject> future = new CompletableFuture<>();
-
-        executorService.submit(() -> {
-            try
-            {
-                future.complete(makeNetworkRequest(urlExtension, "DELETE", null));
-            }
-            catch (Exception e)
-            {
-                future.completeExceptionally(e);
-            }
-        });
-
-        return future;
+        try {
+            return makeNetworkRequest(urlExtension, "DELETE", null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

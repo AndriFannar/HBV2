@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -53,7 +55,7 @@ public class UserServiceImplementation implements UserService
             JSONObject signUpJsonObject = new JSONObject(signUpJSON);
 
             // Send info to API and get a return object.
-            JSONObject returnJson = apiService.postRequestAsync("user/signUp", signUpJsonObject);
+            JSONObject returnJson = apiService.postRequest("user/signUp", signUpJsonObject);
 
             if (returnJson != null)
             {
@@ -80,21 +82,15 @@ public class UserServiceImplementation implements UserService
     @Override
     public User getUserByID(Long userID)
     {
-        try
+        // Fetch User with corresponding ID from API.
+        JSONObject returnJson = apiService.getRequest("user/view/" + userID);
+
+        if (returnJson != null)
         {
-            // Fetch User with corresponding ID from API.
-            JSONObject returnJson = apiService.getRequestAsync("user/view/" + userID).get();
-
-            if (returnJson != null)
-            {
-                // Convert response from JSON to User class if response is not null.
-                Gson gson = new Gson();
-                Type responseType = new TypeToken<User>() {}.getType();
-                return gson.fromJson(returnJson.toString(), responseType);
-            }
-
-        } catch (ExecutionException | InterruptedException e) {
-            throw new RuntimeException(e);
+            // Convert response from JSON to User class if response is not null.
+            Gson gson = new Gson();
+            Type responseType = new TypeToken<User>() {}.getType();
+            return gson.fromJson(returnJson.toString(), responseType);
         }
 
         return null;
@@ -116,67 +112,89 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public ErrorResponse updateUser(Long requestingUserID, User updatedUser)
+    public void updateUser(final Long requestingUserID, final User updatedUser, final APICallback<User> callback)
     {
-        // Convert User class to String.
-        String userJson = new Gson().toJson(updatedUser);
-
-        try
-        {
-            // Convert String of User class to JSONObject.
-            JSONObject updatedUserJson = new JSONObject(userJson);
-
-            // Send JSON data to API, wait for a return.
-            JSONObject returnJson = apiService.putRequestAsync("user/update/" + requestingUserID, updatedUserJson).get();
-
-            if (returnJson != null && returnJson.length() > 0)
-            {
-                // If return is not empty, convert from JSON to ErrorResponse.
-                Gson gson = new Gson();
-                Type responseType = new TypeToken<ErrorResponse>() {}.getType();
-                return gson.fromJson(returnJson.toString(), responseType);
-            }
-
-        } catch (JSONException | ExecutionException | InterruptedException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        return null;
-    }
-
-    @Override
-    public void deleteUserByID(Long userID)
-    {
-        // Request deletion of a User.
-        apiService.deleteRequestAsync("user/delete/" + userID);
-    }
-
-    @Override
-    public void logInUser(final LoginDTO login, final APICallback<User> callback)
-    {
+        Log.println(Log.INFO, "Update User", "Inside updateUser");
         executor.execute(new Runnable() {
             @Override
             public void run()
             {
                 try {
+                    Log.println(Log.INFO, "Update User", "Converting");
+                    // Convert User class to String.
+                    String userJson = new Gson().toJson(updatedUser);
+
+                    // Convert String of User class to JSONObject.
+                    JSONObject updatedUserJson = new JSONObject(userJson);
+
+                    Log.println(Log.INFO, "Update User", "Calling API");
+                    // Send JSON data to API, wait for a return.
+                    JSONObject returnJson = apiService.putRequest("user/update/" + requestingUserID, updatedUserJson);
+
+                    Log.println(Log.INFO, "Update User", "API return");
+
+                    if (returnJson != null && returnJson.length() > 0)
+                    {
+                        Log.println(Log.INFO, "Update User", "Creating GSON");
+                        // If return is not empty, convert from JSON to ErrorResponse.
+                        Gson gson = new Gson();
+                        Type responseType = new TypeToken<ErrorResponse>() {}.getType();
+
+                        ErrorResponse errorResponse = gson.fromJson(returnJson.toString(), responseType);
+
+                        Log.println(Log.INFO, "Update User", "Returning...");
+                        callback.onComplete(new ResponseWrapper<User>(errorResponse));
+                    }
+                    else
+                    {
+                        callback.onComplete(new ResponseWrapper<User>(updatedUser));
+                    }
+                }
+                catch (Exception e)
+                {
+                    Log.println(Log.INFO, "Update User", "There was an error");
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse.setError("No response from API");
+                    ResponseWrapper<User> responseWrapper = new ResponseWrapper<>(errorResponse);
+                    callback.onComplete(responseWrapper);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void deleteUserByID(Long userID)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                apiService.deleteRequest("user/delete/" + userID);
+            }
+        });
+    }
+
+    @Override
+    public void logInUser(final LoginDTO login, final APICallback<User> callback)
+    {
+        Log.println(Log.INFO, "Login", "Inside Login");
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    Log.println(Log.INFO, "Login", "Starting...");
                     // Convert LogIn data to String.
                     String loginJson = new Gson().toJson(login);
 
-                    JSONObject loginJsonObject;
+                    JSONObject loginJsonObject = new JSONObject(loginJson);
 
-                    try
-                    {
-                        // Convert String to JSONObject.
-                        loginJsonObject = new JSONObject(loginJson);
-                    }
-                    catch (JSONException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-
+                    Log.println(Log.INFO, "Login", "Calling API");
                     // Send LogIn data as JSON to API, wait for a return.
-                    JSONObject returnJson = apiService.postRequestAsync("user/login", loginJsonObject);
+                    JSONObject returnJson = apiService.postRequest("user/login", loginJsonObject);
+
+                    Log.println(Log.INFO, "Login", "Returned from API: " + returnJson);
+
                     if (returnJson != null)
                     {
                         // If return is not empty, convert to ResponseWrapper<User>.
@@ -189,38 +207,11 @@ public class UserServiceImplementation implements UserService
                 catch (Exception e)
                 {
                     ErrorResponse errorResponse = new ErrorResponse();
-                    errorResponse.setError("No response from API");
+                    errorResponse.setError("No response from API. Error: " + e);
                     ResponseWrapper<User> responseWrapper = new ResponseWrapper<>(errorResponse);
                     callback.onComplete(responseWrapper);
                 }
             }
         });
-/*
-        // Convert LogIn data to String.
-        String loginJson = new Gson().toJson(login);
-
-        JSONObject loginJsonObject;
-
-        try
-        {
-            // Convert String to JSONObject.
-            loginJsonObject = new JSONObject(loginJson);
-        }
-        catch (JSONException e)
-        {
-            throw new RuntimeException(e);
-        }
-
-        // Send LogIn data as JSON to API, wait for a return.
-        return apiService.postRequestAsync("user/login", loginJsonObject).thenApply(returnJson -> {
-            if (returnJson != null)
-            {
-                // If return is not empty, convert to ResponseWrapper<User>.
-                Gson gson = new Gson();
-                Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
-                return gson.fromJson(returnJson.toString(), responseType);
-            }
-            return null;
-        });*/
     }
 }

@@ -73,7 +73,7 @@ public interface UserService
      * @param requestingUserID Unique ID of User that is performing the update.
      * @param updatedUser      User with updated information.
      */
-    public ErrorResponse updateUser(Long requestingUserID, User updatedUser);
+    public void updateUser(Long requestingUserID, User updatedUser, APICallback<User> callback);
 
     /**
      * Deletes a User by unique ID.

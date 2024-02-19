@@ -27,11 +27,13 @@ public class APIServiceTest {
 
         try
         {
-            object = apiService.getRequestAsync("user/viewUser/1").get();
+            object = apiService.getRequest("user/view/8");
 
-            assertEquals(object.getString("id"), "1");
+            JSONObject user = object.getJSONObject("data");
+
+            assertEquals(user.getString("id"), "8");
         }
-        catch (ExecutionException | InterruptedException | JSONException e)
+        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
@@ -48,11 +50,13 @@ public class APIServiceTest {
             JSONObject logInJson = new JSONObject(new Gson().toJson(logIn));
 
             APIServiceImplementation apiService = new APIServiceImplementation();
-            JSONObject object = apiService.postRequestAsync("user/login", logInJson).get();
+            JSONObject object = apiService.postRequest("user/login", logInJson);
 
-            assertEquals(object.getString("email"), email);
+            JSONObject user = object.getJSONObject("data");
+
+            assertEquals(user.getString("email"), email);
         }
-        catch (JSONException | ExecutionException | InterruptedException e)
+        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
