@@ -1,4 +1,4 @@
-package is.hi.afk6.hbv2.entities;
+package is.hi.afk6.hbv2.entities.api;
 
 /**
  * Response Wrapper that contains data returned from API, or an ErrorResponse with a detailed error message.

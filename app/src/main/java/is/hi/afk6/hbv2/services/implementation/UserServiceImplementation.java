@@ -1,7 +1,5 @@
 package is.hi.afk6.hbv2.services.implementation;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -10,26 +8,25 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Future;
 
-import is.hi.afk6.hbv2.entities.ErrorResponse;
-import is.hi.afk6.hbv2.entities.LoginDTO;
-import is.hi.afk6.hbv2.entities.ResponseWrapper;
-import is.hi.afk6.hbv2.entities.SignUpDTO;
+import is.hi.afk6.hbv2.entities.api.ErrorResponse;
+import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.dtos.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.callbacks.APICallback;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.UserService;
 
 /**
  * Service for User class.
+ * Performs asynchronous calls to APIService.
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/02/2024
- * @version 1.0
+ * @version 1.5
  */
 public class UserServiceImplementation implements UserService
 {
@@ -79,8 +76,8 @@ public class UserServiceImplementation implements UserService
 
 
     @Override
-    public List<User> getAllUsers() {
-        return null;
+    public void getAllUsers(APICallback<List<User>> callback) {
+
     }
 
     @Override
@@ -105,18 +102,19 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public User getUserByEmail(String email) {
-        return null;
+    public void getUserByEmail(String email, APICallback<User> callback)
+    {
+
     }
 
     @Override
-    public User getUserBySSN(String ssn) {
-        return null;
+    public void getUserBySSN(String ssn, APICallback<User> callback) {
+
     }
 
     @Override
-    public List<User> getUsersByRole(UserRole role, boolean includeElevated) {
-        return null;
+    public void getUsersByRole(UserRole role, boolean includeElevated, APICallback<List<User>> callback) {
+
     }
 
     @Override
@@ -158,13 +156,14 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public void deleteUserByID(Long userID)
+    public void deleteUserByID(Long userID, APICallback<User> callback)
     {
         executor.execute(new Runnable() {
             @Override
             public void run()
             {
                 apiService.deleteRequest("user/delete/" + userID);
+                callback.onComplete(null);
             }
         });
     }

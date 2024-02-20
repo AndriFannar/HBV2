@@ -12,9 +12,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.ExecutionException;
-
-import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 
 @RunWith(AndroidJUnit4.class)

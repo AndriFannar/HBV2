@@ -3,6 +3,7 @@ package is.hi.afk6.hbv2.services;
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 
 /**
  * Service for Question class.
@@ -17,37 +18,44 @@ public interface QuestionService
      * Save a new Question.
      *
      * @param question Question to save.
-     * @return         Saved Question.
+     * @param callback Callback for when the method has saved a new Question.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public Question saveNewQuestion(Question question);
+    void saveNewQuestion(Question question, APICallback<Question> callback);
 
     /**
      * Get all saved Questions.
      *
-     * @return List of all saved Questions.
+     * @param callback Callback for when the method has fetched all Questions.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public List<Question> getAllQuestions();
+    void getAllQuestions(APICallback<List<Question>> callback);
 
     /**
      * Get a Question by unique ID.
      *
      * @param questionID Unique ID of question to fetch.
-     * @return           Question with corresponding ID, if any.
+     * @param callback   Callback for when the method has fetched a Question with matching ID, if any.
+     *                   The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public Question getQuestionByID(Long questionID);
+    void getQuestionByID(Long questionID, APICallback<Question> callback);
 
     /**
      * Update a Question with corresponding unique ID.
      *
      * @param questionID      Unique ID of Question to update.
      * @param updatedQuestion Question with updated information.
+     * @param callback        Callback for when the method has updated the Question.
+     *                        The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void updateQuestionByID(Long questionID, Question updatedQuestion);
+    void updateQuestionByID(Long questionID, Question updatedQuestion, APICallback<Question> callback);
 
     /**
      * Delete Question by unique ID.
      *
      * @param questionID Unique ID of Question to delete.
+     * @param callback   Callback for when the method has deleted the Question.
+     *                   The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void deleteQuestionByID(Long questionID);
+    void deleteQuestionByID(Long questionID, APICallback<Question> callback);
 }

@@ -3,10 +3,12 @@ package is.hi.afk6.hbv2.services.implementation;
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.services.QuestionService;
 
 /**
  * Service for Question class.
+ * Performs asynchronous calls to APIService.
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 08/02/2024
@@ -14,28 +16,29 @@ import is.hi.afk6.hbv2.services.QuestionService;
  */
 public class QuestionServiceImplementation implements QuestionService
 {
-    @Override
-    public Question saveNewQuestion(Question question) {
-        return null;
-    }
 
     @Override
-    public List<Question> getAllQuestions() {
-        return null;
-    }
-
-    @Override
-    public Question getQuestionByID(Long questionID) {
-        return null;
-    }
-
-    @Override
-    public void updateQuestionByID(Long questionID, Question updatedQuestion) {
+    public void saveNewQuestion(Question question, APICallback<Question> callback) {
 
     }
 
     @Override
-    public void deleteQuestionByID(Long questionID) {
+    public void getAllQuestions(APICallback<List<Question>> callback) {
+
+    }
+
+    @Override
+    public void getQuestionByID(Long questionID, APICallback<Question> callback) {
+
+    }
+
+    @Override
+    public void updateQuestionByID(Long questionID, Question updatedQuestion, APICallback<Question> callback) {
+
+    }
+
+    @Override
+    public void deleteQuestionByID(Long questionID, APICallback<Question> callback) {
 
     }
 }

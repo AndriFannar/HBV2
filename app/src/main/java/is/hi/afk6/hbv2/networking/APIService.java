@@ -10,12 +10,12 @@ import java.util.concurrent.Future;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/02/2024
- * @version 1.0
+ * @version 2.0
  */
 public interface APIService
 {
     /**
-     * Performs an asynchronous get request with the specified URL.
+     * Performs a get request with the specified URL.
      *
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @return             JSONObject returned from API.
@@ -23,7 +23,7 @@ public interface APIService
     public JSONObject getRequest(String urlExtension);
 
     /**
-     * Performs an asynchronous post request with the specified URL.
+     * Performs a post request with the specified URL.
      *
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @param object       JSONObject to post to API.
@@ -32,7 +32,7 @@ public interface APIService
     public JSONObject postRequest(String urlExtension, JSONObject object);
 
     /**
-     * Performs an asynchronous put request with the specified URL.
+     * Performs a put request with the specified URL.
      *
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @param object       JSONObject to put to API.
@@ -41,7 +41,7 @@ public interface APIService
     public JSONObject putRequest(String urlExtension, JSONObject object);
 
     /**
-     * Performs an asynchronous delete request with the specified URL.
+     * Performs a delete request with the specified URL.
      *
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @return             JSONObject returned from API.

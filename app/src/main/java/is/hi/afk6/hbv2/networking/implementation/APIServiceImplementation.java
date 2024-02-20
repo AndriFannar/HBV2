@@ -17,7 +17,7 @@ import is.hi.afk6.hbv2.networking.APIService;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/02/2024
- * @version 1.0
+ * @version 2.0
  */
 public class APIServiceImplementation implements APIService
 {

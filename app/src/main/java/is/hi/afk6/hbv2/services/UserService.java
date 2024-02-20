@@ -1,14 +1,11 @@
 package is.hi.afk6.hbv2.services;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
-import is.hi.afk6.hbv2.entities.ErrorResponse;
-import is.hi.afk6.hbv2.entities.LoginDTO;
-import is.hi.afk6.hbv2.entities.ResponseWrapper;
-import is.hi.afk6.hbv2.entities.SignUpDTO;
+import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
+import is.hi.afk6.hbv2.entities.dtos.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.callbacks.APICallback;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
 /**
@@ -16,78 +13,94 @@ import is.hi.afk6.hbv2.entities.enums.UserRole;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/02/2024
- * @version 1.0
+ * @version 2.0
  */
 public interface UserService
 {
     /**
      * Saves a new User.
      *
-     * @return ResponseWrapper containing saved User, or in case of errors, an ErrorResponse.
+     * @param signUpInfo Info for User to save.
+     * @param callback   Callback for when User has been successfully saved.
+     *                   The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void saveNewUser(SignUpDTO signUpInfo, APICallback<User> callback);
+    void saveNewUser(SignUpDTO signUpInfo, APICallback<User> callback);
 
     /**
      * Gets all saved Users.
      *
-     * @return List of all Users.
+     * @param callback Callback for when a list of Users has been fetched.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public List<User> getAllUsers();
+    void getAllUsers(APICallback<List<User>> callback);
 
     /**
      * Gets a User by unique ID.
      *
-     * @param userID Unique ID of User to fetch.
-     * @return       User with corresponding ID, if any.
+     * @param userID   Unique ID of User to fetch.
+     * @param callback Callback for when the action has been completed, and will contain either:
+     *                 A User with a matching ID, or an ErrorResponse.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void getUserByID(Long userID, APICallback<User> callback);
+    void getUserByID(Long userID, APICallback<User> callback);
 
     /**
      * Gets a User by E-mail.
      *
-     * @param email E-mail of User to fetch.
-     * @return      User with corresponding E-mail, if any.
+     * @param email    E-mail of User to fetch.
+     * @param callback Callback for when the method has completed fetching,
+     *                 and returns either a User with a matching E-mail, or an ErrorResponse.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public User getUserByEmail(String email);
+    void getUserByEmail(String email, APICallback<User> callback);
 
     /**
      * Gets a User by Social Security Number.
      *
-     * @param ssn Social Security Number of User to fetch.
-     * @return    User with corresponding Social Security Number, if any.
+     * @param ssn      Social Security Number of User to fetch.
+     * @param callback Callback for when the method has completed fetching,
+     *                 and returns either a User with a matching SSN, or an ErrorResponse.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public User getUserBySSN(String ssn);
+    void getUserBySSN(String ssn, APICallback<User> callback);
 
     /**
      * Gets all Users with specified UserRole.
      *
      * @param role            UserRole of users to fetch.
      * @param includeElevated Include Users with higher UserRoles.
-     * @return                List of Users with corresponding role.
+     * @param callback        Callback for when the method has returned with a list of Users with a matching role.
+     *                        The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public List<User> getUsersByRole(UserRole role, boolean includeElevated);
+    void getUsersByRole(UserRole role, boolean includeElevated, APICallback<List<User>> callback);
 
     /**
      * Updates User.
      *
      * @param requestingUserID Unique ID of User that is performing the update.
      * @param updatedUser      User with updated information.
+     * @param callback         Callback for when the method has updated the User, or if update was unsuccessful,
+     *                         with an ErrorResponse containing reasons for unsuccessful update.
+     *                         The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void updateUser(Long requestingUserID, User updatedUser, APICallback<User> callback);
+    void updateUser(Long requestingUserID, User updatedUser, APICallback<User> callback);
 
     /**
      * Deletes a User by unique ID.
      *
-     * @param userID Unique ID of User to delete.
+     * @param userID   Unique ID of User to delete.
+     * @param callback Callback for when the method has deleted the User.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void deleteUserByID(Long userID);
+    void deleteUserByID(Long userID, APICallback<User> callback);
 
     /**
      * Checks if a User with corresponding User info exists, and if so, returns that User.
      *
-     * @param login Login info of User to find.
-     * @return      ResponseWrapper containing User that corresponds with the log in info,
-     *              or in case of errors, an ErrorResponse.
+     * @param login    Login info of User to find.
+     * @param callback Callback for when the method has returned with a matching User, or if login was unsuccessful,
+     *                 with an ErrorResponse containing reasons for unsuccessful login.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void logInUser(LoginDTO login, APICallback<User> callback);
+    void logInUser(LoginDTO login, APICallback<User> callback);
 }
