@@ -24,6 +24,7 @@
 
     <string name="user_homepage_test">Heimaskjár notanda</string>
     <string name="user_name">"Notandi: "</string>
+    <string name="name">Nafn</string>
     <string name="phoneNumber">"Símanúmer: "</string>
     <string name="address">"Heimilisfang: "</string>
     <string name="email">"Netfang: "</string>
@@ -33,5 +34,5 @@
     <string name="edit_error_address">Heimilisfang ólölegt</string>
     <string name="edit_error_email">Netfang ólölegt</string>
     <string name="edit_text">Breyta upplýsingum\n</string>
-    <string name="name">Nafn</string>
+    <string name="edit_delete">Eyða aðgangi</string>
 </resources>
