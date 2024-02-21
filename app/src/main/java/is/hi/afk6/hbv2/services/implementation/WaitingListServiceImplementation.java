@@ -5,59 +5,62 @@ import java.util.List;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.services.WaitingListService;
 
 /**
  * Service for WaitingListRequest class.
+ * Performs asynchronous calls to APIService.
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 08/02/2024
- * @version 1.0
+ * @version 1.1
  */
 public class WaitingListServiceImplementation implements WaitingListService
 {
-    @Override
-    public WaitingListRequest saveNewWaitingListRequest(WaitingListRequest request) {
-        return null;
-    }
 
     @Override
-    public List<WaitingListRequest> getAllWaitingListRequests() {
-        return null;
-    }
-
-    @Override
-    public WaitingListRequest getWaitingListRequestByID(Long requestID) {
-        return null;
-    }
-
-    @Override
-    public WaitingListRequest getWaitingListRequestByPatient(User patient) {
-        return null;
-    }
-
-    @Override
-    public List<WaitingListRequest> getWaitingListRequestByStaff(User staff) {
-        return null;
-    }
-
-    @Override
-    public void updateWaitingListRequestByID(Long requestID, WaitingListRequest updatedRequest) {
+    public void saveNewWaitingListRequest(WaitingListRequest request, APICallback<WaitingListRequest> callback) {
 
     }
 
     @Override
-    public void updateWaitingListRequestStatus(Long requestID, boolean newStatus) {
+    public void getAllWaitingListRequests(APICallback<List<WaitingListRequest>> callback) {
 
     }
 
     @Override
-    public void updateQuestionnaireAnswers(Long requestID, Questionnaire questionnaire) {
+    public void getWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback) {
 
     }
 
     @Override
-    public void deleteWaitingListRequestByID(Long requestID) {
+    public void getWaitingListRequestByPatient(User patient, APICallback<WaitingListRequest> callback) {
+
+    }
+
+    @Override
+    public void getWaitingListRequestByStaff(User staff, APICallback<List<WaitingListRequest>> callback) {
+
+    }
+
+    @Override
+    public void updateWaitingListRequestByID(Long requestID, WaitingListRequest updatedRequest, APICallback<WaitingListRequest> callback) {
+
+    }
+
+    @Override
+    public void updateWaitingListRequestStatus(Long requestID, boolean newStatus, APICallback<WaitingListRequest> callback) {
+
+    }
+
+    @Override
+    public void updateQuestionnaireAnswers(Long requestID, Questionnaire questionnaire, APICallback<WaitingListRequest> callback) {
+
+    }
+
+    @Override
+    public void deleteWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback) {
 
     }
 }

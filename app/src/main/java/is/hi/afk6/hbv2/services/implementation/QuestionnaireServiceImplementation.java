@@ -3,10 +3,12 @@ package is.hi.afk6.hbv2.services.implementation;
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
 
 /**
  * Service for Questionnaire class.
+ * Performs asynchronous calls to APIService.
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 08/02/2024
@@ -14,44 +16,44 @@ import is.hi.afk6.hbv2.services.QuestionnaireService;
  */
 public class QuestionnaireServiceImplementation implements QuestionnaireService
 {
-    @Override
-    public Questionnaire saveNewQuestionnaire(Questionnaire questionnaire)
-    {
-        return null;
-    }
 
     @Override
-    public List<Questionnaire> getAllQuestionnaires() {
-        return null;
-    }
-
-    @Override
-    public Questionnaire getQuestionnaireByID(Long questionnaireID) {
-        return null;
-    }
-
-    @Override
-    public List<Questionnaire> getQuestionnairesOnForm() {
-        return null;
-    }
-
-    @Override
-    public void addQuestionToQuestionnaire(Long questionID, Long questionnaireID) {
+    public void saveNewQuestionnaire(Questionnaire questionnaire, APICallback<Questionnaire> callback) {
 
     }
 
     @Override
-    public void removeQuestionFromQuestionnaire(Long questionID, Long questionnaireID) {
+    public void getAllQuestionnaires(APICallback<List<Questionnaire>> callback) {
 
     }
 
     @Override
-    public void toggleDisplayQuestionnaireOnForm(Long questionnaireID) {
+    public void getQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback) {
 
     }
 
     @Override
-    public void deleteQuestionnaireByID(Long questionnaireID) {
+    public void getQuestionnairesOnForm(APICallback<List<Questionnaire>> callback) {
+
+    }
+
+    @Override
+    public void addQuestionToQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback) {
+
+    }
+
+    @Override
+    public void removeQuestionFromQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback) {
+
+    }
+
+    @Override
+    public void toggleDisplayQuestionnaireOnForm(Long questionnaireID, APICallback<Questionnaire> callback) {
+
+    }
+
+    @Override
+    public void deleteQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback) {
 
     }
 }

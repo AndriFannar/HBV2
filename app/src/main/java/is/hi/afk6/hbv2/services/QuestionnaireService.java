@@ -3,6 +3,7 @@ package is.hi.afk6.hbv2.services;
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 
 /**
  * Service for Questionnaire class.
@@ -17,59 +18,71 @@ public interface QuestionnaireService
      * Save a new Questionnaire.
      *
      * @param questionnaire Questionnaire to save.
-     * @return              Saved Questionnaire.
+     * @param callback      Callback for when the method has saved the Questionnaire.
+     *                      The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public Questionnaire saveNewQuestionnaire(Questionnaire questionnaire);
+    void saveNewQuestionnaire(Questionnaire questionnaire, APICallback<Questionnaire> callback);
 
     /**
      * Get all saved Questionnaires.
      *
-     * @return List of all saved Questionnaires, if any.
+     * @param callback Callback for when the method has fetched all Questionnaires.
+     *                 The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public List<Questionnaire> getAllQuestionnaires();
+    void getAllQuestionnaires(APICallback<List<Questionnaire>> callback);
 
     /**
      * Get Questionnaire by unique ID.
      *
      * @param questionnaireID Unique ID of questionnaire to fetch.
-     * @return                Questionnaire with corresponding ID, if any.
+     * @param callback        Callback for when the method has fetched a Questionnaire with a matching ID, if any.
+     *                        The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public Questionnaire getQuestionnaireByID(Long questionnaireID);
+    void getQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback);
 
     /**
      * Get all Questionnaires to be displayed on a form.
      *
-     * @return List of Questionnaires to be displayed on a form.
+     * @param callback Callback for when the method has fetched all Questionnaires to be displayed.
+     *                 The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public List<Questionnaire> getQuestionnairesOnForm();
+    void getQuestionnairesOnForm(APICallback<List<Questionnaire>> callback);
 
     /**
      * Add a Question to Questionnaire.
      *
      * @param questionID      Unique ID of Question to add to Questionnaire.
      * @param questionnaireID Unique ID of Questionnaire to add Question to.
+     * @param callback        Callback for when the method has added a Question to a Questionnaire.
+     *                        The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public void addQuestionToQuestionnaire(Long questionID, Long questionnaireID);
+    void addQuestionToQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback);
 
     /**
      * Remove a Question from Questionnaire.
      *
      * @param questionID      Unique ID of Question to remove from Questionnaire.
      * @param questionnaireID Unique ID of Questionnaire to remove question from.
+     * @param callback        Callback for when the method has removed a Question from Questionnaire.
+     *                        The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public void removeQuestionFromQuestionnaire(Long questionID, Long questionnaireID);
+    void removeQuestionFromQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback);
 
     /**
      * Toggle displaying Questionnaire on form.
      *
      * @param questionnaireID Unique ID of Questionnaire to toggle.
+     * @param callback        Callback for when the method has marked the Questionnaire to be displayed on form.
+     *                        The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public void toggleDisplayQuestionnaireOnForm(Long questionnaireID);
+    void toggleDisplayQuestionnaireOnForm(Long questionnaireID, APICallback<Questionnaire> callback);
 
     /**
      * Delete a Questionnaire by unique ID.
      *
      * @param questionnaireID Unique ID of Questionnaire to delete.
+     * @param callback        Callback for when the method has deleted the Questionnaire.
+     *                        The callback will have the object returned from the method as a ResponseWrapper.
      */
-    public void deleteQuestionnaireByID(Long questionnaireID);
+    void deleteQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback);
 }

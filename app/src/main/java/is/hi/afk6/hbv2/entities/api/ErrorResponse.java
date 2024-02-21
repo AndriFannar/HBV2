@@ -1,4 +1,4 @@
-package is.hi.afk6.hbv2.entities;
+package is.hi.afk6.hbv2.entities.api;
 
 import java.util.HashMap;
 import java.util.Map;

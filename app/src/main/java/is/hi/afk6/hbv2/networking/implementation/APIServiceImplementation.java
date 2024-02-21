@@ -9,9 +9,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import is.hi.afk6.hbv2.networking.APIService;
 
@@ -20,7 +17,7 @@ import is.hi.afk6.hbv2.networking.APIService;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/02/2024
- * @version 1.0
+ * @version 2.0
  */
 public class APIServiceImplementation implements APIService
 {
@@ -28,185 +25,104 @@ public class APIServiceImplementation implements APIService
     private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
     private final String API_PASS = "Kclj6G!2$CRpnOog";
 
-    private final ExecutorService executorService;
+    // Long timeout since base level Render host goes offline when not in use
+    // and takes quite some time to come back online.
+    private final int API_TIMEOUT = 240000;
 
     /**
      * Create a new API Service.
      */
     public APIServiceImplementation()
     {
-        executorService = Executors.newFixedThreadPool(5);
     }
 
-    public Future<JSONObject> getRequestAsync(String urlExtension)
+    private JSONObject parseNetworkResponse(InputStream inputStream) throws JSONException
     {
-        return executorService.submit(() ->
+        try (Scanner scanner = new Scanner(inputStream, UTF_8.name()))
         {
-            URL url = new URL((API_URL + urlExtension));
+            StringBuilder inline = new StringBuilder();
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", API_PASS);
-            connection.setRequestMethod("GET");
-            connection.connect();
-
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode != HttpURLConnection.HTTP_OK)
+            while (scanner.hasNext())
             {
-                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
+                inline.append(scanner.nextLine());
             }
-            else
-            {
-                StringBuilder inline = new StringBuilder();
-                Scanner scanner = new Scanner(connection.getInputStream());
 
-                while (scanner.hasNext())
-                {
-                    inline.append(scanner.nextLine());
-                }
-
-                scanner.close();
-
-                return new JSONObject(inline.toString());
-            }
-        });
+            return inline.length() > 0 ? new JSONObject(inline.toString()): new JSONObject();
+        }
     }
 
-
-    public Future<JSONObject> postRequestAsync(String urlExtension, JSONObject object)
+    private JSONObject makeNetworkRequest(String urlExtension, String requestMethod, JSONObject object) throws Exception
     {
-        return executorService.submit(() ->
-        {
-            URL url = new URL((API_URL + urlExtension));
+        URL url = new URL(API_URL + urlExtension);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("X-API-KEY", API_PASS);
+        connection.setConnectTimeout(API_TIMEOUT);
+        connection.setReadTimeout(API_TIMEOUT);
+        connection.setRequestMethod(requestMethod);
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", API_PASS);
+        if (object != null)
+        {
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            connection.connect();
 
-            OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(object.toString().getBytes(UTF_8));
-
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_BAD_REQUEST) {
-                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
-            } else {
-                InputStream inputStream = null;
-
-                if (responseCode == HttpURLConnection.HTTP_OK)
-                    inputStream = connection.getInputStream();
-                else if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
-                    inputStream = connection.getErrorStream();
-
-                if (inputStream != null)
-                {
-                    StringBuilder inline = new StringBuilder();
-                    Scanner scanner = new Scanner(inputStream);
-
-                    while (scanner.hasNext()) {
-                        inline.append(scanner.nextLine());
-                    }
-
-                    scanner.close();
-
-                    return new JSONObject(inline.toString());
-                }
-                else
-                {
-                    throw new RuntimeException("Error reading response from API.");
-                }
+            try (OutputStream outputStream = connection.getOutputStream())
+            {
+                outputStream.write(object.toString().getBytes(UTF_8));
             }
-        });
+        }
+
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_BAD_REQUEST && responseCode != HttpURLConnection.HTTP_CREATED)
+        {
+            throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
+        }
+        else
+        {
+            if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
+                return parseNetworkResponse(connection.getErrorStream());
+
+            return parseNetworkResponse(connection.getInputStream());
+        }
     }
 
     @Override
-    public Future<JSONObject> putRequestAsync(String urlExtension, JSONObject object)
+    public JSONObject getRequest(String urlExtension)
     {
-        return executorService.submit(() ->
-        {
-            URL url = new URL((API_URL + urlExtension));
-
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", API_PASS);
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestMethod("PUT");
-            connection.setDoOutput(true);
-            connection.connect();
-
-            OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(object.toString().getBytes(UTF_8));
-
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_BAD_REQUEST) {
-                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
-            } else {
-                InputStream inputStream = null;
-
-                if (responseCode == HttpURLConnection.HTTP_OK)
-                    inputStream = connection.getInputStream();
-                else if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
-                    inputStream = connection.getErrorStream();
-
-                if (inputStream != null)
-                {
-                    StringBuilder inline = new StringBuilder();
-                    Scanner scanner = new Scanner(inputStream);
-
-                    while (scanner.hasNext()) {
-                        inline.append(scanner.nextLine());
-                    }
-
-                    scanner.close();
-
-                    if (inline.length() == 0)
-                        return new JSONObject();
-
-                    return new JSONObject(inline.toString());
-                }
-                else
-                {
-                    throw new RuntimeException("Error reading response from API.");
-                }
-            }
-        });
+        try {
+            return makeNetworkRequest(urlExtension, "GET", null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public Future<JSONObject> deleteRequestAsync(String urlExtension)
+    public JSONObject postRequest(String urlExtension, JSONObject object)
     {
-        return executorService.submit(() ->
-        {
-            URL url = new URL((API_URL + urlExtension));
+        try {
+            return makeNetworkRequest(urlExtension, "POST", object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", API_PASS);
-            connection.setRequestMethod("DELETE");
-            connection.connect();
+    @Override
+    public JSONObject putRequest(String urlExtension, JSONObject object)
+    {
+        try {
+            return makeNetworkRequest(urlExtension, "PUT", object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode != HttpURLConnection.HTTP_OK)
-            {
-                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
-            }
-            else
-            {
-                StringBuilder inline = new StringBuilder();
-                Scanner scanner = new Scanner(connection.getInputStream());
-
-                while (scanner.hasNext())
-                {
-                    inline.append(scanner.nextLine());
-                }
-
-                scanner.close();
-
-                return new JSONObject(inline.toString());
-            }
-        });
+    @Override
+    public JSONObject deleteRequest(String urlExtension)
+    {
+        try {
+            return makeNetworkRequest(urlExtension, "DELETE", null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
