@@ -2,6 +2,8 @@ package is.hi.afk6.hbv2.ui.fragment;
 
 import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +16,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -58,9 +59,8 @@ public class EditUserFragment extends Fragment {
             binding.editEmail.setText(loggedInUser.getEmail());
         }
 
-
         binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
-        binding.editDeleteButton.setOnClickListener(v -> deleteAccount());
+        binding.editDeleteButton.setOnClickListener(v -> testAlert());
 
         return view;
     }
@@ -92,26 +92,22 @@ public class EditUserFragment extends Fragment {
         userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
 
-            requireActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run()
-                {
-                    Log.d("ErrorRespnse", "Error:" + errorResponse);
-                    if(errorResponse != null){
-                        edit_setup();
-                        errorResponse_input(errorResponse);
-                    } else {
-                        FragmentManager fragmentManager = getParentFragmentManager();
-                        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            requireActivity().runOnUiThread(() -> {
+                Log.d("ErrorResponse", "Error:" + errorResponse);
+                if(errorResponse != null){
+                    edit_setup();
+                    errorResponse_input(errorResponse);
+                } else {
+                    FragmentManager fragmentManager = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
-                        UserFragment userFragment = new UserFragment();
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
-                        userFragment.setArguments(bundle);
+                    UserFragment userFragment = new UserFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+                    userFragment.setArguments(bundle);
 
-                        fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
-                        fragmentTransaction.commit();
-                    }
+                    fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
+                    fragmentTransaction.commit();
                 }
             });
         });
@@ -119,6 +115,10 @@ public class EditUserFragment extends Fragment {
 
     }
 
+    /**
+     * Input the appropriate errors when updating information's
+     * @param errorResponse Includes errorResponses for the edit info
+     */
     private void errorResponse_input(ErrorResponse errorResponse){
         String nameError = errorResponse.getErrorDetails().get("name");
         if (nameError != null)
@@ -151,23 +151,44 @@ public class EditUserFragment extends Fragment {
     }
 
     /**
-     * Deletes acounts
+     * Deletes accounts
      */
     public void deleteAccount(){
         //Eyða aðgangi
         userService.deleteUserByID(loggedInUser.getId(), result -> {
-            requireActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run()
-                {
-                    if(result != null){
-                        Log.d("TAG", "could not delete");
-                    } else {
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        requireActivity().startActivity(intent);
-                    }
+            requireActivity().runOnUiThread(() -> {
+                if(result != null){
+                    Log.d("TAG", "could not delete");
+                } else {
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    // Clear back stack
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    requireActivity().startActivity(intent);
+                    requireActivity().finish();
                 }
             });
         });
+    }
+
+    /**
+     * Pops a Alert to check if user has the intent to delete the account
+     */
+    public void testAlert(){
+        Activity activity = getActivity();
+        if (activity != null) {
+            AlertDialog.Builder build = new AlertDialog.Builder(activity);
+            build.setMessage("Ertu viss að þú viljir eyða aðganginum?");
+            build.setCancelable(false);
+            build.setPositiveButton("Já", (dialog, which) -> {
+                deleteAccount();
+            });
+
+            build.setNegativeButton("Nei", (dialog, which) -> {
+                dialog.cancel();
+            });
+
+            AlertDialog alert = build.create();
+            alert.show();
+        }
     }
 }
