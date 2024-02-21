@@ -16,20 +16,10 @@ import androidx.fragment.app.FragmentTransaction;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
-import is.hi.afk6.hbv2.services.UserService;
-import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
-import is.hi.afk6.hbv2.ui.UserHomepageActivity;
 
-<<<<<<< HEAD
 public class UserFragment extends Fragment
 {
     private User loggedInUser;
-=======
-public class UserFragment extends Fragment {
-    private UserService userService;
-    private Long user_id;
->>>>>>> develop
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
@@ -46,14 +36,6 @@ public class UserFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
         is.hi.afk6.hbv2.databinding.FragmentUserBinding binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-<<<<<<< HEAD
-        //Temp User Id
-        //User user = userService.getUserByID(8L);
-=======
-        user_id = 8L;
-
-        User user = userService.getUserByID(user_id);
->>>>>>> develop
 
         if(loggedInUser != null){
             binding.userName.setText(loggedInUser.getName());
@@ -68,14 +50,8 @@ public class UserFragment extends Fragment {
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
             EditUserFragment editUserFragment = new EditUserFragment();
-<<<<<<< HEAD
             Bundle bundle = new Bundle();
             bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
-=======
-
-            Bundle bundle = new Bundle();
-            bundle.putLong("userId", user_id);
->>>>>>> develop
             editUserFragment.setArguments(bundle);
 
             fragmentTransaction.replace(R.id.edit_fragment_container_view, editUserFragment);
