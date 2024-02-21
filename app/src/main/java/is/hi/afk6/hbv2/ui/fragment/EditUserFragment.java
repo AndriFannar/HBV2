@@ -2,6 +2,7 @@ package is.hi.afk6.hbv2.ui.fragment;
 
 import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
@@ -22,6 +24,7 @@ import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
+import is.hi.afk6.hbv2.ui.LoginActivity;
 
 public class EditUserFragment extends Fragment {
     private FragmentEditUserBinding binding;
@@ -57,6 +60,7 @@ public class EditUserFragment extends Fragment {
 
 
         binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
+        binding.editDeleteButton.setOnClickListener(v -> deleteAccount());
 
         return view;
     }
@@ -144,5 +148,26 @@ public class EditUserFragment extends Fragment {
             binding.editErrorEmail.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    /**
+     * Deletes acounts
+     */
+    public void deleteAccount(){
+        //Eyða aðgangi
+        userService.deleteUserByID(loggedInUser.getId(), result -> {
+            requireActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run()
+                {
+                    if(result != null){
+                        Log.d("TAG", "could not delete");
+                    } else {
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        requireActivity().startActivity(intent);
+                    }
+                }
+            });
+        });
     }
 }
