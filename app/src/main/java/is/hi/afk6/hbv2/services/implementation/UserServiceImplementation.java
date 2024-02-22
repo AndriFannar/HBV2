@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -82,13 +84,13 @@ public class UserServiceImplementation implements UserService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest("/getAll");
+                JSONObject returnJson = apiService.getRequest("user/getAll");
 
                 if (returnJson != null)
                 {
                     // Convert response from JSON to User class if response is not null.
                     Gson gson = new Gson();
-                    Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
+                    Type responseType = new TypeToken<ResponseWrapper<List<User>>>() {}.getType();
                     callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
                 }
             }

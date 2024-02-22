@@ -12,12 +12,15 @@ import androidx.annotation.Nullable;
 
 import java.util.List;
 
+import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
+import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
 public class UsersOverviewActivity extends Activity {
 
@@ -28,6 +31,9 @@ public class UsersOverviewActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
+
         binding = ActivityUsersOverviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -36,14 +42,14 @@ public class UsersOverviewActivity extends Activity {
 
     public static Intent newIntent(Context packageContext, User loggedInUser)
     {
-        Intent intent = new Intent(packageContext, UserHomepageActivity.class);
+        Intent intent = new Intent(packageContext, UsersOverviewActivity.class);
         intent.putExtra(LOGGED_IN_USER, loggedInUser);
         return intent;
     }
 
     public void getUsers(){
         controlView(true, "");
-
+        Log.d("TAG", "GET USER");
         userService.getAllUsers(new APICallback<List<User>>() {
             @Override
             public void onComplete(ResponseWrapper<List<User>> result) {
@@ -51,12 +57,16 @@ public class UsersOverviewActivity extends Activity {
                     @Override
                     public void run() {
                         if(result.getData() != null){
+                            Log.d("Tag", result.getData().toString());
                             controlView(false, "");
                             users = result.getData();
 
                             for (User user : users){
                                 Log.d("TAG", user.getName());
                             }
+                        } else {
+                            String error = result.getErrorResponse().getErrorDetails().get("user");
+                            controlView(false, error);
                         }
                     }
                 });
