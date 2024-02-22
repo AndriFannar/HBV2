@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -11,6 +13,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.ui.fragment.UserFragment;
 
 public class UserHomepageActivity extends AppCompatActivity
@@ -29,6 +32,9 @@ public class UserHomepageActivity extends AppCompatActivity
 
         User loggedInUser = getIntent().getParcelableExtra(LOGGED_IN_USER);
 
+        assert loggedInUser != null;
+        checkIfAdmin(loggedInUser);
+
         if(savedInstanceState == null)
         {
             UserFragment userFragment = new UserFragment();
@@ -40,6 +46,8 @@ public class UserHomepageActivity extends AppCompatActivity
                     .setReorderingAllowed(true)
                     .add(R.id.edit_fragment_container_view, userFragment, null)
                     .commit();
+
+            binding.adminSeeAllUsers.setOnClickListener(v -> seeAll(loggedInUser));
         }
     }
 
@@ -55,5 +63,18 @@ public class UserHomepageActivity extends AppCompatActivity
         Intent intent = new Intent(packageContext, UserHomepageActivity.class);
         intent.putExtra(LOGGED_IN_USER, loggedInUser);
         return intent;
+    }
+
+    private void checkIfAdmin(User loggedInUser ){
+        if(loggedInUser.getRole() == UserRole.ADMIN){
+            binding.adminSeeAllUsers.setVisibility(View.VISIBLE);
+        } else {
+            binding.adminSeeAllUsers.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void seeAll(User loggedInUser){
+        Intent intent = UsersOverviewActivity.newIntent(UserHomepageActivity.this, loggedInUser);
+        startActivity(intent);
     }
 }
