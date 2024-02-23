@@ -1,5 +1,6 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
+import static is.hi.afk6.hbv2.ui.UserHomepageActivity.EDITED_USER;
 import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
 import android.app.Activity;
@@ -26,11 +27,14 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
+import is.hi.afk6.hbv2.ui.UserHomepageActivity;
+import is.hi.afk6.hbv2.ui.UsersOverviewActivity;
 
 public class EditUserFragment extends Fragment {
     private FragmentEditUserBinding binding;
     private UserService userService;
     private User loggedInUser;
+    private User editedUser;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
@@ -39,6 +43,7 @@ public class EditUserFragment extends Fragment {
         if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
+            editedUser = getArguments().getParcelable(EDITED_USER);
         }
 
         userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
@@ -52,30 +57,19 @@ public class EditUserFragment extends Fragment {
 
         edit_setup();
 
-        if(loggedInUser != null){
-            binding.editName.setText(loggedInUser.getName());
-            binding.editPhone.setText(loggedInUser.getPhoneNumber());
-            binding.editAddress.setText(loggedInUser.getAddress());
-            binding.editEmail.setText(loggedInUser.getEmail());
+        if(editedUser.getName().equals(loggedInUser.getName())){
+            inputUserInEdit(loggedInUser);
+            binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
+            binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(loggedInUser));
+        } else {
+            inputUserInEdit(editedUser);
+            onlyVisibleEditText();
+            binding.buttonEditSumbit.setOnClickListener(v -> changeStaffRole());
+            binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(editedUser));
         }
-
-        binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
-        binding.editDeleteButton.setOnClickListener(v -> testAlert());
 
         return view;
     }
-
-    /**
-     * Sets the error texts as invisible, so they don't show up
-     * when opening the edit screen.
-     */
-    private void edit_setup(){
-        binding.editErrorName.setVisibility(View.INVISIBLE);
-        binding.editErrorPhoneNr.setVisibility(View.INVISIBLE);
-        binding.editErrorAddress.setVisibility(View.INVISIBLE);
-        binding.editErrorEmail.setVisibility(View.INVISIBLE);
-    }
-
 
     /**
      * Checks if the changes that are made are validated and allowed.
@@ -84,6 +78,7 @@ public class EditUserFragment extends Fragment {
         if(loggedInUser == null){
             return;
         }
+
         loggedInUser.setName(binding.editName.getText().toString());
         loggedInUser.setAddress(binding.editAddress.getText().toString());
         loggedInUser.setPhoneNumber(binding.editPhone.getText().toString());
@@ -93,7 +88,6 @@ public class EditUserFragment extends Fragment {
             ErrorResponse errorResponse = result.getErrorResponse();
 
             requireActivity().runOnUiThread(() -> {
-                Log.d("ErrorResponse", "Error:" + errorResponse);
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
@@ -111,8 +105,26 @@ public class EditUserFragment extends Fragment {
                 }
             });
         });
+    }
 
+    private void changeStaffRole(){
+        Log.d("TAG", editedUser.getRole().toString());
 
+        userService.updateUser(editedUser.getId(), editedUser, result -> {
+            ErrorResponse errorResponse = result.getErrorResponse();
+
+            requireActivity().runOnUiThread(() -> {
+                if(errorResponse != null){
+                    edit_setup();
+                    errorResponse_input(errorResponse);
+                } else {
+                    Intent intent = UsersOverviewActivity.newIntent(getActivity(), loggedInUser);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    requireActivity().startActivity(intent);
+                    requireActivity().finish();
+                }
+            });
+        });
     }
 
     /**
@@ -151,36 +163,16 @@ public class EditUserFragment extends Fragment {
     }
 
     /**
-     * Deletes accounts
-     */
-    public void deleteAccount(){
-        //Eyða aðgangi
-        userService.deleteUserByID(loggedInUser.getId(), result -> {
-            requireActivity().runOnUiThread(() -> {
-                if(result != null){
-                    Log.d("TAG", "could not delete");
-                } else {
-                    Intent intent = new Intent(getActivity(), LoginActivity.class);
-                    // Clear back stack
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    requireActivity().startActivity(intent);
-                    requireActivity().finish();
-                }
-            });
-        });
-    }
-
-    /**
      * Pops a Alert to check if user has the intent to delete the account
      */
-    public void testAlert(){
+    public void deleteUserAlert(User deletedUser){
         Activity activity = getActivity();
         if (activity != null) {
             AlertDialog.Builder build = new AlertDialog.Builder(activity);
             build.setMessage("Ertu viss að þú viljir eyða aðganginum?");
             build.setCancelable(false);
             build.setPositiveButton("Já", (dialog, which) -> {
-                deleteAccount();
+                deleteAccount(deletedUser);
             });
 
             build.setNegativeButton("Nei", (dialog, which) -> {
@@ -191,4 +183,60 @@ public class EditUserFragment extends Fragment {
             alert.show();
         }
     }
+
+    /**
+     * Deletes accounts
+     */
+    public void deleteAccount(User deletedUser){
+        userService.deleteUserByID(deletedUser.getId(), result -> {
+            requireActivity().runOnUiThread(() -> {
+                if(result != null){
+                    Log.d("TAG", "could not delete");
+                } else {
+                    Intent intent;
+                    if(editedUser.getName().equals(loggedInUser.getName())){
+                        intent = new Intent(getActivity(), LoginActivity.class);
+                    } else {
+                        intent = new Intent(getActivity(), UsersOverviewActivity.class);
+                    }
+                    // Clear back stack
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    requireActivity().startActivity(intent);
+                    requireActivity().finish();
+                }
+            });
+        });
+    }
+
+
+
+    /**
+     * Sets the error texts as invisible, so they don't show up
+     * when opening the edit screen.
+     */
+    private void edit_setup(){
+        binding.editErrorName.setVisibility(View.INVISIBLE);
+        binding.editErrorPhoneNr.setVisibility(View.INVISIBLE);
+        binding.editErrorAddress.setVisibility(View.INVISIBLE);
+        binding.editErrorEmail.setVisibility(View.INVISIBLE);
+    }
+
+    private void inputUserInEdit(User user){
+        binding.editName.setText(user.getName());
+        binding.editPhone.setText(user.getPhoneNumber());
+        binding.editAddress.setText(user.getAddress());
+        binding.editEmail.setText(user.getEmail());
+    }
+
+    private void onlyVisibleEditText(){
+        binding.editText.setFocusable(false);
+        binding.editText.setFocusableInTouchMode(false);
+        binding.editPhone.setFocusable(false);
+        binding.editPhone.setFocusableInTouchMode(false);
+        binding.editAddress.setFocusable(false);
+        binding.editAddress.setFocusableInTouchMode(false);
+        binding.editEmail.setFocusable(false);
+        binding.editEmail.setFocusableInTouchMode(false);
+    }
+
 }

@@ -21,6 +21,7 @@ public class UserHomepageActivity extends AppCompatActivity
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserHomepageBinding binding;
     public static final String LOGGED_IN_USER = "loggedInUser";
+    public static final String EDITED_USER = "editedUser";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -40,6 +41,7 @@ public class UserHomepageActivity extends AppCompatActivity
             UserFragment userFragment = new UserFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+            bundle.putParcelable(EDITED_USER, loggedInUser);
             userFragment.setArguments(bundle);
 
             getSupportFragmentManager().beginTransaction()

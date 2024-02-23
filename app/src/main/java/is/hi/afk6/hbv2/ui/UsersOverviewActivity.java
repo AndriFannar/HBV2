@@ -27,6 +27,7 @@ public class UsersOverviewActivity extends Activity {
     private ActivityUsersOverviewBinding binding;
     private UserService userService;
     public static final String LOGGED_IN_USER = "loggedInUser";
+    public static final String EDITED_USER = "editUser";
     private List<User> users;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
