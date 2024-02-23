@@ -30,7 +30,6 @@ public class UsersOverviewActivity extends Activity {
     private UserService userService;
     public static final String LOGGED_IN_USER = "loggedInUser";
     private List<User> users;
-    private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +40,6 @@ public class UsersOverviewActivity extends Activity {
         setContentView(binding.getRoot());
 
         getUsers();
-
-        button.setOnClickListener(v -> Log.d("TAG", "TEST button"));
 
     }
 
@@ -71,10 +68,12 @@ public class UsersOverviewActivity extends Activity {
                                 LinearLayout userContainer = createUserContainer();
                                 TextView userName = new TextView(UsersOverviewActivity.this);
                                 userName.setText(user.getName());
-                                button = new Button(UsersOverviewActivity.this);
+                                Button button = new Button(UsersOverviewActivity.this);
                                 button.setText("Test");
                                 userContainer.addView(userName);
                                 userContainer.addView(button);
+                                button.setOnClickListener(v -> Log.d("TAG", "TEST button"));
+
                                 binding.usersContatiner.addView(userContainer);
                             }
                         } else {
