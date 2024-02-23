@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -28,6 +30,7 @@ public class UsersOverviewActivity extends Activity {
     private UserService userService;
     public static final String LOGGED_IN_USER = "loggedInUser";
     private List<User> users;
+    private Button button;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +41,9 @@ public class UsersOverviewActivity extends Activity {
         setContentView(binding.getRoot());
 
         getUsers();
+
+        button.setOnClickListener(v -> Log.d("TAG", "TEST button"));
+
     }
 
     public static Intent newIntent(Context packageContext, User loggedInUser)
@@ -62,7 +68,14 @@ public class UsersOverviewActivity extends Activity {
                             users = result.getData();
 
                             for (User user : users){
-                                Log.d("TAG", user.getName());
+                                LinearLayout userContainer = createUserContainer();
+                                TextView userName = new TextView(UsersOverviewActivity.this);
+                                userName.setText(user.getName());
+                                button = new Button(UsersOverviewActivity.this);
+                                button.setText("Test");
+                                userContainer.addView(userName);
+                                userContainer.addView(button);
+                                binding.usersContatiner.addView(userContainer);
                             }
                         } else {
                             String error = result.getErrorResponse().getErrorDetails().get("user");
@@ -97,5 +110,11 @@ public class UsersOverviewActivity extends Activity {
                 binding.usersError.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    private LinearLayout createUserContainer(){
+        LinearLayout userContainer = new LinearLayout(UsersOverviewActivity.this);
+        userContainer.setOrientation(LinearLayout.HORIZONTAL);
+        return userContainer;
     }
 }

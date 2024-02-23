@@ -23,16 +23,12 @@
             android:text="@string/user_overview_header_text" />
 
         <LinearLayout
-
-            android:id="@+id/user_contatiner"
+            android:id="@+id/users_contatiner"
             android:layout_width="match_parent"
             android:layout_height="696dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/userNameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
         <RelativeLayout
@@ -48,7 +44,6 @@
                 android:textColor="#F44336"
                 android:textSize="20sp"
                 android:visibility="invisible" />
-
 
             <ProgressBar
                 android:id="@+id/users_progressBar"
