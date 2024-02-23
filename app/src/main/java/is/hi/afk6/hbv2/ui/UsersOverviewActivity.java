@@ -10,12 +10,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 
 import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
-import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
@@ -66,15 +64,13 @@ public class UsersOverviewActivity extends Activity {
 
                             for (User user : users){
                                 LinearLayout userContainer = createUserContainer();
-                                TextView userName = new TextView(UsersOverviewActivity.this);
-                                userName.setText(user.getName());
-                                Button button = new Button(UsersOverviewActivity.this);
-                                button.setText("Test");
+                                TextView userName = createTextView(user);
+                                Button button = createButton();
                                 userContainer.addView(userName);
                                 userContainer.addView(button);
                                 button.setOnClickListener(v -> Log.d("TAG", "TEST button"));
 
-                                binding.usersContatiner.addView(userContainer);
+                                binding.usersContainer.addView(userContainer);
                             }
                         } else {
                             String error = result.getErrorResponse().getErrorDetails().get("user");
@@ -111,9 +107,41 @@ public class UsersOverviewActivity extends Activity {
         }
     }
 
+    private TextView createTextView(User user){
+        TextView usersName = new TextView(UsersOverviewActivity.this);
+        usersName.setText(user.getName());
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        usersName.setLayoutParams(params);
+
+        return usersName;
+    }
+
+    private Button createButton(){
+        Button updateButton = new Button(UsersOverviewActivity.this);
+        String BUTTON_TEXT = "Uppfæra";
+        updateButton.setText(BUTTON_TEXT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        updateButton.setLayoutParams(params);
+
+        return updateButton;
+    }
+
     private LinearLayout createUserContainer(){
         LinearLayout userContainer = new LinearLayout(UsersOverviewActivity.this);
         userContainer.setOrientation(LinearLayout.HORIZONTAL);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        userContainer.setLayoutParams(layoutParams);
         return userContainer;
     }
 }
