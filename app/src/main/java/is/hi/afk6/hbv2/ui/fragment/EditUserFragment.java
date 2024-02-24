@@ -62,7 +62,7 @@ public class EditUserFragment extends Fragment {
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(loggedInUser));
         } else {
             inputUserInEdit(editedUser);
-            //onlyVisibleEditText();
+            onlyVisibleEditText();
             binding.buttonEditSumbit.setOnClickListener(v -> changeStaffRole());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(editedUser));
         }
