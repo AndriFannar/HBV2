@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 
 import java.util.List;
+import java.util.Objects;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.databinding.ActivityUsersOverviewBinding;
@@ -27,8 +28,8 @@ public class UsersOverviewActivity extends Activity {
     private ActivityUsersOverviewBinding binding;
     private UserService userService;
     public static final String LOGGED_IN_USER = "loggedInUser";
-    public static final String EDITED_USER = "editUser";
     private List<User> users;
+    private User loggedInUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +38,8 @@ public class UsersOverviewActivity extends Activity {
 
         binding = ActivityUsersOverviewBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+
+        loggedInUser = getIntent().getParcelableExtra(LOGGED_IN_USER);
 
         getUsers();
 
@@ -49,6 +52,9 @@ public class UsersOverviewActivity extends Activity {
         return intent;
     }
 
+    /**
+     * Gets all the users that uses the app and displays them
+     */
     public void getUsers(){
         controlView(true, "");
         Log.d("TAG", "GET USER");
@@ -59,19 +65,23 @@ public class UsersOverviewActivity extends Activity {
                     @Override
                     public void run() {
                         if(result.getData() != null){
-                            Log.d("Tag", result.getData().toString());
                             controlView(false, "");
                             users = result.getData();
 
                             for (User user : users){
-                                LinearLayout userContainer = createUserContainer();
-                                TextView userName = createTextView(user);
-                                Button button = createButton();
-                                userContainer.addView(userName);
-                                userContainer.addView(button);
-                                button.setOnClickListener(v -> Log.d("TAG", "TEST button"));
+                                if(!Objects.equals(user.getEmail(), loggedInUser.getEmail())){
+                                    LinearLayout userContainer = createUserContainer();
+                                    TextView userName = createTextView(user);
+                                    Button button = createButton();
+                                    userContainer.addView(userName);
+                                    userContainer.addView(button);
+                                    button.setOnClickListener(v -> {
+                                        Intent intent = UserHomepageActivity.newIntent(UsersOverviewActivity.this, loggedInUser, user);
+                                        startActivity(intent);
+                                    });
 
-                                binding.usersContainer.addView(userContainer);
+                                    binding.usersContainer.addView(userContainer);
+                                }
                             }
                         } else {
                             String error = result.getErrorResponse().getErrorDetails().get("user");
@@ -108,6 +118,11 @@ public class UsersOverviewActivity extends Activity {
         }
     }
 
+    /**
+     * Create a TextView with the users name
+     * @param user User that is used
+     * @return a TextView with that user
+     */
     private TextView createTextView(User user){
         TextView usersName = new TextView(UsersOverviewActivity.this);
         usersName.setText(user.getName());
@@ -121,6 +136,11 @@ public class UsersOverviewActivity extends Activity {
         return usersName;
     }
 
+    /**
+     * Create a button that will let admin be able to update/delete
+     * User
+     * @return the Button
+     */
     private Button createButton(){
         Button updateButton = new Button(UsersOverviewActivity.this);
         String BUTTON_TEXT = "Uppfæra";
@@ -135,6 +155,11 @@ public class UsersOverviewActivity extends Activity {
         return updateButton;
     }
 
+    /**
+     * Creates a user layout container, so the TextView and Button will
+     * be in the same line
+     * @return the LinearLayout container
+     */
     private LinearLayout createUserContainer(){
         LinearLayout userContainer = new LinearLayout(UsersOverviewActivity.this);
         userContainer.setOrientation(LinearLayout.HORIZONTAL);

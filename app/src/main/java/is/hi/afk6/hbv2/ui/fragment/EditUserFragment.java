@@ -27,7 +27,6 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
-import is.hi.afk6.hbv2.ui.UserHomepageActivity;
 import is.hi.afk6.hbv2.ui.UsersOverviewActivity;
 
 public class EditUserFragment extends Fragment {
@@ -63,7 +62,7 @@ public class EditUserFragment extends Fragment {
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(loggedInUser));
         } else {
             inputUserInEdit(editedUser);
-            onlyVisibleEditText();
+            //onlyVisibleEditText();
             binding.buttonEditSumbit.setOnClickListener(v -> changeStaffRole());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(editedUser));
         }
@@ -109,6 +108,7 @@ public class EditUserFragment extends Fragment {
 
     private void changeStaffRole(){
         Log.d("TAG", editedUser.getRole().toString());
+
 
         userService.updateUser(editedUser.getId(), editedUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
@@ -199,7 +199,6 @@ public class EditUserFragment extends Fragment {
                     } else {
                         intent = new Intent(getActivity(), UsersOverviewActivity.class);
                     }
-                    // Clear back stack
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     requireActivity().startActivity(intent);
                     requireActivity().finish();

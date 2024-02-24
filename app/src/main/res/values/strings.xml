@@ -36,6 +36,7 @@
     <string name="edit_error_email">Netfang ólölegt</string>
     <string name="edit_text">Breyta upplýsingum\n</string>
     <string name="edit_delete">Eyða aðgangi</string>
+    <string name="edit_to_admin">Breyta í kerfisstjóra</string>
 
     <string name="user_overview_header_text">Yfirlit notendur</string>
     <string name="user_overview_button_text">Uppfæra</string>

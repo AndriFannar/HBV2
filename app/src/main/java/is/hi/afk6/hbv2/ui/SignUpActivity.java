@@ -91,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity
                             binding.contentSignUp.signupText.setText(text);
 
                             // Go to UserHomepage.
-                            Intent intent = UserHomepageActivity.newIntent(SignUpActivity.this, loggedInUser);
+                            Intent intent = UserHomepageActivity.newIntent(SignUpActivity.this, loggedInUser, null);
 
                             startActivity(intent);
                         }
