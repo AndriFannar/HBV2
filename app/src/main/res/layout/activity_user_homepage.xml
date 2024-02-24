@@ -6,13 +6,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.UserHomepageActivity">
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/edit_fragment_container_view"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="20dp"
-        android:layout_marginTop="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="vertical">
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/edit_fragment_container_view"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="20dp" />
+
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/user_fragment_detail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="20dp" />
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

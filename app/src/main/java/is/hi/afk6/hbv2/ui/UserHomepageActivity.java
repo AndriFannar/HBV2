@@ -11,6 +11,8 @@ import androidx.navigation.ui.AppBarConfiguration;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
+import is.hi.afk6.hbv2.ui.fragment.CreateWaitingListRequestFragment;
 import is.hi.afk6.hbv2.ui.fragment.UserFragment;
 
 public class UserHomepageActivity extends AppCompatActivity
@@ -40,6 +42,17 @@ public class UserHomepageActivity extends AppCompatActivity
                     .setReorderingAllowed(true)
                     .add(R.id.edit_fragment_container_view, userFragment, null)
                     .commit();
+
+            if (loggedInUser.getRole() == UserRole.USER)
+            {
+                CreateWaitingListRequestFragment createFragment = new CreateWaitingListRequestFragment();
+                createFragment.setArguments(bundle);
+
+                getSupportFragmentManager().beginTransaction()
+                        .setReorderingAllowed(true)
+                        .add(R.id.user_fragment_detail, createFragment, null)
+                        .commit();
+            }
         }
     }
 

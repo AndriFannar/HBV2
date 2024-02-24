@@ -28,7 +28,6 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
 
 public class EditUserFragment extends Fragment {
-    private FragmentEditUserBinding binding;
     private UserService userService;
     private User loggedInUser;
 

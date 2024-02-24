@@ -35,4 +35,7 @@
     <string name="edit_error_email">Netfang ólölegt</string>
     <string name="edit_text">Breyta upplýsingum\n</string>
     <string name="edit_delete">Eyða aðgangi</string>
+
+    <string name="register_waiting_list">Senda fyrirspurn á biðlista</string>
+    <string name="register_waiting_list_detail">Lýsing á vandamáli</string>
 </resources>
