@@ -31,6 +31,9 @@
         <activity android:name=".ui.UserHomepageActivity">
 
         </activity>
+        <activity android:name=".ui.UsersOverviewActivity">
+
+        </activity>
     </application>
 
 </manifest>

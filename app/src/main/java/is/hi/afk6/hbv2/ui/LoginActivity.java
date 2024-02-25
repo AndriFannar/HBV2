@@ -99,7 +99,7 @@ public class LoginActivity extends AppCompatActivity
                             binding.contentLogin.textLogin.setText(text);
 
                             //Switch to UserHomepage.
-                            Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, loggedInUser);
+                            Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, loggedInUser, null);
                             startActivity(intent);
                         }
                         else

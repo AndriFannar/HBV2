@@ -1,8 +1,10 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
+import static is.hi.afk6.hbv2.ui.UserHomepageActivity.EDITED_USER;
 import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,12 +54,14 @@ public class UserFragment extends Fragment
             EditUserFragment editUserFragment = new EditUserFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+            bundle.putParcelable(EDITED_USER, loggedInUser);
             editUserFragment.setArguments(bundle);
 
             fragmentTransaction.replace(R.id.edit_fragment_container_view, editUserFragment);
-            fragmentTransaction.addToBackStack(null); // Add transaction to back stack
+            fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
+
         return view;
     }
 }

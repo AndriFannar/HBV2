@@ -8,6 +8,7 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
+    <string name="admin_see_users">Sjá alla notendur</string>
 
     <string name="login_text">Skrá inn</string>
     <string name="login_email">Tölvupóstur</string>
@@ -35,4 +36,8 @@
     <string name="edit_error_email">Netfang ólölegt</string>
     <string name="edit_text">Breyta upplýsingum\n</string>
     <string name="edit_delete">Eyða aðgangi</string>
+    <string name="edit_to_admin">Breyta í kerfisstjóra</string>
+
+    <string name="user_overview_header_text">Yfirlit notendur</string>
+    <string name="user_overview_button_text">Uppfæra</string>
 </resources>
