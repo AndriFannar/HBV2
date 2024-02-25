@@ -7,13 +7,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
-import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentCreateWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
@@ -85,6 +86,10 @@ public class CreateWaitingListRequestFragment extends Fragment
 
     private void setUpView(List<User> staff, List<Questionnaire> displayQuestionnaires)
     {
-        binding.staffSpinner.
+        List<String> test = new ArrayList<>();
+        test.add("test");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, test);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.staffSpinner.setAdapter(adapter);
     }
 }
