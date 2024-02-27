@@ -38,4 +38,6 @@
 
     <string name="register_waiting_list">Senda fyrirspurn á biðlista</string>
     <string name="register_waiting_list_detail">Lýsing á vandamáli</string>
+    <string name="register_waiting_list_conform">Senda fyrirspurn</string>
+    <string name="register_waiting_list_error">Villa við gerð á fyrirspurn</string>
 </resources>

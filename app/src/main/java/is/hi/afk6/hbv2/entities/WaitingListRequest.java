@@ -1,5 +1,10 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,47 +14,49 @@ import java.util.List;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 08/01/2024
- * @version 1.0
+ * @version 1.5
  */
-public class WaitingListRequest
+public class WaitingListRequest implements Parcelable
 {
     private Long id;
-    private User patient;
-    private User staff;
+    private Long patientID;
+    private Long staffID;
     private String description;
     private boolean status;
     private LocalDate dateOfRequest;
-    private Questionnaire questionnaire;
+    private Long questionnaireID;
     private List<Integer> questionnaireAnswers;
     private double grade;
 
     /**
      * Create a new empty WaitingListRequest.
      */
-    public WaitingListRequest() {
+    public WaitingListRequest()
+    {
+        this.dateOfRequest = LocalDate.now();
     }
 
     /**
      * Create a new WaitingListRequest.
      *
      * @param id                   Unique ID of the WaitingListRequest.
-     * @param patient              Patient (User) making the WaitingListRequest.
-     * @param staff                Staff member (User) assigned to the WaitingListRequest.
+     * @param patientID              Patient (User) making the WaitingListRequest.
+     * @param staffID                Staff member (User) assigned to the WaitingListRequest.
      * @param description          Description of Users (patient's) problem.
      * @param status               Status of WaitingListRequest.
      * @param dateOfRequest        Date of WaitingListRequest creation.
-     * @param questionnaire        Assigned Questionnaire.
+     * @param questionnaireID        Assigned Questionnaire.
      * @param questionnaireAnswers User answers to assigned Questionnaire.
      * @param grade                Priority grade of WaitingListRequest.
      */
-    public WaitingListRequest(Long id, User patient, User staff, String description, boolean status, LocalDate dateOfRequest, Questionnaire questionnaire, List<Integer> questionnaireAnswers, double grade) {
+    public WaitingListRequest(Long id, Long patientID, Long staffID, String description, boolean status, LocalDate dateOfRequest, Long questionnaireID, List<Integer> questionnaireAnswers, double grade) {
         this.id = id;
-        this.patient = patient;
-        this.staff = staff;
+        this.patientID = patientID;
+        this.staffID = staffID;
         this.description = description;
         this.status = status;
         this.dateOfRequest = dateOfRequest;
-        this.questionnaire = questionnaire;
+        this.questionnaireID = questionnaireID;
         this.questionnaireAnswers = questionnaireAnswers;
         this.grade = grade;
     }
@@ -57,21 +64,40 @@ public class WaitingListRequest
     /**
      * Create a new WaitingListRequest.
      *
-     * @param patient              Patient (User) making the WaitingListRequest.
-     * @param staff                Staff member (User) assigned to the WaitingListRequest.
+     * @param patientID              Patient (User) making the WaitingListRequest.
+     * @param staffID                Staff member (User) assigned to the WaitingListRequest.
      * @param description          Description of Users (patient's) problem.
-     * @param questionnaire        Assigned Questionnaire.
+     * @param questionnaireID        Assigned Questionnaire.
      */
-    public WaitingListRequest(User patient, User staff, String description, Questionnaire questionnaire) {
-        this.patient = patient;
-        this.staff = staff;
+    public WaitingListRequest(Long patientID, Long staffID, String description, Long questionnaireID) {
+        this.patientID = patientID;
+        this.staffID = staffID;
         this.description = description;
-        this.questionnaire = questionnaire;
+        this.questionnaireID = questionnaireID;
 
         this.dateOfRequest = LocalDate.now();
         this.grade = 0;
         this.questionnaireAnswers = new ArrayList<>();
         this.status = false;
+    }
+
+
+    /**
+     * Create a WaitingListRequest from Parcel.
+     *
+     * @param in Parcel input.
+     */
+    private WaitingListRequest (Parcel in)
+    {
+        this.id                   = in.readLong();
+        this.patientID            = in.readLong();
+        this.staffID              = in.readLong();
+        this.description          = in.readString();
+        this.status               = in.readByte() != 0;
+        this.dateOfRequest        = LocalDate.parse(in.readString());
+        this.questionnaireID      = in.readLong();
+        this.questionnaireAnswers = in.readArrayList(Integer.class.getClassLoader());
+        this.grade                = in.readDouble();
     }
 
     public Long getId() {
@@ -82,20 +108,20 @@ public class WaitingListRequest
         this.id = id;
     }
 
-    public User getPatient() {
-        return patient;
+    public Long getPatientID() {
+        return patientID;
     }
 
-    public void setPatient(User patient) {
-        this.patient = patient;
+    public void setPatientID(Long patientID) {
+        this.patientID = patientID;
     }
 
-    public User getStaff() {
-        return staff;
+    public Long getStaffID() {
+        return staffID;
     }
 
-    public void setStaff(User staff) {
-        this.staff = staff;
+    public void setStaffID(Long staffID) {
+        this.staffID = staffID;
     }
 
     public String getDescription() {
@@ -122,12 +148,12 @@ public class WaitingListRequest
         this.dateOfRequest = dateOfRequest;
     }
 
-    public Questionnaire getQuestionnaire() {
-        return questionnaire;
+    public Long getQuestionnaireID() {
+        return questionnaireID;
     }
 
-    public void setQuestionnaire(Questionnaire questionnaire) {
-        this.questionnaire = questionnaire;
+    public void setQuestionnaireID(Long questionnaireID) {
+        this.questionnaireID = questionnaireID;
     }
 
     public List<Integer> getQuestionnaireAnswers() {
@@ -145,4 +171,36 @@ public class WaitingListRequest
     public void setGrade(double grade) {
         this.grade = grade;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeLong(patientID);
+        dest.writeLong(staffID);
+        dest.writeString(description);
+        dest.writeByte((byte) (status ? 1 : 0));
+        dest.writeString(dateOfRequest.toString());
+        dest.writeLong(questionnaireID);
+        dest.writeList(questionnaireAnswers);
+        dest.writeDouble(grade);
+    }
+
+
+    public static final Parcelable.Creator<WaitingListRequest> CREATOR = new Parcelable.Creator<WaitingListRequest>()
+    {
+        public WaitingListRequest createFromParcel(Parcel in)
+        {
+            return new WaitingListRequest(in);
+        }
+
+        public WaitingListRequest[] newArray(int size)
+        {
+            return new WaitingListRequest[size];
+        }
+    };
 }

@@ -25,7 +25,7 @@ public class APIServiceTest {
 
         try
         {
-            object = apiService.getRequest("user/view/8");
+            object = apiService.getRequest("user/view/8", "");
 
             JSONObject user = object.getJSONObject("data");
 
@@ -45,7 +45,7 @@ public class APIServiceTest {
         {
             String email = "afk6@hi.is";
             LoginDTO logIn = new LoginDTO(email, "Lykilord123");
-            JSONObject logInJson = new JSONObject(new Gson().toJson(logIn));
+            String logInJson = new Gson().toJson(logIn);
 
             APIServiceImplementation apiService = new APIServiceImplementation();
             JSONObject object = apiService.postRequest("user/login", logInJson);

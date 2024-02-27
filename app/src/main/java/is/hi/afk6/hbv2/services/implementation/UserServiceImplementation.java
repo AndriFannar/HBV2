@@ -3,10 +3,12 @@ package is.hi.afk6.hbv2.services.implementation;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -32,6 +34,7 @@ public class UserServiceImplementation implements UserService
 {
     private final APIService apiService;
     private final Executor executor;
+    private final static String API_USER_LOCATION = "user/";
 
     public UserServiceImplementation(APIService apiService, Executor executor)
     {
@@ -50,25 +53,15 @@ public class UserServiceImplementation implements UserService
                 // Convert SignUp info to String.
                 String signUpJSON = new Gson().toJson(signUpInfo);
 
-                try
+                // Send info to API and get a return object.
+                JSONObject returnJson = apiService.postRequest(API_USER_LOCATION + "signUp", signUpJSON);
+
+                if (returnJson != null)
                 {
-                    // Convert String to JSON.
-                    JSONObject signUpJsonObject = new JSONObject(signUpJSON);
-
-                    // Send info to API and get a return object.
-                    JSONObject returnJson = apiService.postRequest("user/signUp", signUpJsonObject);
-
-                    if (returnJson != null)
-                    {
-                        // If the return object is not empty, then convert JSON data to ResponseWrapper<User>
-                        Gson gson = new Gson();
-                        Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
-                        callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
-                    }
-
-                } catch (JSONException e)
-                {
-                    throw new RuntimeException(e);
+                    // If the return object is not empty, then convert JSON data to ResponseWrapper<User>
+                    Gson gson = new Gson();
+                    Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
                 }
             }
         });
@@ -88,7 +81,7 @@ public class UserServiceImplementation implements UserService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest("user/view/" + userID);
+                JSONObject returnJson = apiService.getRequest(API_USER_LOCATION + "view/" + userID, "");
 
                 if (returnJson != null)
                 {
@@ -113,8 +106,34 @@ public class UserServiceImplementation implements UserService
     }
 
     @Override
-    public void getUsersByRole(UserRole role, boolean includeElevated, APICallback<List<User>> callback) {
+    public void getUsersByRole(final UserRole role, boolean includeElevated, APICallback<List<User>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
 
+                String urlExtension = API_USER_LOCATION;
+                urlExtension += includeElevated ? "getByRoleElevated" : "getByRole";
+
+                String roleJson = "userRole=" + role.toString();
+
+                JSONObject returnJson = apiService.getRequest(urlExtension, roleJson);
+
+                if (returnJson != null && returnJson.length() > 0)
+                {
+                    // If return is not empty, convert from JSON to ErrorResponse.
+                    Gson gson = new Gson();
+                    Type responseType = new TypeToken<ResponseWrapper<List<User>>>() {}.getType();
+
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+                else
+                {
+                    callback.onComplete(new ResponseWrapper<>(new ArrayList<>()));
+                }
+            }
+
+        });
     }
 
     @Override
@@ -128,11 +147,8 @@ public class UserServiceImplementation implements UserService
                     // Convert User class to String.
                     String userJson = new Gson().toJson(updatedUser);
 
-                    // Convert String of User class to JSONObject.
-                    JSONObject updatedUserJson = new JSONObject(userJson);
-
                     // Send JSON data to API, wait for a return.
-                    JSONObject returnJson = apiService.putRequest("user/update/" + requestingUserID, updatedUserJson);
+                    JSONObject returnJson = apiService.putRequest(API_USER_LOCATION + "update/" + requestingUserID, userJson);
 
                     if (returnJson != null && returnJson.length() > 0)
                     {
@@ -162,7 +178,7 @@ public class UserServiceImplementation implements UserService
             @Override
             public void run()
             {
-                apiService.deleteRequest("user/delete/" + userID);
+                apiService.deleteRequest(API_USER_LOCATION + "delete/" + userID);
                 callback.onComplete(null);
             }
         });
@@ -179,10 +195,8 @@ public class UserServiceImplementation implements UserService
                     // Convert LogIn data to String.
                     String loginJson = new Gson().toJson(login);
 
-                    JSONObject loginJsonObject = new JSONObject(loginJson);
-
                     // Send LogIn data as JSON to API, wait for a return.
-                    JSONObject returnJson = apiService.postRequest("user/login", loginJsonObject);
+                    JSONObject returnJson = apiService.postRequest(API_USER_LOCATION + "login", loginJson);
 
                     if (returnJson != null)
                     {

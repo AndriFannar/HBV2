@@ -20,6 +20,7 @@ import is.hi.afk6.hbv2.entities.User;
 public class UserFragment extends Fragment
 {
     private User loggedInUser;
+    private FragmentUserBinding binding;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
@@ -34,7 +35,7 @@ public class UserFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
-        is.hi.afk6.hbv2.databinding.FragmentUserBinding binding = FragmentUserBinding.inflate(inflater, container, false);
+        binding = FragmentUserBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
         if(loggedInUser != null){

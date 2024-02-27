@@ -1,5 +1,11 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +14,9 @@ import java.util.List;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 08/01/2024
- * @version 1.0
+ * @version 1.5
  */
-public class Questionnaire
+public class Questionnaire implements Parcelable
 {
     private Long id;
     private String name;
@@ -58,6 +64,20 @@ public class Questionnaire
         this.displayOnForm = false;
     }
 
+    /**
+     * Create a Questionnaire from Parcel.
+     *
+     * @param in Parcel input.
+     */
+    private Questionnaire (Parcel in)
+    {
+        this.id                  = in.readLong();
+        this.name                = in.readString();
+        this.questions           = in.readArrayList(Question.class.getClassLoader());
+        this.displayOnForm       = in.readByte() != 0;
+        this.waitingListRequests = in.readArrayList(WaitingListRequest.class.getClassLoader());
+    }
+
     public Long getId() {
         return id;
     }
@@ -97,4 +117,32 @@ public class Questionnaire
     public void setWaitingListRequests(List<WaitingListRequest> waitingListRequests) {
         this.waitingListRequests = waitingListRequests;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeList(questions);
+        dest.writeByte((byte) (displayOnForm ? 1 : 0));
+        dest.writeList(waitingListRequests);
+    }
+
+
+    public static final Parcelable.Creator<Questionnaire> CREATOR = new Parcelable.Creator<Questionnaire>()
+    {
+        public Questionnaire createFromParcel(Parcel in)
+        {
+            return new Questionnaire(in);
+        }
+
+        public Questionnaire[] newArray(int size)
+        {
+            return new Questionnaire[size];
+        }
+    };
 }

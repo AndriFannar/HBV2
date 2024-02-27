@@ -30,6 +30,7 @@ import is.hi.afk6.hbv2.ui.LoginActivity;
 public class EditUserFragment extends Fragment {
     private UserService userService;
     private User loggedInUser;
+    private FragmentEditUserBinding binding;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){

@@ -1,5 +1,10 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,9 +13,9 @@ import java.util.List;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/01/2024
- * @version 1.0
+ * @version 1.5
  */
-public class Question
+public class Question implements Parcelable
 {
     private Long id;
     private String questionString;
@@ -56,6 +61,20 @@ public class Question
         this.answer = answer;
     }
 
+    /**
+     * Create a Question from Parcel.
+     *
+     * @param in Parcel input.
+     */
+    private Question (Parcel in)
+    {
+        this.id             = in.readLong();
+        this.questionString = in.readString();
+        this.weight         = in.readDouble();
+        this.questionnaires = in.readArrayList(Questionnaire.class.getClassLoader());
+        this.answer         = in.readInt();
+    }
+
     public Long getId() {
         return id;
     }
@@ -95,4 +114,32 @@ public class Question
     public void setAnswer(Integer answer) {
         this.answer = answer;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(questionString);
+        dest.writeDouble(weight);
+        dest.writeList(questionnaires);
+        dest.writeInt(answer);
+    }
+
+
+    public static final Parcelable.Creator<Question> CREATOR = new Parcelable.Creator<Question>()
+    {
+        public Question createFromParcel(Parcel in)
+        {
+            return new Question(in);
+        }
+
+        public Question[] newArray(int size)
+        {
+            return new Question[size];
+        }
+    };
 }

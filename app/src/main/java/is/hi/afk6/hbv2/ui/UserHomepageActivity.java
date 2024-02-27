@@ -20,6 +20,7 @@ public class UserHomepageActivity extends AppCompatActivity
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserHomepageBinding binding;
     public static final String LOGGED_IN_USER = "loggedInUser";
+    public static final String WAITING_LIST_REQUEST = "wlrequest";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

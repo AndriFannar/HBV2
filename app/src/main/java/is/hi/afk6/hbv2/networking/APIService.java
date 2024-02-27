@@ -20,7 +20,7 @@ public interface APIService
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
      * @return             JSONObject returned from API.
      */
-    public JSONObject getRequest(String urlExtension);
+    public JSONObject getRequest(String urlExtension, String requestParam);
 
     /**
      * Performs a post request with the specified URL.
@@ -29,7 +29,7 @@ public interface APIService
      * @param object       JSONObject to post to API.
      * @return             JSONObject returned from API.
      */
-    public JSONObject postRequest(String urlExtension, JSONObject object);
+    public JSONObject postRequest(String urlExtension, String object);
 
     /**
      * Performs a put request with the specified URL.
@@ -38,7 +38,7 @@ public interface APIService
      * @param object       JSONObject to put to API.
      * @return             JSONObject returned from API.
      */
-    public JSONObject putRequest(String urlExtension, JSONObject object);
+    public JSONObject putRequest(String urlExtension, String object);
 
     /**
      * Performs a delete request with the specified URL.

@@ -1,11 +1,25 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import android.util.Log;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.networking.APIService;
+import is.hi.afk6.hbv2.serializers.LocalDateSerializer;
 import is.hi.afk6.hbv2.services.WaitingListService;
 
 /**
@@ -18,10 +32,43 @@ import is.hi.afk6.hbv2.services.WaitingListService;
  */
 public class WaitingListServiceImplementation implements WaitingListService
 {
+    private final APIService apiService;
+    private final Executor executor;
+    private final static String API_WAITING_LIST_LOCATION = "waitingList/";
+
+    public WaitingListServiceImplementation(APIService apiService, Executor executor)
+    {
+        this.apiService = apiService;
+        this.executor = executor;
+    }
 
     @Override
-    public void saveNewWaitingListRequest(WaitingListRequest request, APICallback<WaitingListRequest> callback) {
+    public void saveNewWaitingListRequest(WaitingListRequest request, APICallback<WaitingListRequest> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                        .create();
 
+                // Convert SignUp info to String.
+                String requestJson = gson.toJson(request);
+
+                Log.d("Request", requestJson);
+
+                // Send info to API and get a return object.
+                JSONObject returnJson = apiService.postRequest(API_WAITING_LIST_LOCATION + "create", requestJson);
+
+                if (returnJson != null)
+                {
+                    // If the return object is not empty, then convert JSON data to ResponseWrapper<WaitingListRequest>
+                    Type responseType = new TypeToken<ResponseWrapper<WaitingListRequest>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override

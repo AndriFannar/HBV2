@@ -1,9 +1,22 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
+import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
 
 /**
@@ -16,6 +29,14 @@ import is.hi.afk6.hbv2.services.QuestionnaireService;
  */
 public class QuestionnaireServiceImplementation implements QuestionnaireService
 {
+    private APIService apiService;
+    private Executor executor;
+
+    public QuestionnaireServiceImplementation(APIService apiService, Executor executor)
+    {
+        this.apiService = apiService;
+        this.executor = executor;
+    }
 
     @Override
     public void saveNewQuestionnaire(Questionnaire questionnaire, APICallback<Questionnaire> callback) {
@@ -33,8 +54,28 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
     }
 
     @Override
-    public void getQuestionnairesOnForm(APICallback<List<Questionnaire>> callback) {
+    public void getQuestionnairesOnForm(APICallback<List<Questionnaire>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                JSONObject returnJson = apiService.getRequest("questionnaire/getAllToDisplay", "");
 
+                if (returnJson != null && returnJson.length() > 0)
+                {
+                    // If return is not empty, convert from JSON to ErrorResponse.
+                    Gson gson = new Gson();
+                    Type responseType = new TypeToken<ResponseWrapper<List<Questionnaire>>>() {}.getType();
+
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+                else
+                {
+                    callback.onComplete(new ResponseWrapper<>(new ArrayList<>()));
+                }
+            }
+        });
     }
 
     @Override

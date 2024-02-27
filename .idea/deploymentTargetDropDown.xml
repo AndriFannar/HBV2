@@ -8,10 +8,16 @@
       <entry key="app">
         <State />
       </entry>
-      <entry key="testUpdateUserSuccessful()">
+      <entry key="testGetAllQuestionnairesToDisplay()">
         <State />
       </entry>
-      <entry key="testUpdateUserUnsuccessful()">
+      <entry key="testGetUserByRole()">
+        <State />
+      </entry>
+      <entry key="testLogInDoesNotExist()">
+        <State />
+      </entry>
+      <entry key="testLogInExists()">
         <State />
       </entry>
     </value>
