@@ -198,6 +198,7 @@ public class EditUserFragment extends Fragment {
                         intent = new Intent(getActivity(), LoginActivity.class);
                     } else {
                         intent = new Intent(getActivity(), UsersOverviewActivity.class);
+                        intent.putExtra(LOGGED_IN_USER, loggedInUser);
                     }
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     requireActivity().startActivity(intent);
