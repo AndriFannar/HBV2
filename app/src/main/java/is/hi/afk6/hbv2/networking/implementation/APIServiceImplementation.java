@@ -128,7 +128,7 @@ public class APIServiceImplementation implements APIService
     public JSONObject deleteRequest(String urlExtension)
     {
         try {
-            return makeNetworkRequest(urlExtension, "DELETE", null);
+            return makeNetworkRequest(urlExtension, "DELETE", "");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

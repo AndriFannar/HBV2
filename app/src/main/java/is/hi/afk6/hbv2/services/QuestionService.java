@@ -32,6 +32,15 @@ public interface QuestionService
     void getAllQuestions(APICallback<List<Question>> callback);
 
     /**
+     * Get all saved Questions from a list of unique IDs.
+     *
+     * @param questionIDs List of unique IDs of Questions to fetch.
+     * @param callback    Callback for when the method has fetched all Questions with matching IDs, if any.
+     *                    The callback will have the object returned from the action as a ResponseWrapper.
+     */
+    void getAllQuestionsFromList(List<Long> questionIDs, APICallback<List<Question>> callback);
+
+    /**
      * Get a Question by unique ID.
      *
      * @param questionID Unique ID of question to fetch.

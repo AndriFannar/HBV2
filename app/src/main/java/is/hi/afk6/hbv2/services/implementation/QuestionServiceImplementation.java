@@ -28,6 +28,11 @@ public class QuestionServiceImplementation implements QuestionService
     }
 
     @Override
+    public void getAllQuestionsFromList(List<Long> questionIDs, APICallback<List<Question>> callback) {
+
+    }
+
+    @Override
     public void getQuestionByID(Long questionID, APICallback<Question> callback) {
 
     }

@@ -37,7 +37,6 @@ public class WaitingListRequestFragment extends Fragment
 
         if (getArguments() != null) {
             loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
-            Log.d("RequestID in onCreate", "" + loggedInUser);
         }
 
         waitingListService = new WaitingListServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
@@ -49,7 +48,6 @@ public class WaitingListRequestFragment extends Fragment
     {
         binding = FragmentWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        Log.d("RequestID in onCreateView", "" + loggedInUser);
 
         waitingListService.getWaitingListRequestByID(loggedInUser.getWaitingListRequestID(), new APICallback<WaitingListRequest>()
         {
@@ -60,13 +58,12 @@ public class WaitingListRequestFragment extends Fragment
                     @Override
                     public void run()
                     {
-                        Log.d("Success", "Waiting List Request Fetched!");
-                        Log.d("Success", result.getData().toString());
-                        binding.waitingListDate.setText("Sus time");
+                        waitingListRequest = result.getData();
 
+                        binding.waitingListDate.setText(waitingListRequest.getDateOfRequest().toString());
                         binding.waitingListDescription.setText(waitingListRequest.getDescription());
 
-                        binding.waitingListStatus.setText(waitingListRequest.isStatus() ? "Accepted" : "Pending");
+                        binding.waitingListStatus.setText(waitingListRequest.isStatus() ? getString(R.string.waiting_list_request_accepted) : getString(R.string.waiting_list_request_pending));
                         if (waitingListRequest.getQuestionnaireID() == null)
                             binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
                     }

@@ -173,6 +173,21 @@ public class WaitingListRequest implements Parcelable
     }
 
     @Override
+    public String toString() {
+        return "WaitingListRequest{" +
+                "id=" + id +
+                ", patientID=" + patientID +
+                ", staffID=" + staffID +
+                ", description='" + description + '\'' +
+                ", status=" + status +
+                ", dateOfRequest=" + dateOfRequest +
+                ", questionnaireID=" + questionnaireID +
+                ", questionnaireAnswers=" + questionnaireAnswers +
+                ", grade=" + grade +
+                '}';
+    }
+
+    @Override
     public int describeContents() {
         return 0;
     }
