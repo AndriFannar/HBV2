@@ -1,5 +1,10 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,23 +13,21 @@ import java.util.List;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 08/01/2024
- * @version 1.0
+ * @version 1.5
  */
-public class Questionnaire
+public class Questionnaire implements Parcelable
 {
     private Long id;
     private String name;
-    private List<Question> questions; // List<Long> questionID's
+    private List<Long> questionIDs;
     private boolean displayOnForm;
-    private List<WaitingListRequest> waitingListRequests;
 
     /**
      * Create a new empty Questionnaire.
      */
     public Questionnaire()
     {
-        this.questions = new ArrayList<>();
-        this.waitingListRequests = new ArrayList<>();
+        this.questionIDs = new ArrayList<>();
         this.displayOnForm = false;
     }
 
@@ -33,16 +36,14 @@ public class Questionnaire
      *
      * @param id                  Unique ID of Questionnaire.
      * @param name                Name of Questionnaire.
-     * @param questions           Questions belonging to the Questionnaire.
+     * @param questionIDs           Questions belonging to the Questionnaire.
      * @param displayOnForm       Display this Questionnaire on registration form.
-     * @param waitingListRequests WaitingListRequests that have been assigned this Questionnaire.
      */
-    public Questionnaire(Long id, String name, List<Question> questions, boolean displayOnForm, List<WaitingListRequest> waitingListRequests) {
+    public Questionnaire(Long id, String name, List<Long> questionIDs, boolean displayOnForm) {
         this.id = id;
         this.name = name;
-        this.questions = questions;
+        this.questionIDs = questionIDs;
         this.displayOnForm = displayOnForm;
-        this.waitingListRequests = waitingListRequests;
     }
 
     /**
@@ -50,12 +51,24 @@ public class Questionnaire
      *
      * @param name Name of Questionnaire.
      */
-    public Questionnaire(String name) {
+    public Questionnaire(String name)
+    {
         this.name = name;
-
-        this.questions = new ArrayList<>();
-        this.waitingListRequests = new ArrayList<>();
+        this.questionIDs = new ArrayList<>();
         this.displayOnForm = false;
+    }
+
+    /**
+     * Create a Questionnaire from Parcel.
+     *
+     * @param in Parcel input.
+     */
+    private Questionnaire (Parcel in)
+    {
+        this.id            = in.readLong();
+        this.name          = in.readString();
+        this.questionIDs   = in.readArrayList(Long.class.getClassLoader());
+        this.displayOnForm = in.readByte() != 0;
     }
 
     public Long getId() {
@@ -74,12 +87,12 @@ public class Questionnaire
         this.name = name;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<Long> getQuestionIDs() {
+        return questionIDs;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+    public void setQuestionIDs(List<Long> questionIDs) {
+        this.questionIDs = questionIDs;
     }
 
     public boolean isDisplayOnForm() {
@@ -90,11 +103,30 @@ public class Questionnaire
         this.displayOnForm = displayOnForm;
     }
 
-    public List<WaitingListRequest> getWaitingListRequests() {
-        return waitingListRequests;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
-    public void setWaitingListRequests(List<WaitingListRequest> waitingListRequests) {
-        this.waitingListRequests = waitingListRequests;
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeList(questionIDs);
+        dest.writeByte((byte) (displayOnForm ? 1 : 0));
     }
+
+
+    public static final Parcelable.Creator<Questionnaire> CREATOR = new Parcelable.Creator<Questionnaire>()
+    {
+        public Questionnaire createFromParcel(Parcel in)
+        {
+            return new Questionnaire(in);
+        }
+
+        public Questionnaire[] newArray(int size)
+        {
+            return new Questionnaire[size];
+        }
+    };
 }
