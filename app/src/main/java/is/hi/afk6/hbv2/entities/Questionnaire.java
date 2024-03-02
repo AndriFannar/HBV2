@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,17 +19,15 @@ public class Questionnaire implements Parcelable
 {
     private Long id;
     private String name;
-    private List<Question> questions;
+    private List<Long> questionIDs;
     private boolean displayOnForm;
-    private List<WaitingListRequest> waitingListRequests;
 
     /**
      * Create a new empty Questionnaire.
      */
     public Questionnaire()
     {
-        this.questions = new ArrayList<>();
-        this.waitingListRequests = new ArrayList<>();
+        this.questionIDs = new ArrayList<>();
         this.displayOnForm = false;
     }
 
@@ -39,16 +36,14 @@ public class Questionnaire implements Parcelable
      *
      * @param id                  Unique ID of Questionnaire.
      * @param name                Name of Questionnaire.
-     * @param questions           Questions belonging to the Questionnaire.
+     * @param questionIDs           Questions belonging to the Questionnaire.
      * @param displayOnForm       Display this Questionnaire on registration form.
-     * @param waitingListRequests WaitingListRequests that have been assigned this Questionnaire.
      */
-    public Questionnaire(Long id, String name, List<Question> questions, boolean displayOnForm, List<WaitingListRequest> waitingListRequests) {
+    public Questionnaire(Long id, String name, List<Long> questionIDs, boolean displayOnForm) {
         this.id = id;
         this.name = name;
-        this.questions = questions;
+        this.questionIDs = questionIDs;
         this.displayOnForm = displayOnForm;
-        this.waitingListRequests = waitingListRequests;
     }
 
     /**
@@ -56,11 +51,10 @@ public class Questionnaire implements Parcelable
      *
      * @param name Name of Questionnaire.
      */
-    public Questionnaire(String name) {
+    public Questionnaire(String name)
+    {
         this.name = name;
-
-        this.questions = new ArrayList<>();
-        this.waitingListRequests = new ArrayList<>();
+        this.questionIDs = new ArrayList<>();
         this.displayOnForm = false;
     }
 
@@ -71,11 +65,10 @@ public class Questionnaire implements Parcelable
      */
     private Questionnaire (Parcel in)
     {
-        this.id                  = in.readLong();
-        this.name                = in.readString();
-        this.questions           = in.readArrayList(Question.class.getClassLoader());
-        this.displayOnForm       = in.readByte() != 0;
-        this.waitingListRequests = in.readArrayList(WaitingListRequest.class.getClassLoader());
+        this.id            = in.readLong();
+        this.name          = in.readString();
+        this.questionIDs   = in.readArrayList(Long.class.getClassLoader());
+        this.displayOnForm = in.readByte() != 0;
     }
 
     public Long getId() {
@@ -94,12 +87,12 @@ public class Questionnaire implements Parcelable
         this.name = name;
     }
 
-    public List<Question> getQuestions() {
-        return questions;
+    public List<Long> getQuestionIDs() {
+        return questionIDs;
     }
 
-    public void setQuestions(List<Question> questions) {
-        this.questions = questions;
+    public void setQuestionIDs(List<Long> questionIDs) {
+        this.questionIDs = questionIDs;
     }
 
     public boolean isDisplayOnForm() {
@@ -108,14 +101,6 @@ public class Questionnaire implements Parcelable
 
     public void setDisplayOnForm(boolean displayOnForm) {
         this.displayOnForm = displayOnForm;
-    }
-
-    public List<WaitingListRequest> getWaitingListRequests() {
-        return waitingListRequests;
-    }
-
-    public void setWaitingListRequests(List<WaitingListRequest> waitingListRequests) {
-        this.waitingListRequests = waitingListRequests;
     }
 
     @Override
@@ -127,9 +112,8 @@ public class Questionnaire implements Parcelable
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(name);
-        dest.writeList(questions);
+        dest.writeList(questionIDs);
         dest.writeByte((byte) (displayOnForm ? 1 : 0));
-        dest.writeList(waitingListRequests);
     }
 
 

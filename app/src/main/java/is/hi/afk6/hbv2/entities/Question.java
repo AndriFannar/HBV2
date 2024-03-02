@@ -20,7 +20,7 @@ public class Question implements Parcelable
     private Long id;
     private String questionString;
     private double weight;
-    private List<Questionnaire> questionnaires;
+    private List<Long> questionnaireIDs;
     private Integer answer;
 
     /**
@@ -28,7 +28,7 @@ public class Question implements Parcelable
      */
     public Question()
     {
-        this.questionnaires = new ArrayList<>();
+        this.questionnaireIDs = new ArrayList<>();
     }
 
     /**
@@ -41,7 +41,7 @@ public class Question implements Parcelable
         this.questionString = questionString;
         this.weight = weight;
 
-        this.questionnaires = new ArrayList<>();
+        this.questionnaireIDs = new ArrayList<>();
     }
 
     /**
@@ -50,14 +50,14 @@ public class Question implements Parcelable
      * @param id             Unique ID of Question.
      * @param questionString String for question to ask.
      * @param weight         Weight of the Question.
-     * @param questionnaires Questionnaires that Question belongs in.
+     * @param questionnaireIDs Questionnaires that Question belongs in.
      * @param answer         User selected answer.
      */
-    public Question(Long id, String questionString, double weight, List<Questionnaire> questionnaires, Integer answer) {
+    public Question(Long id, String questionString, double weight, List<Long> questionnaireIDs, Integer answer) {
         this.id = id;
         this.questionString = questionString;
         this.weight = weight;
-        this.questionnaires = questionnaires;
+        this.questionnaireIDs = questionnaireIDs;
         this.answer = answer;
     }
 
@@ -68,11 +68,11 @@ public class Question implements Parcelable
      */
     private Question (Parcel in)
     {
-        this.id             = in.readLong();
-        this.questionString = in.readString();
-        this.weight         = in.readDouble();
-        this.questionnaires = in.readArrayList(Questionnaire.class.getClassLoader());
-        this.answer         = in.readInt();
+        this.id               = in.readLong();
+        this.questionString   = in.readString();
+        this.weight           = in.readDouble();
+        this.questionnaireIDs = in.readArrayList(Long.class.getClassLoader());
+        this.answer           = in.readInt();
     }
 
     public Long getId() {
@@ -99,12 +99,12 @@ public class Question implements Parcelable
         this.weight = weight;
     }
 
-    public List<Questionnaire> getQuestionnaires() {
-        return questionnaires;
+    public List<Long> getQuestionnaireIDs() {
+        return questionnaireIDs;
     }
 
-    public void setQuestionnaires(List<Questionnaire> questionnaires) {
-        this.questionnaires = questionnaires;
+    public void setQuestionnaireIDs(List<Long> questionnaireIDs) {
+        this.questionnaireIDs = questionnaireIDs;
     }
 
     public Integer getAnswer() {
@@ -125,7 +125,7 @@ public class Question implements Parcelable
         dest.writeLong(id);
         dest.writeString(questionString);
         dest.writeDouble(weight);
-        dest.writeList(questionnaires);
+        dest.writeList(questionnaireIDs);
         dest.writeInt(answer);
     }
 

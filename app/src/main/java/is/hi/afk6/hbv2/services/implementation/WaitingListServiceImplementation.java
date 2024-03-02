@@ -77,8 +77,27 @@ public class WaitingListServiceImplementation implements WaitingListService
     }
 
     @Override
-    public void getWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback) {
+    public void getWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                // Fetch User with corresponding ID from API.
+                JSONObject returnJson = apiService.getRequest(API_WAITING_LIST_LOCATION + "view/" + requestID, "");
 
+                if (returnJson != null)
+                {
+                    // Convert response from JSON to User class if response is not null.
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                            .create();
+
+                    Type responseType = new TypeToken<ResponseWrapper<WaitingListRequest>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override
@@ -107,7 +126,15 @@ public class WaitingListServiceImplementation implements WaitingListService
     }
 
     @Override
-    public void deleteWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback) {
-
+    public void deleteWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                apiService.deleteRequest(API_WAITING_LIST_LOCATION + "delete/" + requestID);
+                callback.onComplete(null);
+            }
+        });
     }
 }

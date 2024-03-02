@@ -25,6 +25,7 @@ public class User implements Parcelable
     private String phoneNumber;
     private String address;
     private String specialization;
+    private Long waitingListRequestID;
 
     private UserRole role;
 
@@ -48,7 +49,7 @@ public class User implements Parcelable
      * @param specialization Specialization of User.
      * @param role           Role of User.
      */
-    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, UserRole role) {
+    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, Long waitingListRequestID, UserRole role) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -56,6 +57,7 @@ public class User implements Parcelable
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.specialization = specialization;
+        this.waitingListRequestID = waitingListRequestID;
         this.role = role;
     }
 
@@ -73,6 +75,7 @@ public class User implements Parcelable
         this.phoneNumber = in.readString();
         this.address = in.readString();
         this.specialization = in.readString();
+        this.waitingListRequestID = in.readLong();
         this.role = UserRole.values()[in.readInt()];
     }
 
@@ -132,6 +135,14 @@ public class User implements Parcelable
         this.specialization = specialization;
     }
 
+    public Long getWaitingListRequestID() {
+        return waitingListRequestID;
+    }
+
+    public void setWaitingListRequestID(Long waitingListRequestID) {
+        this.waitingListRequestID = waitingListRequestID;
+    }
+
     public UserRole getRole() {
         return role;
     }
@@ -150,6 +161,7 @@ public class User implements Parcelable
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", specialization='" + specialization + '\'' +
+                ", waitingListRequestID='" + waitingListRequestID + '\'' +
                 ", role=" + role +
                 '}';
     }
@@ -168,6 +180,7 @@ public class User implements Parcelable
         dest.writeString(phoneNumber);
         dest.writeString(address);
         dest.writeString(specialization);
+        dest.writeLong(waitingListRequestID);
         dest.writeInt(role.ordinal());
     }
 

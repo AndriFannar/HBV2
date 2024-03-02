@@ -77,25 +77,19 @@ public class CreateWaitingListRequestFragment extends Fragment
         binding = FragmentCreateWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        Log.d("API", "Fetching Users");
-
         userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, new APICallback<List<User>>() {
             @Override
             public void onComplete(ResponseWrapper<List<User>> result)
             {
-                Log.d("API", "Fetched Users");
                 List<User> staff = result.getData();
-                Log.d("API", "Fetching Questionnaires");
 
                 questionnaireService.getQuestionnairesOnForm(new APICallback<List<Questionnaire>>() {
                     @Override
                     public void onComplete(ResponseWrapper<List<Questionnaire>> result)
                     {
-                        Log.d("API", "Completed fetching Questionnaires");
                         requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Log.d("API", "Setting up view");
                                 setUpView(staff, result.getData());
                             }
                         });
@@ -145,6 +139,9 @@ public class CreateWaitingListRequestFragment extends Fragment
      */
     private void register(List<User> staff, List<Questionnaire> displayQuestionnaires)
     {
+        if (binding.waitingListInfo.getText() == null)
+            return;
+
         controlView(true, false);
 
         WaitingListRequest request = new WaitingListRequest(
@@ -154,8 +151,6 @@ public class CreateWaitingListRequestFragment extends Fragment
                 displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition()).getId()
         );
 
-        Log.d("Request", "Date of request: " + request.getDateOfRequest().toString());
-
         waitingListService.saveNewWaitingListRequest(request, new APICallback<WaitingListRequest>() {
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
@@ -164,7 +159,6 @@ public class CreateWaitingListRequestFragment extends Fragment
                     @Override
                     public void run()
                     {
-                        Log.d("Request", "Back from API");
                         if (result.getData() != null)
                         {
                             controlView(false, false);

@@ -36,8 +36,20 @@
     <string name="edit_text">Breyta upplýsingum\n</string>
     <string name="edit_delete">Eyða aðgangi</string>
 
+    <!-- Register to Waiting List -->
     <string name="register_waiting_list">Senda fyrirspurn á biðlista</string>
     <string name="register_waiting_list_detail">Lýsing á vandamáli</string>
     <string name="register_waiting_list_conform">Senda fyrirspurn</string>
     <string name="register_waiting_list_error">Villa við gerð á fyrirspurn</string>
+
+    <!-- Waiting List Request Overview -->
+    <string name="waiting_list_info">Fyrirspurn á biðlista:</string>
+    <string name="waiting_list_info_date">Dagsetning: </string>
+    <string name="waiting_list_info_bodyPart">Líkamshluti: </string>
+    <string name="waiting_list_info_description">Lýsing: </string>
+    <string name="waiting_list_info_physiotherapist">Sjúkraþjálfari: </string>
+    <string name="waiting_list_info_status">Staða fyrirspurnar: </string>
+    <string name="delete_request">Eyða fyrirspurn</string>
+    <string name="answer_questionnaire">Svara spurningalista</string>
+
 </resources>

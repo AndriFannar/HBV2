@@ -31,6 +31,7 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
 {
     private APIService apiService;
     private Executor executor;
+    private final static String API_QUESTIONNAIRE_LOCATION = "questionnaire/";
 
     public QuestionnaireServiceImplementation(APIService apiService, Executor executor)
     {
@@ -60,7 +61,7 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
             @Override
             public void run()
             {
-                JSONObject returnJson = apiService.getRequest("questionnaire/getAllToDisplay", "");
+                JSONObject returnJson = apiService.getRequest(API_QUESTIONNAIRE_LOCATION + "getAllToDisplay", "");
 
                 if (returnJson != null && returnJson.length() > 0)
                 {
