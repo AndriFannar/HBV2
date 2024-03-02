@@ -61,7 +61,20 @@ public class UserFragment extends Fragment
             fragmentTransaction.addToBackStack(null);
             fragmentTransaction.commit();
         });
+        binding.answerQuestionnaire.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getParentFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
 
+            AnswerQuestionnaireFragment answerQuestionnaireFragment = new AnswerQuestionnaireFragment();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+            bundle.putParcelable(EDITED_USER, loggedInUser);
+            answerQuestionnaireFragment.setArguments(bundle);
+
+            fragmentTransaction.replace(R.id.edit_fragment_container_view, answerQuestionnaireFragment);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        });
         return view;
     }
 }

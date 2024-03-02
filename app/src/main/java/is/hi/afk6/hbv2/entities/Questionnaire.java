@@ -14,7 +14,7 @@ public class Questionnaire
 {
     private Long id;
     private String name;
-    private List<Question> questions;
+    private List<Question> questions; // List<Long> questionID's
     private boolean displayOnForm;
     private List<WaitingListRequest> waitingListRequests;
 

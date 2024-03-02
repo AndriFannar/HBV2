@@ -133,7 +133,6 @@
             android:textSize="20sp"
             app:layout_constraintTop_toTopOf="parent" />
     </LinearLayout>
-
     <Button
         android:id="@+id/button_go_edit"
         android:layout_width="wrap_content"
@@ -141,6 +140,16 @@
         android:layout_marginTop="130dp"
         android:layout_marginEnd="34dp"
         android:text="@string/edit_confirm"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/answer_questionnaire"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="170dp"
+        android:layout_marginEnd="34dp"
+        android:text="@string/answer_questionnaire"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

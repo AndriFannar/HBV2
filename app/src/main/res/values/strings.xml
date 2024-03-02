@@ -30,6 +30,7 @@
     <string name="address">"Heimilisfang: "</string>
     <string name="email">"Netfang: "</string>
     <string name="edit_confirm">Uppfæra</string>
+    <string name="answer_questionnaire">Svara spurningalista</string>
     <string name="edit_error_name">Nafn ólölegt</string>
     <string name="edit_error_phoneNr">Símanúmer ólölegt</string>
     <string name="edit_error_address">Heimilisfang ólölegt</string>
