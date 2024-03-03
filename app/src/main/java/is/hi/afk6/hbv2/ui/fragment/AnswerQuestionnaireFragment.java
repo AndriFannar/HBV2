@@ -40,6 +40,10 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
  */
 public class AnswerQuestionnaireFragment extends Fragment {
 
+    private Questionnaire questionnaire;
+
+    private List<Question> questions;
+    private int currentQuestionIndex = 0;
     private FragmentAnswerQuestionnaireBinding binding;
     private QuestionnaireService questionnaireService;
     private QuestionService questionService;
@@ -80,12 +84,6 @@ public class AnswerQuestionnaireFragment extends Fragment {
     public  void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
-        /*if (getArguments() != null)
-        {
-            loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
-            editedUser = getArguments().getParcelable(EDITED_USER);
-        }*/
-
         questionnaireService = new QuestionnaireServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
         questionService = new QuestionServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
     }
@@ -95,13 +93,36 @@ public class AnswerQuestionnaireFragment extends Fragment {
         is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
         View view = binding.getRoot();
+        binding.goHomeButton.setOnClickListener(v -> {
+            getParentFragmentManager().popBackStack();
+        });
+        binding.nextQuestionButton.setOnClickListener(v -> {
+            if (currentQuestionIndex < questions.size()) {
+                Question nextQuestion = questions.get(currentQuestionIndex);
+                if (nextQuestion != null) {
+                    currentQuestionIndex++;
+                    String questionText = nextQuestion.getQuestionString();
+                    binding.spurning.setText(questionText);
+                } else {
+                    // Handle the error, for example:
+                    binding.spurning.setText("Spurningarnar eru búnar.");
+                    // Example: showErrorMessage(errorResponse);
+                }
+            }
+            else {
+                // Handle the error, for example:
+                binding.spurning.setText("Spurningarnar eru búnar.");
+                // Example: showErrorMessage(errorResponse);
+            }
+
+        });
 
         questionnaireService.getQuestionnaireByID(1L, result -> {
             // Handle the result here, for example:
-            Questionnaire questionnaire = result.getData();
+            questionnaire = result.getData();
             if (questionnaire != null) {
                 questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result1 -> {
-                    List<Question> questions = result1.getData();
+                    questions = result1.getData();
                     if (questions != null && !questions.isEmpty()) {
                         // Assuming you want to display the first question
                         Question firstQuestion = questions.get(0);
@@ -109,14 +130,9 @@ public class AnswerQuestionnaireFragment extends Fragment {
 
                         // Set the text using data binding
                         binding.spurning.setText(questionText);
+                        currentQuestionIndex++;
                     }
                 });
-                // getQuestionIDs, senda þetta á QuestionService. Fer inní fall sem ég var að setja inn
-                // QuestionService, getAllQuestionsfromList, það er fall inní QuestionService sem ég þarf að búa til.
-
-                // getAllInList,
-                // Now you can use the questionnaire object to update your UI or perform other actions.
-                // Example: updateUIWithQuestionnaire(questionnaire);
             } else {
                 // Handle the error, for example:
                 ErrorResponse errorResponse = result.getErrorResponse();
