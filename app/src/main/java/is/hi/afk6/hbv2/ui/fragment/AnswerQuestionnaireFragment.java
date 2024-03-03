@@ -12,7 +12,10 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
@@ -39,7 +42,15 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
  * create an instance of this fragment.
  */
 public class AnswerQuestionnaireFragment extends Fragment {
-
+    private List<RadioButton> radioButtons;
+    int[] listi = new int[4];
+    private RadioButton selectedRadioButton;
+    private RadioButton radioButtonOption1;
+    private RadioButton radioButtonOption2;
+    private RadioButton radioButtonOption3;
+    private RadioButton radioButtonOption4;
+    private RadioButton radioButtonOption5;
+    private RadioGroup radioGroup;
     private Questionnaire questionnaire;
 
     private List<Question> questions;
@@ -93,26 +104,97 @@ public class AnswerQuestionnaireFragment extends Fragment {
         is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
         View view = binding.getRoot();
+        //radioGroup = binding.radioGroup;
+        // Set a listener to handle radio button selections
+
+        radioButtonOption1 = binding.radioButtonOption1;
+        radioButtonOption2 = binding.radioButtonOption2;
+        radioButtonOption3 = binding.radioButtonOption3;
+        radioButtonOption4 = binding.radioButtonOption4;
+        radioButtonOption5 = binding.radioButtonOption5;
+
+        radioButtons = new ArrayList<>();
+        radioButtons.add(radioButtonOption1);
+        radioButtons.add(radioButtonOption2);
+        radioButtons.add(radioButtonOption3);
+        radioButtons.add(radioButtonOption4);
+        radioButtons.add(radioButtonOption5);
+
+
+        radioButtonOption1.setTag(1);
+        radioButtonOption2.setTag(2);
+        radioButtonOption3.setTag(3);
+        radioButtonOption4.setTag(4);
+        radioButtonOption5.setTag(5);
+        // Set a listener to handle radio button selections
+        radioButtonOption1.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Option 1 is selected
+                selectedRadioButton = radioButtonOption1;
+            }
+        });
+
+        radioButtonOption2.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Option 2 is selected
+                selectedRadioButton = radioButtonOption2;
+            }
+        });
+        radioButtonOption3.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Option 3 is selected
+                selectedRadioButton = radioButtonOption3;
+            }
+        });
+        radioButtonOption4.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Option 4 is selected
+                selectedRadioButton = radioButtonOption4;
+            }
+        });
+        radioButtonOption5.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                // Option 5 is selected
+                selectedRadioButton = radioButtonOption5;
+            }
+        });
+
         binding.goHomeButton.setOnClickListener(v -> {
             getParentFragmentManager().popBackStack();
         });
         binding.nextQuestionButton.setOnClickListener(v -> {
-            if (currentQuestionIndex < questions.size()) {
-                Question nextQuestion = questions.get(currentQuestionIndex);
-                if (nextQuestion != null) {
-                    currentQuestionIndex++;
-                    String questionText = nextQuestion.getQuestionString();
-                    binding.spurning.setText(questionText);
+            if(currentQuestionIndex < questions.size()) {
+                if(selectedRadioButton != null){
+                int radioButtonNumber = (int) selectedRadioButton.getTag();
+                listi[currentQuestionIndex-1] = radioButtonNumber;
+                if (currentQuestionIndex < questions.size()) {
+                    Question nextQuestion = questions.get(currentQuestionIndex);
+                    if (nextQuestion != null) {
+                        currentQuestionIndex++;
+                        String questionText = nextQuestion.getQuestionString();
+                        binding.spurning.setText(questionText);
+                        for (RadioButton radioButton : radioButtons) {
+                            radioButton.setChecked(false);
+                        }
+                    } else {
+                        // Handle the error, for example:
+                        binding.spurning.setText("Spurningarnar eru búnar.");
+                        // Example: showErrorMessage(errorResponse);
+                    }
                 } else {
                     // Handle the error, for example:
                     binding.spurning.setText("Spurningarnar eru búnar.");
                     // Example: showErrorMessage(errorResponse);
                 }
+                }
             }
             else {
-                // Handle the error, for example:
-                binding.spurning.setText("Spurningarnar eru búnar.");
-                // Example: showErrorMessage(errorResponse);
+                radioButtonOption1.setVisibility(View.INVISIBLE);
+                radioButtonOption2.setVisibility(View.INVISIBLE);
+                radioButtonOption3.setVisibility(View.INVISIBLE);
+                radioButtonOption4.setVisibility(View.INVISIBLE);
+                radioButtonOption5.setVisibility(View.INVISIBLE);
+                binding.spurning.setText("Takk fyrir að svara");
             }
 
         });
@@ -130,6 +212,7 @@ public class AnswerQuestionnaireFragment extends Fragment {
 
                         // Set the text using data binding
                         binding.spurning.setText(questionText);
+                        takkar(firstQuestion.getNumberOfAnswers());
                         currentQuestionIndex++;
                     }
                 });
@@ -140,6 +223,10 @@ public class AnswerQuestionnaireFragment extends Fragment {
             }
         });
 
+
         return view;
+    }
+    private void takkar(int numberOfAnswers){
+
     }
 }
