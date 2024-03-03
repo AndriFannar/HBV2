@@ -51,7 +51,7 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest("questionnaire/get/" + questionnaireID);
+                JSONObject returnJson = apiService.getRequest("questionnaire/get/" + questionnaireID, "");
 
                 if (returnJson != null)
                 {

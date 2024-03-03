@@ -2,12 +2,15 @@ package is.hi.afk6.hbv2.networking.implementation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import android.util.Log;
+
 import org.json.*;
 
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Scanner;
 
 import is.hi.afk6.hbv2.networking.APIService;
@@ -51,8 +54,13 @@ public class APIServiceImplementation implements APIService
         }
     }
 
-    private JSONObject makeNetworkRequest(String urlExtension, String requestMethod, JSONObject object) throws Exception
+    private JSONObject makeNetworkRequest(String urlExtension, String requestMethod, String object) throws Exception
     {
+        if (Objects.equals(requestMethod, "GET") && !object.isEmpty())
+        {
+            urlExtension += "?" + object;
+        }
+
         URL url = new URL(API_URL + urlExtension);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
         connection.setRequestProperty("X-API-KEY", API_PASS);
@@ -60,20 +68,20 @@ public class APIServiceImplementation implements APIService
         connection.setReadTimeout(API_TIMEOUT);
         connection.setRequestMethod(requestMethod);
 
-        if (object != null)
+        if (!object.isEmpty() && !Objects.equals(requestMethod, "GET"))
         {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);
 
             try (OutputStream outputStream = connection.getOutputStream())
             {
-                outputStream.write(object.toString().getBytes(UTF_8));
+                outputStream.write(object.getBytes(UTF_8));
             }
         }
 
         int responseCode = connection.getResponseCode();
 
-        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_BAD_REQUEST && responseCode != HttpURLConnection.HTTP_CREATED)
+        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_CREATED)
         {
             throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
         }
@@ -87,17 +95,17 @@ public class APIServiceImplementation implements APIService
     }
 
     @Override
-    public JSONObject getRequest(String urlExtension)
+    public JSONObject getRequest(String urlExtension, String requestParam)
     {
         try {
-            return makeNetworkRequest(urlExtension, "GET", null);
+            return makeNetworkRequest(urlExtension, "GET", requestParam);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
     @Override
-    public JSONObject postRequest(String urlExtension, JSONObject object)
+    public JSONObject postRequest(String urlExtension, String object)
     {
         try {
             return makeNetworkRequest(urlExtension, "POST", object);
@@ -107,7 +115,7 @@ public class APIServiceImplementation implements APIService
     }
 
     @Override
-    public JSONObject putRequest(String urlExtension, JSONObject object)
+    public JSONObject putRequest(String urlExtension, String object)
     {
         try {
             return makeNetworkRequest(urlExtension, "PUT", object);
@@ -120,7 +128,7 @@ public class APIServiceImplementation implements APIService
     public JSONObject deleteRequest(String urlExtension)
     {
         try {
-            return makeNetworkRequest(urlExtension, "DELETE", null);
+            return makeNetworkRequest(urlExtension, "DELETE", "");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

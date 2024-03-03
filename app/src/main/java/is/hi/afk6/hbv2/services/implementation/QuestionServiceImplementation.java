@@ -6,8 +6,10 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.User;
@@ -49,19 +51,29 @@ public class QuestionServiceImplementation implements QuestionService
     public void getAllQuestionsFromList(List<Long> questionIDs, APICallback<List<Question>> callback) {
         executor.execute(new Runnable() {
             @Override
-            public void run()
-            {
-                // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest("question/getAllInList/" + questionIDs);
+            public void run() {
 
-                if (returnJson != null)
+                String urlExtension = "question/getAllInList";
+
+                String questions = "questionIDs=" + questionIDs.stream()
+                                                            .map(Object::toString).collect(Collectors.joining(","));
+
+                JSONObject returnJson = apiService.getRequest(urlExtension, questions);
+
+                if (returnJson != null && returnJson.length() > 0)
                 {
-                    // Convert response from JSON to User class if response is not null.
+                    // If return is not empty, convert from JSON to ErrorResponse.
                     Gson gson = new Gson();
-                    Type responseType = new TypeToken<ResponseWrapper<Question>>() {}.getType();
+                    Type responseType = new TypeToken<ResponseWrapper<List<Question>>>() {}.getType();
+
                     callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
                 }
+                else
+                {
+                    callback.onComplete(new ResponseWrapper<>(new ArrayList<>()));
+                }
             }
+
         });
     }
 
