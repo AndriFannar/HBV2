@@ -15,9 +15,16 @@ import android.view.ViewGroup;
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
+import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.api.ErrorResponse;
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
+import is.hi.afk6.hbv2.services.QuestionService;
+import is.hi.afk6.hbv2.services.QuestionnaireService;
 import is.hi.afk6.hbv2.services.UserService;
+import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
 /**
@@ -28,9 +35,8 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 public class AnswerQuestionnaireFragment extends Fragment {
 
     private FragmentEditUserBinding binding;
-    private UserService userService;
-    private User loggedInUser;
-    private User editedUser;
+    private QuestionnaireService questionnaireService;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -67,19 +73,39 @@ public class AnswerQuestionnaireFragment extends Fragment {
     public  void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
-        if (getArguments() != null)
+        /*if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
             editedUser = getArguments().getParcelable(EDITED_USER);
-        }
+        }*/
 
-        userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
+        questionnaireService = new QuestionnaireServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_answer_questionnaire, container, false);
+        View view = inflater.inflate(R.layout.fragment_answer_questionnaire, container, false);
+
+        questionnaireService.getQuestionnaireByID(Long.valueOf(1), result -> {
+            // Handle the result here, for example:
+            Questionnaire questionnaire = result.getData();
+            if (questionnaire != null) {
+                Question question = new QuestionService();
+                // getQuestionIDs, senda þetta á QuestionService. Fer inní fall sem ég var að setja inn
+                // QuestionService, getAllQuestionsfromList, það er fall inní QuestionService sem ég þarf að búa til.
+
+                // getAllInList,
+                // Now you can use the questionnaire object to update your UI or perform other actions.
+                // Example: updateUIWithQuestionnaire(questionnaire);
+            } else {
+                // Handle the error, for example:
+                ErrorResponse errorResponse = result.getErrorResponse();
+                // Example: showErrorMessage(errorResponse);
+            }
+        });
+
+        return view;
     }
 }
