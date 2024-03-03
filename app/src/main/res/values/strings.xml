@@ -7,7 +7,8 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Home</string>
+    <string name="menu_home">Heim</string>
+    <string name="menu_change_user">Breyta Notendaupplýsingum</string>
 
     <string name="login_text">Skrá inn</string>
     <string name="login_email">Tölvupóstur</string>

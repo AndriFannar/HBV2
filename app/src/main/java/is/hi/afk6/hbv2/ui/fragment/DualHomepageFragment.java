@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -48,23 +51,26 @@ public class DualHomepageFragment extends Fragment
         binding = FragmentDualHomepageBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        UserFragment userFragment = new UserFragment();
-        fragmentTransition(R.id.edit_fragment_container_view, userFragment);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+        navController.navigate(R.id.nav_user_fragment);
 
-        if (loggedInUser.getRole() == UserRole.USER)
+        /*if (loggedInUser != null)
         {
-            if (loggedInUser.getWaitingListRequestID() == 0)
+            test = (NavHostFragment) getChildFragmentManager().findFragmentById(R.id.user_fragment_detail);
+            navController = test.getNavController();
+
+            if (loggedInUser.getRole() == UserRole.USER)
             {
-                CreateWaitingListRequestFragment createFragment = new CreateWaitingListRequestFragment();
-                fragmentTransition(R.id.user_fragment_detail, createFragment);
+                if (loggedInUser.getWaitingListRequestID() == 0)
+                {
+                    navController.navigate(R.id.nav_create_waiting_list_request);
+                }
+                else
+                {
+                    navController.navigate(R.id.nav_waiting_list_request);
+                }
             }
-            else
-            {
-                Log.d("RequestID", "" + loggedInUser.getId());
-                WaitingListRequestFragment waitingListRequestFragment = new WaitingListRequestFragment();
-                fragmentTransition(R.id.user_fragment_detail, waitingListRequestFragment);
-            }
-        }
+        }*/
 
         return view;
     }
