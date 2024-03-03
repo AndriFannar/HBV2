@@ -5,6 +5,7 @@ import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
@@ -12,9 +13,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.List;
+
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
+import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
@@ -24,6 +29,7 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.QuestionService;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
 import is.hi.afk6.hbv2.services.UserService;
+import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
@@ -34,8 +40,9 @@ import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
  */
 public class AnswerQuestionnaireFragment extends Fragment {
 
-    private FragmentEditUserBinding binding;
+    private FragmentAnswerQuestionnaireBinding binding;
     private QuestionnaireService questionnaireService;
+    private QuestionService questionService;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -80,19 +87,30 @@ public class AnswerQuestionnaireFragment extends Fragment {
         }*/
 
         questionnaireService = new QuestionnaireServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
+        questionService = new QuestionServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
+        is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_answer_questionnaire, container, false);
+        View view = binding.getRoot();
 
-        questionnaireService.getQuestionnaireByID(Long.valueOf(1), result -> {
+        questionnaireService.getQuestionnaireByID(1L, result -> {
             // Handle the result here, for example:
             Questionnaire questionnaire = result.getData();
             if (questionnaire != null) {
-                Question question = new QuestionService();
+                questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result1 -> {
+                    List<Question> questions = result1.getData();
+                    if (questions != null && !questions.isEmpty()) {
+                        // Assuming you want to display the first question
+                        Question firstQuestion = questions.get(0);
+                        String questionText = firstQuestion.getQuestionString();
+
+                        // Set the text using data binding
+                        binding.spurning.setText(questionText);
+                    }
+                });
                 // getQuestionIDs, senda þetta á QuestionService. Fer inní fall sem ég var að setja inn
                 // QuestionService, getAllQuestionsfromList, það er fall inní QuestionService sem ég þarf að búa til.
 

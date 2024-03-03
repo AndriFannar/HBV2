@@ -57,7 +57,7 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
                 {
                     // Convert response from JSON to User class if response is not null.
                     Gson gson = new Gson();
-                    Type responseType = new TypeToken<ResponseWrapper<User>>() {}.getType();
+                    Type responseType = new TypeToken<ResponseWrapper<Questionnaire>>() {}.getType();
                     callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
                 }
             }
