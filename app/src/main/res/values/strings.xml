@@ -9,6 +9,7 @@
 
     <string name="menu_home">Heim</string>
     <string name="menu_change_user">Breyta Notendaupplýsingum</string>
+    <string name="admin_see_users">Sjá alla notendur</string>
 
     <string name="login_text">Skrá inn</string>
     <string name="login_email">Tölvupóstur</string>
@@ -62,6 +63,15 @@
 
     <!-- Bundles -->
     <string name="logged_in_user">loggedInUser</string>
+    <string name="edited_user">editedUser</string>
     <string name="waiting_list_request">waitingListRequest</string>
 
+    <string name="edit_to_admin">Breyta í kerfisstjóra</string>
+
+    <string name="questions">Spurningar</string>
+    <string name="next_question_button">Næsta spurning</string>
+    <string name="go_home_button">Heimasíða</string>
+
+    <string name="user_overview_header_text">Yfirlit notendur</string>
+    <string name="user_overview_button_text">Uppfæra</string>
 </resources>

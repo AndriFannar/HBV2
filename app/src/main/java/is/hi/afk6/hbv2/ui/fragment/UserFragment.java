@@ -51,6 +51,7 @@ public class UserFragment extends Fragment
             EditUserFragment editUserFragment = new EditUserFragment();
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+            bundle.putParcelable(getString(R.string.edited_user), loggedInUser);
             editUserFragment.setArguments(bundle);
 
             fragmentTransaction.replace(R.id.super_fragment, editUserFragment);

@@ -9,12 +9,15 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.os.Parcelable;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.fragment.app.Fragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
@@ -26,11 +29,15 @@ import org.w3c.dom.Text;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
+import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
+import is.hi.afk6.hbv2.ui.fragment.UserFragment;
 
 public class UserHomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserHomepageBinding binding;
     private User loggedInUser;
+    private User editedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,15 +86,18 @@ public class UserHomepageActivity extends AppCompatActivity implements Navigatio
     /**
      * Creates a new Intent to this Activity.
      *
-     * @param packageContext  Activity coming from.
-     * @param bundleExtraName String to associate with the bundle extra.
-     * @param loggedInUser    User to be displayed on homepage.
-     * @return                Intent to this Activity.
+     * @param packageContext      Activity coming from.
+     * @param bundleExtraLoggedIn String to associate with the logged in User.
+     * @param loggedInUser        User to be displayed on homepage.
+     * @param bundleExtraEdited   String to associate with the edited User.
+     * @param editedUser          Edited User.
+     * @return                    Intent to this Activity.
      */
-    public static Intent newIntent(Context packageContext, String bundleExtraName, User loggedInUser)
+    public static Intent newIntent(Context packageContext, String bundleExtraLoggedIn, User loggedInUser, String bundleExtraEdited, User editedUser)
     {
         Intent intent = new Intent(packageContext, UserHomepageActivity.class);
-        intent.putExtra(bundleExtraName, loggedInUser);
+        intent.putExtra(bundleExtraLoggedIn, loggedInUser);
+        intent.putExtra(bundleExtraEdited, editedUser);
         return intent;
     }
 
