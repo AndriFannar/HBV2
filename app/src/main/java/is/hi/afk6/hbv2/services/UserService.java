@@ -1,5 +1,8 @@
 package is.hi.afk6.hbv2.services;
 
+import android.content.Context;
+import android.location.Location;
+
 import java.util.List;
 
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
@@ -73,6 +76,18 @@ public interface UserService
      *                        The callback will have the object returned from the action as a ResponseWrapper.
      */
     void getUsersByRole(UserRole role, boolean includeElevated, APICallback<List<User>> callback);
+
+    /**
+     * Gets all Users with specified UserRole.
+     *
+     * @param role            UserRole of users to fetch.
+     * @param includeElevated Include Users with higher UserRoles.
+     * @param currentLocation Order Users by their distance from the User.
+     * @param context         Context to enable getting geolocation from User's addresses.
+     * @param callback        Callback for when the method has returned with a list of Users with a matching role.
+     *                        The callback will have the object returned from the action as a ResponseWrapper.
+     */
+    void getUsersByRole(UserRole role, boolean includeElevated, Location currentLocation, Context context, APICallback<List<User>> callback);
 
     /**
      * Updates User.

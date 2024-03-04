@@ -1,8 +1,5 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
-import static is.hi.afk6.hbv2.ui.UserHomepageActivity.EDITED_USER;
-import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -15,8 +12,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -27,12 +24,11 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
-import is.hi.afk6.hbv2.ui.UsersOverviewActivity;
 
 public class EditUserFragment extends Fragment {
-    private FragmentEditUserBinding binding;
     private UserService userService;
     private User loggedInUser;
+    private FragmentEditUserBinding binding;
     private User editedUser;
 
     @Override
@@ -41,8 +37,8 @@ public class EditUserFragment extends Fragment {
 
         if (getArguments() != null)
         {
-            loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
-            editedUser = getArguments().getParcelable(EDITED_USER);
+            loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
+            editedUser = getArguments().getParcelable(getString(R.string.edited_user));
         }
 
         userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
@@ -55,7 +51,6 @@ public class EditUserFragment extends Fragment {
         View view = binding.getRoot();
 
         edit_setup();
-
         if(editedUser.getName().equals(loggedInUser.getName())){
             inputUserInEdit(loggedInUser);
             binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
@@ -86,21 +81,13 @@ public class EditUserFragment extends Fragment {
         userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
 
-            requireActivity().runOnUiThread(() -> {
+            requireActivity().runOnUiThread(() ->
+            {
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
                 } else {
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    UserFragment userFragment = new UserFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
-                    userFragment.setArguments(bundle);
-
-                    fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
-                    fragmentTransaction.commit();
+                    Log.d("User updated", "User updated successfully");
                 }
             });
         });
@@ -117,11 +104,13 @@ public class EditUserFragment extends Fragment {
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
-                } else {
-                    Intent intent = UsersOverviewActivity.newIntent(getActivity(), loggedInUser);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    requireActivity().startActivity(intent);
-                    requireActivity().finish();
+                }
+                else
+                {
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                    navController.navigate(R.id.nav_users_overview, bundle);
                 }
             });
         });
@@ -193,16 +182,21 @@ public class EditUserFragment extends Fragment {
                 if(result != null){
                     Log.d("TAG", "could not delete");
                 } else {
-                    Intent intent;
-                    if(editedUser.getName().equals(loggedInUser.getName())){
-                        intent = new Intent(getActivity(), LoginActivity.class);
-                    } else {
-                        intent = new Intent(getActivity(), UsersOverviewActivity.class);
-                        intent.putExtra(LOGGED_IN_USER, loggedInUser);
+                    if(editedUser.getName().equals(loggedInUser.getName()))
+                    {
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        requireActivity().startActivity(intent);
+                        requireActivity().finish();
+                    } else
+                    {
+                        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+                        navController.navigate(R.id.nav_users_overview, bundle);
                     }
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    requireActivity().startActivity(intent);
-                    requireActivity().finish();
                 }
             });
         });

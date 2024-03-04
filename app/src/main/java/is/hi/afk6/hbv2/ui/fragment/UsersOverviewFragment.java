@@ -1,21 +1,25 @@
-package is.hi.afk6.hbv2.ui;
+package is.hi.afk6.hbv2.ui.fragment;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import java.util.List;
 import java.util.Objects;
 
 import is.hi.afk6.hbv2.HBV2Application;
-import is.hi.afk6.hbv2.databinding.ActivityUsersOverviewBinding;
+import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.databinding.FragmentUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -23,33 +27,34 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
-public class UsersOverviewActivity extends Activity {
+public class UsersOverviewFragment extends Fragment {
 
-    private ActivityUsersOverviewBinding binding;
+    private FragmentUsersOverviewBinding binding;
     private UserService userService;
-    public static final String LOGGED_IN_USER = "loggedInUser";
     private List<User> users;
     private User loggedInUser;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
 
-        binding = ActivityUsersOverviewBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
+        if (getArguments() != null) {
+            loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
+        }
+    }
 
-        loggedInUser = getIntent().getParcelableExtra(LOGGED_IN_USER);
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState)
+    {
+        binding = FragmentUsersOverviewBinding.inflate(getLayoutInflater());
+        View view = binding.getRoot();
 
         getUsers();
 
-    }
-
-    public static Intent newIntent(Context packageContext, User loggedInUser)
-    {
-        Intent intent = new Intent(packageContext, UsersOverviewActivity.class);
-        intent.putExtra(LOGGED_IN_USER, loggedInUser);
-        return intent;
+        return view;
     }
 
     /**
@@ -57,11 +62,10 @@ public class UsersOverviewActivity extends Activity {
      */
     public void getUsers(){
         controlView(true, "");
-        Log.d("TAG", "GET USER");
         userService.getAllUsers(new APICallback<List<User>>() {
             @Override
             public void onComplete(ResponseWrapper<List<User>> result) {
-                runOnUiThread(new Runnable() {
+                requireActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         if(result.getData() != null){
@@ -75,9 +79,15 @@ public class UsersOverviewActivity extends Activity {
                                     Button button = createButton();
                                     userContainer.addView(userName);
                                     userContainer.addView(button);
-                                    button.setOnClickListener(v -> {
-                                        Intent intent = UserHomepageActivity.newIntent(UsersOverviewActivity.this, loggedInUser, user);
-                                        startActivity(intent);
+                                    button.setOnClickListener(v ->
+                                    {
+                                        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                                        bundle.putParcelable(getString(R.string.edited_user), user);
+
+                                        navController.navigate(R.id.nav_edit_user, bundle);
                                     });
 
                                     binding.usersContainer.addView(userContainer);
@@ -124,7 +134,7 @@ public class UsersOverviewActivity extends Activity {
      * @return a TextView with that user
      */
     private TextView createTextView(User user){
-        TextView usersName = new TextView(UsersOverviewActivity.this);
+        TextView usersName = new TextView(requireContext());
         usersName.setText(user.getName());
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 0,
@@ -142,7 +152,7 @@ public class UsersOverviewActivity extends Activity {
      * @return the Button
      */
     private Button createButton(){
-        Button updateButton = new Button(UsersOverviewActivity.this);
+        Button updateButton = new Button(requireContext());
         String BUTTON_TEXT = "Uppfæra";
         updateButton.setText(BUTTON_TEXT);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -161,7 +171,7 @@ public class UsersOverviewActivity extends Activity {
      * @return the LinearLayout container
      */
     private LinearLayout createUserContainer(){
-        LinearLayout userContainer = new LinearLayout(UsersOverviewActivity.this);
+        LinearLayout userContainer = new LinearLayout(requireContext());
         userContainer.setOrientation(LinearLayout.HORIZONTAL);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,

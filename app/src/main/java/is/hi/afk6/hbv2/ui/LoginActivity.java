@@ -9,6 +9,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import is.hi.afk6.hbv2.HBV2Application;
+import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityLoginBinding;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -99,7 +100,7 @@ public class LoginActivity extends AppCompatActivity
                             binding.contentLogin.textLogin.setText(text);
 
                             //Switch to UserHomepage.
-                            Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, loggedInUser, null);
+                            Intent intent = UserHomepageActivity.newIntent(LoginActivity.this, getString(R.string.logged_in_user), loggedInUser, null, null);
                             startActivity(intent);
                         }
                         else

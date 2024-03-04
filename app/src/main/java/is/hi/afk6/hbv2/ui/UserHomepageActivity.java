@@ -3,26 +3,29 @@ package is.hi.afk6.hbv2.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
+
+import com.google.android.material.navigation.NavigationView;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
-import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
-import is.hi.afk6.hbv2.ui.fragment.UserFragment;
 
-public class UserHomepageActivity extends AppCompatActivity
-{
+public class UserHomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserHomepageBinding binding;
-    public static final String LOGGED_IN_USER = "loggedInUser";
-    public static final String EDITED_USER = "editedUser";
     private User loggedInUser;
     private User editedUser;
 
@@ -34,72 +37,125 @@ public class UserHomepageActivity extends AppCompatActivity
         binding = ActivityUserHomepageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        loggedInUser = getIntent().getParcelableExtra(LOGGED_IN_USER);
-        editedUser = getIntent().getParcelableExtra(EDITED_USER);
+        //setSupportActionBar(binding.appBarMain.toolbar);
+        DrawerLayout drawer = binding.mainDrawerLayout;
+        NavigationView navigationView = binding.mainNav;
 
-        assert loggedInUser != null;
-        checkIfAdmin();
+        loggedInUser = (User) getIntent().getParcelableExtra(getString(R.string.logged_in_user));
 
-        if(savedInstanceState == null)
+        Menu menu = navigationView.getMenu();
+
+        if (loggedInUser.getRole() == UserRole.USER)
         {
-            if(editedUser != null){
-                loadFragment(new EditUserFragment(), editedUser);
-                binding.adminSeeAllUsers.setVisibility(View.GONE);
-            } else {
-                loadFragment(new UserFragment(), loggedInUser);
-                binding.adminSeeAllUsers.setOnClickListener(v -> seeAll());
-            }
+            binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_create_waiting_list_request, R.id.nav_edit_user)
+                    .setOpenableLayout(drawer)
+                    .build();
         }
+        else if (loggedInUser.getRole() == UserRole.ADMIN)
+        {
+            binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_users_overview, R.id.nav_edit_user)
+                    .setOpenableLayout(drawer)
+                    .build();
+        }
+        else
+        {
+            binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
+            binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_user_fragment, R.id.nav_edit_user)
+                    .setOpenableLayout(drawer)
+                    .build();
+        }
+
+
+        NavController navController = Navigation.findNavController(this, R.id.super_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+        NavigationUI.setupWithNavController(navigationView, navController);
+
+        navigationView.setNavigationItemSelectedListener(this);
+
+        View headerView = navigationView.getHeaderView(0);
+        TextView username = headerView.findViewById(R.id.nav_username);
+        TextView email = headerView.findViewById(R.id.nav_email);
+        username.setText(loggedInUser.getName());
+        email.setText(loggedInUser.getEmail());
+
+        navigate(navController);
     }
 
     /**
      * Creates a new Intent to this Activity.
      *
-     * @param packageContext Activity coming from.
-     * @param loggedInUser   User to be displayed on homepage.
-     * @return               Intent to this Activity.
+     * @param packageContext      Activity coming from.
+     * @param bundleExtraLoggedIn String to associate with the logged in User.
+     * @param loggedInUser        User to be displayed on homepage.
+     * @param bundleExtraEdited   String to associate with the edited User.
+     * @param editedUser          Edited User.
+     * @return                    Intent to this Activity.
      */
-    public static Intent newIntent(Context packageContext, User loggedInUser, User editedUser)
+    public static Intent newIntent(Context packageContext, String bundleExtraLoggedIn, User loggedInUser, String bundleExtraEdited, User editedUser)
     {
         Intent intent = new Intent(packageContext, UserHomepageActivity.class);
-        intent.putExtra(LOGGED_IN_USER, loggedInUser);
-        intent.putExtra(EDITED_USER, editedUser);
+        intent.putExtra(bundleExtraLoggedIn, loggedInUser);
+        intent.putExtra(bundleExtraEdited, editedUser);
         return intent;
     }
 
-    /**
-     * Create the approriate fragment depending on what Parcelable user it will be
-     * @param fragment Fragment that will be shown
-     * @param user User that will be used for EDITED_USER
-     */
-    private void loadFragment(Fragment fragment, Parcelable user){
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.super_fragment);
+        return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
+    {
+        NavController navController = Navigation.findNavController(this, R.id.super_fragment);
+
         Bundle bundle = new Bundle();
-        bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
-        bundle.putParcelable(EDITED_USER, user);
-        fragment.setArguments(bundle);
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
-        getSupportFragmentManager().beginTransaction()
-                .setReorderingAllowed(true)
-                .add(R.id.edit_fragment_container_view, fragment, null)
-                .commit();
+        if (loggedInUser.getRole() != UserRole.ADMIN || editedUser == null)
+            bundle.putParcelable(getString(R.string.edited_user), loggedInUser);
+        else
+            bundle.putParcelable(getString(R.string.edited_user), editedUser);
+
+        navController.navigate(menuItem.getItemId(), bundle);
+
+        return true;
     }
 
-    /**
-     * Checks if the logged in user is an admin or not
-     */
-    private void checkIfAdmin( ){
-        if(loggedInUser.getRole() == UserRole.ADMIN){
-            binding.adminSeeAllUsers.setVisibility(View.VISIBLE);
-        } else {
-            binding.adminSeeAllUsers.setVisibility(View.INVISIBLE);
+    private void navigate(NavController navController)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+        if (loggedInUser.getRole() == UserRole.USER)
+        {
+            if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0)
+            {
+                navController.navigate(R.id.nav_waiting_list_request, bundle);
+            }
+            else
+            {
+                navController.navigate(R.id.nav_create_waiting_list_request, bundle);
+            }
         }
-    }
-
-    /**
-     * Creates a new intent to an page with overview over all users
-     */
-    private void seeAll(){
-        Intent intent = UsersOverviewActivity.newIntent(UserHomepageActivity.this, loggedInUser);
-        startActivity(intent);
+        else if (loggedInUser.getRole() == UserRole.ADMIN)
+        {
+            navController.navigate(R.id.nav_users_overview, bundle);
+        }
+        else
+        {
+            navController.navigate(R.id.nav_user_fragment, bundle);
+        }
     }
 }
