@@ -2,8 +2,6 @@ package is.hi.afk6.hbv2.networking.implementation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
-import android.util.Log;
-
 import org.json.*;
 
 import java.io.InputStream;
@@ -81,7 +79,7 @@ public class APIServiceImplementation implements APIService
 
         int responseCode = connection.getResponseCode();
 
-        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_CREATED)
+        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_CREATED && responseCode != HttpURLConnection.HTTP_BAD_REQUEST)
         {
             throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
         }

@@ -1,11 +1,13 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.location.Location;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
 import is.hi.afk6.hbv2.entities.enums.UserRole;
+import kotlin.jvm.Transient;
 
 /**
  * Class to hold User information.
@@ -29,12 +31,17 @@ public class User implements Parcelable
 
     private UserRole role;
 
+    private Location location;
+    private float distance;
+
     /**
      * Create a new empty user.
+     * Gets a default role of UserRole.USER.
      */
     public User()
     {
         role = UserRole.USER;
+        distance = 0;
     }
 
     /**
@@ -47,9 +54,11 @@ public class User implements Parcelable
      * @param phoneNumber    Phone number of User.
      * @param address        Address of User.
      * @param specialization Specialization of User.
-     * @param role           Role of User.
+     * @param role           Role of User. Default is UserRole.USER.
+     * @param location       Location of User.
+     * @param distance       Distance from User to location.
      */
-    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, Long waitingListRequestID, UserRole role) {
+    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, Long waitingListRequestID, UserRole role, Location location, float distance) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -59,6 +68,8 @@ public class User implements Parcelable
         this.specialization = specialization;
         this.waitingListRequestID = waitingListRequestID;
         this.role = role;
+        this.location = location;
+        this.distance = distance;
     }
 
     /**
@@ -77,6 +88,8 @@ public class User implements Parcelable
         this.specialization = in.readString();
         this.waitingListRequestID = in.readLong();
         this.role = UserRole.values()[in.readInt()];
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.distance = in.readFloat();
     }
 
     public Long getId() {
@@ -151,6 +164,22 @@ public class User implements Parcelable
         this.role = role;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -161,8 +190,10 @@ public class User implements Parcelable
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", specialization='" + specialization + '\'' +
-                ", waitingListRequestID='" + waitingListRequestID + '\'' +
+                ", waitingListRequestID=" + waitingListRequestID +
                 ", role=" + role +
+                ", location=" + location +
+                ", distance=" + distance +
                 '}';
     }
 
@@ -182,6 +213,8 @@ public class User implements Parcelable
         dest.writeString(specialization);
         dest.writeLong(waitingListRequestID);
         dest.writeInt(role.ordinal());
+        dest.writeParcelable(location, flags);
+        dest.writeFloat(distance);
     }
 
 

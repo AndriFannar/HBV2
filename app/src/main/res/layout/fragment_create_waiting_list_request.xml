@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.CreateWaitingListRequestFragment">
+    tools:context=".ui.fragment.CreateWaitingListRequestFragment"
+    android:background="@drawable/rounded_corners_background">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,8 +13,7 @@
         android:layout_marginStart="20dp"
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="20dp"
-        android:padding="16dp"
-        android:background="@drawable/rounded_corners_background">
+        android:padding="16dp">
 
         <TextView
             android:id="@+id/register_waiting_list"
@@ -36,19 +36,51 @@
             android:paddingEnd="16dp"
             android:layout_marginBottom="16dp"/>
 
-        <Spinner
-            android:id="@+id/staff_spinner"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/spinner_background"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
 
-        <Spinner
-            android:id="@+id/questionnaire_spinner"
+            <Spinner
+                android:id="@+id/staff_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/spinner_background"
+                android:layout_marginBottom="16dp" />
+
+            <ProgressBar
+                android:id="@+id/staff_spinner_progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:elevation="4dp"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@drawable/spinner_background"
-            android:layout_marginBottom="16dp" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal">
+
+            <Spinner
+                android:id="@+id/questionnaire_spinner"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/spinner_background"
+                android:layout_marginBottom="16dp" />
+
+            <ProgressBar
+                android:id="@+id/questionnaire_spinner_progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:elevation="4dp"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
 
         <TextView
             android:id="@+id/request_error"
@@ -57,12 +89,14 @@
             android:textAlignment="center"
             android:textColor="#F44336"
             android:textSize="16sp"
-            android:visibility="invisible" />
+            android:visibility="invisible"
+            android:text="@string/register_waiting_list_error"/>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:gravity="center">
 
             <Button
                 android:id="@+id/button_register_confirm"
@@ -76,7 +110,7 @@
                 android:elevation="4dp" />
 
             <ProgressBar
-                android:id="@+id/progressBar"
+                android:id="@+id/send_request_progressBar"
                 style="?android:attr/progressBarStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

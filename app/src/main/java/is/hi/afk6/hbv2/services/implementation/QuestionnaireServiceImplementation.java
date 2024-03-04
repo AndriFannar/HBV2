@@ -50,8 +50,24 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
     }
 
     @Override
-    public void getQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback) {
+    public void getQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                // Fetch User with corresponding ID from API.
+                JSONObject returnJson = apiService.getRequest(API_QUESTIONNAIRE_LOCATION + "get/" + questionnaireID, "");
 
+                if (returnJson != null)
+                {
+                    // Convert response from JSON to User class if response is not null.
+                    Gson gson = new Gson();
+                    Type responseType = new TypeToken<ResponseWrapper<Questionnaire>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override

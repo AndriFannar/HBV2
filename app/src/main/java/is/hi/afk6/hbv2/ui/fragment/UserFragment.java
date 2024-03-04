@@ -1,7 +1,5 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
-import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
-
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +26,7 @@ public class UserFragment extends Fragment
 
         if (getArguments() != null)
         {
-            loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
+            loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
         }
     }
 
@@ -52,10 +50,10 @@ public class UserFragment extends Fragment
 
             EditUserFragment editUserFragment = new EditUserFragment();
             Bundle bundle = new Bundle();
-            bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
+            bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
             editUserFragment.setArguments(bundle);
 
-            fragmentTransaction.replace(R.id.edit_fragment_container_view, editUserFragment);
+            fragmentTransaction.replace(R.id.super_fragment, editUserFragment);
             fragmentTransaction.addToBackStack(null); // Add transaction to back stack
             fragmentTransaction.commit();
         });

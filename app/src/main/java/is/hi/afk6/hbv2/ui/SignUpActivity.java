@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.appcompat.app.AppCompatActivity;
 
 import is.hi.afk6.hbv2.HBV2Application;
+import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivitySignUpBinding;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -91,7 +92,7 @@ public class SignUpActivity extends AppCompatActivity
                             binding.contentSignUp.signupText.setText(text);
 
                             // Go to UserHomepage.
-                            Intent intent = UserHomepageActivity.newIntent(SignUpActivity.this, loggedInUser);
+                            Intent intent = UserHomepageActivity.newIntent(SignUpActivity.this, getString(R.string.logged_in_user), loggedInUser);
 
                             startActivity(intent);
                         }

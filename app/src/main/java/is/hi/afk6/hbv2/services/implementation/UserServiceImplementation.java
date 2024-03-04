@@ -1,5 +1,11 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -7,11 +13,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
+import is.hi.afk6.hbv2.comparators.UserDistanceComparator;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -125,7 +134,9 @@ public class UserServiceImplementation implements UserService
                     Gson gson = new Gson();
                     Type responseType = new TypeToken<ResponseWrapper<List<User>>>() {}.getType();
 
-                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    ResponseWrapper<List<User>> responseWrapper = gson.fromJson(returnJson.toString(), responseType);
+
+                    callback.onComplete(responseWrapper);
                 }
                 else
                 {
@@ -134,6 +145,78 @@ public class UserServiceImplementation implements UserService
             }
 
         });
+    }
+
+    @Override
+    public void getUsersByRole(final UserRole role, boolean includeElevated, Location currentLocation, Context context, APICallback<List<User>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                ;
+                getUsersByRole(role, includeElevated, new APICallback<List<User>>() {
+                    @Override
+                    public void onComplete(ResponseWrapper<List<User>> result)
+                    {
+                        if (result.getData() != null && !result.getData().isEmpty())
+                        {
+                            List<User> users = result.getData();
+                            getUsersLocationFromAddress(users, context);
+                            users.sort(new UserDistanceComparator(currentLocation));
+                            callback.onComplete(new ResponseWrapper<>(users));
+                        }
+                        else
+                        {
+                            callback.onComplete(new ResponseWrapper<>(new ArrayList<>()));
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    /**
+     * Gets the location of all User in the given list from their address.
+     *
+     * @param users   List of Users to get location for.
+     * @param context Context to enable getting geolocation from User's addresses.
+     */
+    private void getUsersLocationFromAddress(List<User> users, Context context)
+    {
+        // Create the Geocoder.
+        Geocoder geocoder = new Geocoder(context);
+        Location location;
+
+        try
+        {
+            for (User user : users)
+            {
+                // Reset the location for each User and get addresses with the Geocoder.
+                location = new Location("");
+                List<Address> addresses = geocoder.getFromLocationName(user.getAddress(), 1);
+
+                if (addresses != null && !addresses.isEmpty())
+                {
+                    // If an address is found, set the location of the User to the first address.
+                    Address address = addresses.get(0);
+
+                    // Set the location of the address.
+                    location.setLatitude(address.getLatitude());
+                    location.setLongitude(address.getLongitude());
+
+                    // Update the User's location.
+                    user.setLocation(location);
+                }
+                else
+                {
+                    Log.e("UserServiceImplementation", "Could not find location for user: " + user.getName());
+                }
+            }
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override

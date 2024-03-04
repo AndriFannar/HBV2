@@ -1,7 +1,5 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
-import static is.hi.afk6.hbv2.ui.UserHomepageActivity.LOGGED_IN_USER;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -38,7 +36,7 @@ public class EditUserFragment extends Fragment {
 
         if (getArguments() != null)
         {
-            loggedInUser = getArguments().getParcelable(LOGGED_IN_USER);
+            loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
         }
 
         userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
@@ -92,22 +90,13 @@ public class EditUserFragment extends Fragment {
         userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
 
-            requireActivity().runOnUiThread(() -> {
-                Log.d("ErrorResponse", "Error:" + errorResponse);
+            requireActivity().runOnUiThread(() ->
+            {
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
                 } else {
-                    FragmentManager fragmentManager = getParentFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-                    UserFragment userFragment = new UserFragment();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(LOGGED_IN_USER, loggedInUser);
-                    userFragment.setArguments(bundle);
-
-                    fragmentTransaction.replace(R.id.edit_fragment_container_view, userFragment);
-                    fragmentTransaction.commit();
+                    Log.d("User updated", "User updated successfully");
                 }
             });
         });
