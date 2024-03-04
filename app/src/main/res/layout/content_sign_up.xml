@@ -4,25 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.LoginActivity">
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/Theme.HBV2.AppBarOverlay">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/Theme.HBV2.PopupOverlay" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+    tools:context=".ui.SignUpActivity">
 
     <LinearLayout
         android:layout_width="409dp"
-        android:layout_height="600dp"
+        android:layout_height="625dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -31,7 +17,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center">
 
         <TextView
             android:id="@+id/signup_text"
@@ -46,70 +33,187 @@
             android:textSize="24sp"
             android:visibility="visible" />
 
-        <EditText
-            android:id="@+id/signup_name"
-            android:layout_width="248dp"
-            android:layout_height="72dp"
-            android:layout_margin="8dp"
-            android:height="50dp"
-            android:autofillHints="name"
-            android:ems="10"
-            android:hint="@string/signup_name"
-            android:inputType="textPersonName" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <EditText
-            android:id="@+id/signup_ssn"
-            android:layout_width="239dp"
-            android:layout_height="67dp"
-            android:layout_margin="8dp"
-            android:ems="10"
-            android:hint="@string/signup_ssn"
-            android:inputType="number" />
+            <EditText
+                android:id="@+id/signup_name"
+                android:layout_width="240dp"
+                android:layout_height="65dp"
+                android:layout_margin="8dp"
+                android:height="50dp"
+                android:autofillHints="name"
+                android:ems="10"
+                android:hint="@string/signup_name"
+                android:inputType="textPersonName" />
 
-        <EditText
-            android:id="@+id/signup_phoneNumber"
-            android:layout_width="239dp"
-            android:layout_height="67dp"
-            android:layout_margin="8dp"
-            android:autofillHints="phone"
-            android:ems="10"
-            android:hint="@string/signup_phoneNumber"
-            android:inputType="phone" />
+            <TextView
+                android:id="@+id/signup_name_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#F44336"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/signup_address"
-            android:layout_width="239dp"
-            android:layout_height="67dp"
-            android:layout_margin="8dp"
-            android:autofillHints="postalAddress"
-            android:ems="10"
-            android:hint="@string/signup_address"
-            android:inputType="textPostalAddress" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:gravity="center">
 
-        <EditText
-            android:id="@+id/signup_email"
-            android:layout_width="239dp"
-            android:layout_height="67dp"
-            android:layout_margin="8dp"
-            android:autofillHints="emailAddress"
-            android:ems="10"
-            android:hint="@string/signup_email"
-            android:inputType="textEmailAddress" />
+            <EditText
+                android:id="@+id/signup_ssn"
+                android:layout_width="240dp"
+                android:layout_height="65dp"
+                android:layout_margin="8dp"
+                android:ems="10"
+                android:hint="@string/signup_ssn"
+                android:inputType="number"
+                android:autofillHints="socialSecurityNumber" />
 
-        <EditText
-            android:id="@+id/signup_password"
-            android:layout_width="239dp"
-            android:layout_height="67dp"
-            android:layout_margin="8dp"
-            android:autofillHints="password"
-            android:ems="10"
-            android:hint="@string/signup_password"
-            android:inputType="textPassword" />
+            <TextView
+                android:id="@+id/signup_ssn_error"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#F44336"
+                android:textSize="20sp"
+                android:visibility="invisible" />
 
-        <Button
-            android:id="@+id/signup_confirm"
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/signup_phoneNumber"
+                android:layout_width="240dp"
+                android:layout_height="65dp"
+                android:layout_margin="8dp"
+                android:autofillHints="phone"
+                android:ems="10"
+                android:hint="@string/signup_phoneNumber"
+                android:inputType="phone" />
+
+            <TextView
+                android:id="@+id/signup_phoneNumber_error"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#F44336"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/signup_address"
+                android:layout_width="240dp"
+                android:layout_height="65dp"
+                android:layout_margin="8dp"
+                android:autofillHints="postalAddress"
+                android:ems="10"
+                android:hint="@string/signup_address"
+                android:inputType="textPostalAddress" />
+
+            <TextView
+                android:id="@+id/signup_address_error"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#F44336"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/signup_email"
+                android:layout_width="240dp"
+                android:layout_height="65dp"
+                android:layout_margin="8dp"
+                android:autofillHints="emailAddress"
+                android:ems="10"
+                android:hint="@string/signup_email"
+                android:inputType="textEmailAddress" />
+
+            <TextView
+                android:id="@+id/signup_email_error"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#F44336"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="90dp"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <EditText
+                android:id="@+id/signup_password"
+                android:layout_width="240dp"
+                android:layout_height="65dp"
+                android:layout_margin="8dp"
+                android:autofillHints="password"
+                android:ems="10"
+                android:hint="@string/signup_password"
+                android:inputType="textPassword" />
+
+            <TextView
+                android:id="@+id/signup_password_error"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#F44336"
+                android:textSize="20sp"
+                android:visibility="invisible" />
+        </LinearLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/signup_confirm" />
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/signup_confirm"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/signup_text" />
+
+
+            <ProgressBar
+                android:id="@+id/progressBar"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+                android:visibility="gone"
+                android:layout_centerInParent="true"
+                android:elevation="5dp"
+                android:padding="5dp" />
+        </RelativeLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

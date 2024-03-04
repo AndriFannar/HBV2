@@ -1,6 +1,13 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.location.Location;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
 import is.hi.afk6.hbv2.entities.enums.UserRole;
+import kotlin.jvm.Transient;
 
 /**
  * Class to hold User information.
@@ -9,7 +16,7 @@ import is.hi.afk6.hbv2.entities.enums.UserRole;
  * @since 07/01/2024
  * @version 1.0
  */
-public class User
+public class User implements Parcelable
 {
     // Variables.
     private Long id;
@@ -20,15 +27,21 @@ public class User
     private String phoneNumber;
     private String address;
     private String specialization;
+    private Long waitingListRequestID;
 
     private UserRole role;
 
+    private Location location;
+    private float distance;
+
     /**
      * Create a new empty user.
+     * Gets a default role of UserRole.USER.
      */
     public User()
     {
         role = UserRole.USER;
+        distance = 0;
     }
 
     /**
@@ -41,9 +54,11 @@ public class User
      * @param phoneNumber    Phone number of User.
      * @param address        Address of User.
      * @param specialization Specialization of User.
-     * @param role           Role of User.
+     * @param role           Role of User. Default is UserRole.USER.
+     * @param location       Location of User.
+     * @param distance       Distance from User to location.
      */
-    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, UserRole role) {
+    public User(Long id, String name, String email, String ssn, String phoneNumber, String address, String specialization, Long waitingListRequestID, UserRole role, Location location, float distance) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -51,7 +66,30 @@ public class User
         this.phoneNumber = phoneNumber;
         this.address = address;
         this.specialization = specialization;
+        this.waitingListRequestID = waitingListRequestID;
         this.role = role;
+        this.location = location;
+        this.distance = distance;
+    }
+
+    /**
+     * Create a new User from Parcel.
+     *
+     * @param in Parcel to create User from.
+     */
+    private User(Parcel in)
+    {
+        this.id = in.readLong();
+        this.name = in.readString();
+        this.email = in.readString();
+        this.ssn = in.readString();
+        this.phoneNumber = in.readString();
+        this.address = in.readString();
+        this.specialization = in.readString();
+        this.waitingListRequestID = in.readLong();
+        this.role = UserRole.values()[in.readInt()];
+        this.location = in.readParcelable(Location.class.getClassLoader());
+        this.distance = in.readFloat();
     }
 
     public Long getId() {
@@ -110,12 +148,36 @@ public class User
         this.specialization = specialization;
     }
 
+    public Long getWaitingListRequestID() {
+        return waitingListRequestID;
+    }
+
+    public void setWaitingListRequestID(Long waitingListRequestID) {
+        this.waitingListRequestID = waitingListRequestID;
+    }
+
     public UserRole getRole() {
         return role;
     }
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
+    public void setDistance(float distance) {
+        this.distance = distance;
     }
 
     @Override
@@ -128,7 +190,44 @@ public class User
                 ", phoneNumber='" + phoneNumber + '\'' +
                 ", address='" + address + '\'' +
                 ", specialization='" + specialization + '\'' +
+                ", waitingListRequestID=" + waitingListRequestID +
                 ", role=" + role +
+                ", location=" + location +
+                ", distance=" + distance +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(ssn);
+        dest.writeString(phoneNumber);
+        dest.writeString(address);
+        dest.writeString(specialization);
+        dest.writeLong(waitingListRequestID);
+        dest.writeInt(role.ordinal());
+        dest.writeParcelable(location, flags);
+        dest.writeFloat(distance);
+    }
+
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>()
+    {
+        public User createFromParcel(Parcel in)
+        {
+            return new User(in);
+        }
+
+        public User[] newArray(int size)
+        {
+            return new User[size];
+        }
+    };
 }

@@ -4,13 +4,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 import org.json.*;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Objects;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 import is.hi.afk6.hbv2.networking.APIService;
 
@@ -19,100 +18,117 @@ import is.hi.afk6.hbv2.networking.APIService;
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 07/02/2024
- * @version 1.0
+ * @version 2.0
  */
 public class APIServiceImplementation implements APIService
 {
     // Base API URL.
     private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
+    private final String API_PASS = "Kclj6G!2$CRpnOog";
 
-    private final ExecutorService executorService;
+    // Long timeout since base level Render host goes offline when not in use
+    // and takes quite some time to come back online.
+    private final int API_TIMEOUT = 240000;
 
     /**
      * Create a new API Service.
      */
     public APIServiceImplementation()
     {
-        executorService = Executors.newFixedThreadPool(5);
     }
 
-    public Future<JSONObject> getRequestAsync(String urlExtension)
+    private JSONObject parseNetworkResponse(InputStream inputStream) throws JSONException
     {
-        return executorService.submit(() ->
+        try (Scanner scanner = new Scanner(inputStream, UTF_8.name()))
         {
-            URL url = new URL((API_URL + urlExtension));
+            StringBuilder inline = new StringBuilder();
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", "Kclj6G!2$CRpnOog");
-            connection.setRequestMethod("GET");
-            connection.connect();
-
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode != HttpURLConnection.HTTP_OK)
+            while (scanner.hasNext())
             {
-                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
+                inline.append(scanner.nextLine());
             }
-            else
-            {
-                StringBuilder inline = new StringBuilder();
-                Scanner scanner = new Scanner(connection.getInputStream());
 
-                while (scanner.hasNext())
-                {
-                    inline.append(scanner.nextLine());
-                }
-
-                scanner.close();
-
-                return new JSONObject(inline.toString());
-            }
-        });
+            return inline.length() > 0 ? new JSONObject(inline.toString()): new JSONObject();
+        }
     }
 
-
-    public Future<JSONObject> postRequestAsync(String urlExtension, JSONObject object)
+    private JSONObject makeNetworkRequest(String urlExtension, String requestMethod, String object) throws Exception
     {
-        return executorService.submit(() ->
+        if (Objects.equals(requestMethod, "GET") && !object.isEmpty())
         {
-            URL url = new URL((API_URL + urlExtension));
+            urlExtension += "?" + object;
+        }
 
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("X-API-KEY", "Kclj6G!2$CRpnOog");
+        URL url = new URL(API_URL + urlExtension);
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setRequestProperty("X-API-KEY", API_PASS);
+        connection.setConnectTimeout(API_TIMEOUT);
+        connection.setReadTimeout(API_TIMEOUT);
+        connection.setRequestMethod(requestMethod);
+
+        if (!object.isEmpty() && !Objects.equals(requestMethod, "GET"))
+        {
             connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestMethod("POST");
             connection.setDoOutput(true);
-            connection.connect();
 
-            OutputStream outputStream = connection.getOutputStream();
-            outputStream.write(object.toString().getBytes(UTF_8));
-
-            int responseCode = connection.getResponseCode();
-
-            if (responseCode != HttpURLConnection.HTTP_OK) {
-                throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
-            } else {
-                StringBuilder inline = new StringBuilder();
-                Scanner scanner = new Scanner(connection.getInputStream());
-
-                while (scanner.hasNext()) {
-                    inline.append(scanner.nextLine());
-                }
-
-                scanner.close();
-
-                return new JSONObject(inline.toString());
+            try (OutputStream outputStream = connection.getOutputStream())
+            {
+                outputStream.write(object.getBytes(UTF_8));
             }
-        });
+        }
+
+        int responseCode = connection.getResponseCode();
+
+        if (responseCode != HttpURLConnection.HTTP_OK && responseCode != HttpURLConnection.HTTP_CREATED && responseCode != HttpURLConnection.HTTP_BAD_REQUEST)
+        {
+            throw new RuntimeException("Error connecting to API. Http Response Code: " + responseCode);
+        }
+        else
+        {
+            if (responseCode == HttpURLConnection.HTTP_BAD_REQUEST)
+                return parseNetworkResponse(connection.getErrorStream());
+
+            return parseNetworkResponse(connection.getInputStream());
+        }
     }
 
     @Override
-    public Future<JSONObject> putRequestAsync(String urlExtension, JSONObject object) {
-        return null;
+    public JSONObject getRequest(String urlExtension, String requestParam)
+    {
+        try {
+            return makeNetworkRequest(urlExtension, "GET", requestParam);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
-    public Future<JSONObject> deleteRequestAsync(String urlExtension) {
-        return null;
+    public JSONObject postRequest(String urlExtension, String object)
+    {
+        try {
+            return makeNetworkRequest(urlExtension, "POST", object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public JSONObject putRequest(String urlExtension, String object)
+    {
+        try {
+            return makeNetworkRequest(urlExtension, "PUT", object);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public JSONObject deleteRequest(String urlExtension)
+    {
+        try {
+            return makeNetworkRequest(urlExtension, "DELETE", "");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

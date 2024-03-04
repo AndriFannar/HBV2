@@ -1,4 +1,4 @@
-package is.hi.afk6.hbv2.entities;
+package is.hi.afk6.hbv2.entities.dtos;
 
 /**
  * Class to hold Login information for Users.

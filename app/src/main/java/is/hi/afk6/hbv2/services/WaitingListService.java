@@ -5,6 +5,7 @@ import java.util.List;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
+import is.hi.afk6.hbv2.entities.api.APICallback;
 
 /**
  * Service for WaitingListRequest class.
@@ -18,70 +19,87 @@ public interface WaitingListService
     /**
      * Saves a new WaitingListRequest.
      *
-     * @param request WaitingListRequest to save.
-     * @return        Saved WaitingListRequest.
+     * @param request  WaitingListRequest to save.
+     * @param callback Callback for when WaitingListRequest has been successfully saved and method has returned.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public WaitingListRequest saveNewWaitingListRequest(WaitingListRequest request);
+    void saveNewWaitingListRequest(WaitingListRequest request, APICallback<WaitingListRequest> callback);
 
     /**
      * Gets all saved WaitingListRequests.
      *
-     * @return List of saved WaitingListRequests.
+     * @param callback Callback for when the method has returned a list of WaitingListRequests.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public List<WaitingListRequest> getAllWaitingListRequests();
+    void getAllWaitingListRequests(APICallback<List<WaitingListRequest>> callback);
 
     /**
      * Gets WaitingListRequest by unique ID.
      *
      * @param requestID Unique ID of WaitingListRequest to fetch.
-     * @return          WaitingListRequest with corresponding ID, if any.
+     * @param callback  Callback for when the method has returned, either with a WaitingListRequest with a matching ID,
+     *                  or with an ErrorResponse.
+     *                  The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public WaitingListRequest getWaitingListRequestByID(Long requestID);
+    void getWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback);
 
     /**
      * Gets WaitingListRequest by User registered as patient.
      *
-     * @param patient User registered as patient for WaitingListRequest.
-     * @return        WaitingListRequest with matching patient, if any.
+     * @param patient  User registered as patient for WaitingListRequest.
+     * @param callback Callback for when the method has returned, either with a WaitingListRequest with a matching Patient,
+     *                 or with an ErrorResponse.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public WaitingListRequest getWaitingListRequestByPatient(User patient);
+    void getWaitingListRequestByPatient(User patient, APICallback<WaitingListRequest> callback);
 
     /**
      * Gets WaitingListRequests by User registered as staff.
      *
-     * @param staff User registered as staff for WaitingListRequests to fetch.
-     * @return      List of WaitingListRequests with inputted User registered as Staff.
+     * @param staff    User registered as staff for WaitingListRequests to fetch.
+     * @param callback Callback for when the method has returned, either with a list of WaitingListRequests
+     *                 with a matching Staff, or with an ErrorResponse.
+     *                 The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public List<WaitingListRequest> getWaitingListRequestByStaff(User staff);
+    void getWaitingListRequestByStaff(User staff, APICallback<List<WaitingListRequest>> callback);
 
     /**
-     * Update WaitingListRequest by unique ID.
+     * Update WaitingListRequest.
      *
-     * @param requestID      Unique ID of WaitingListRequest to update.
      * @param updatedRequest WaitingListRequest with updated info.
+     * @param callback       Callback for when the method has updated the WaitingListRequest, or if update was unsuccessful,
+     *                       with an ErrorResponse containing reasons for unsuccessful update.
+     *                       The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void updateWaitingListRequestByID(Long requestID, WaitingListRequest updatedRequest);
+    void updateWaitingListRequestByID(WaitingListRequest updatedRequest, APICallback<WaitingListRequest> callback);
 
     /**
      * Update status of WaitingListRequest.
      *
      * @param requestID Unique ID of WaitingListRequest to update.
      * @param newStatus New status of WaitingListRequest.
+     * @param callback  Callback for when the method has updated the status of the WaitingListRequest,
+     *                  or if update was unsuccessful, with an ErrorResponse containing reasons for unsuccessful update.
+     *                  The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void updateWaitingListRequestStatus(Long requestID, boolean newStatus);
+    void updateWaitingListRequestStatus(Long requestID, boolean newStatus, APICallback<WaitingListRequest> callback);
 
     /**
      * Update Questionnaire answers for a WaitingListRequest.
      *
      * @param requestID     Unique ID of WaitingListRequest to update.
      * @param questionnaire Questionnaire with updated answers.
+     * @param callback      Callback for when the method has updated the Questionnaire answers.
+     *                      The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void updateQuestionnaireAnswers(Long requestID, Questionnaire questionnaire);
+    void updateQuestionnaireAnswers(Long requestID, Questionnaire questionnaire, APICallback<WaitingListRequest> callback);
 
     /**
      * Delete a WaitingListRequest by unique ID.
      *
      * @param requestID Unique ID of WaitingListRequest to delete.
+     * @param callback  Callback for when the method has deleted the WaitingListRequest.
+     *                  The callback will have the object returned from the action as a ResponseWrapper.
      */
-    public void deleteWaitingListRequestByID(Long requestID);
+    void deleteWaitingListRequestByID(Long requestID, APICallback<WaitingListRequest> callback);
 }

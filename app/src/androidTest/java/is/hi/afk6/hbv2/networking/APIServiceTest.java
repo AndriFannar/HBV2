@@ -1,4 +1,4 @@
-package is.hi.afk6.hbv2.services.networking;
+package is.hi.afk6.hbv2.networking;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,9 +12,7 @@ import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.concurrent.ExecutionException;
-
-import is.hi.afk6.hbv2.entities.LoginDTO;
+import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 
 @RunWith(AndroidJUnit4.class)
@@ -27,11 +25,13 @@ public class APIServiceTest {
 
         try
         {
-            object = apiService.getRequestAsync("user/viewUser/1").get();
+            object = apiService.getRequest("user/view/8", "");
 
-            assertEquals(object.getString("id"), "1");
+            JSONObject user = object.getJSONObject("data");
+
+            assertEquals(user.getString("id"), "8");
         }
-        catch (ExecutionException | InterruptedException | JSONException e)
+        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
@@ -45,14 +45,16 @@ public class APIServiceTest {
         {
             String email = "afk6@hi.is";
             LoginDTO logIn = new LoginDTO(email, "Lykilord123");
-            JSONObject logInJson = new JSONObject(new Gson().toJson(logIn));
+            String logInJson = new Gson().toJson(logIn);
 
             APIServiceImplementation apiService = new APIServiceImplementation();
-            JSONObject object = apiService.postRequestAsync("user/login", logInJson).get();
+            JSONObject object = apiService.postRequest("user/login", logInJson);
 
-            assertEquals(object.getString("email"), email);
+            JSONObject user = object.getJSONObject("data");
+
+            assertEquals(user.getString("email"), email);
         }
-        catch (JSONException | ExecutionException | InterruptedException e)
+        catch (JSONException e)
         {
             throw new RuntimeException(e);
         }
