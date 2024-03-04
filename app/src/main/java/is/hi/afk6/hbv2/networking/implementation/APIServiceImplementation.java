@@ -66,7 +66,7 @@ public class APIServiceImplementation implements APIService
         connection.setReadTimeout(API_TIMEOUT);
         connection.setRequestMethod(requestMethod);
 
-        if (object != null)
+        if (!object.isEmpty() && !Objects.equals(requestMethod, "GET"))
         {
             connection.setRequestProperty("Content-Type", "application/json");
             connection.setDoOutput(true);

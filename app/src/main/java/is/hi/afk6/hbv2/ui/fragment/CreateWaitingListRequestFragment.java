@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
@@ -235,6 +236,7 @@ public class CreateWaitingListRequestFragment extends Fragment {
                             bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
                             NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                            NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.nav_create_waiting_list_request, false).build();
                             navController.navigate(R.id.nav_waiting_list_request, bundle);
                         } else {
                             controlView(false, false, true);

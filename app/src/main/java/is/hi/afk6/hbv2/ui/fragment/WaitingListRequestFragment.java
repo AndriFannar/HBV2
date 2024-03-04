@@ -45,6 +45,7 @@ public class WaitingListRequestFragment extends Fragment
         if (getArguments() != null) {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
             waitingListRequest = getArguments().getParcelable(getString(R.string.waiting_list_request));
+            questionnaire = getArguments().getParcelable(getString(R.string.questionnaire));
         }
 
         APIService apiService = new APIServiceImplementation();
@@ -52,11 +53,6 @@ public class WaitingListRequestFragment extends Fragment
         waitingListService   = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         userService          = new UserServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-
-        if (loggedInUser.getWaitingListRequestID() == null || loggedInUser.getWaitingListRequestID() == 0)
-        {
-            goToCreate();
-        }
     }
 
     @Override
@@ -65,6 +61,12 @@ public class WaitingListRequestFragment extends Fragment
     {
         binding = FragmentWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
+
+        if (loggedInUser.getWaitingListRequestID() == null || loggedInUser.getWaitingListRequestID() == 0)
+        {
+            goToCreate();
+            return null;
+        }
 
         if (waitingListRequest == null)
         {
@@ -96,6 +98,20 @@ public class WaitingListRequestFragment extends Fragment
                 deleteRequest();
             }
 
+        });
+
+        binding.buttonAnswerQuestionnaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+
+                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+                bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
+
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                navController.navigate(R.id.nav_answer_questionnaire, bundle);
+            }
         });
 
         return view;
@@ -138,7 +154,7 @@ public class WaitingListRequestFragment extends Fragment
         binding.waitingListPhysiotherapist.setText(staff.getName());
 
         binding.waitingListStatus.setText(waitingListRequest.isStatus() ? getString(R.string.waiting_list_request_accepted) : getString(R.string.waiting_list_request_pending));
-        if (waitingListRequest.getQuestionnaireID() == null)
+        if (waitingListRequest.getQuestionnaireID() == null || waitingListRequest.getQuestionnaireID() == 0 || !waitingListRequest.getQuestionnaireAnswers().isEmpty())
             binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
     }
 

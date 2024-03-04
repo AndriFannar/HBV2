@@ -12,6 +12,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -22,7 +24,6 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
-import is.hi.afk6.hbv2.ui.UsersOverviewActivity;
 
 public class EditUserFragment extends Fragment {
     private UserService userService;
@@ -50,7 +51,6 @@ public class EditUserFragment extends Fragment {
         View view = binding.getRoot();
 
         edit_setup();
-
         if(editedUser.getName().equals(loggedInUser.getName())){
             inputUserInEdit(loggedInUser);
             binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
@@ -104,11 +104,13 @@ public class EditUserFragment extends Fragment {
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
-                } else {
-                    Intent intent = UsersOverviewActivity.newIntent(getActivity(), loggedInUser);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    requireActivity().startActivity(intent);
-                    requireActivity().finish();
+                }
+                else
+                {
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                    navController.navigate(R.id.nav_users_overview, bundle);
                 }
             });
         });
@@ -180,16 +182,21 @@ public class EditUserFragment extends Fragment {
                 if(result != null){
                     Log.d("TAG", "could not delete");
                 } else {
-                    Intent intent;
-                    if(editedUser.getName().equals(loggedInUser.getName())){
-                        intent = new Intent(getActivity(), LoginActivity.class);
-                    } else {
-                        intent = new Intent(getActivity(), UsersOverviewActivity.class);
-                        intent.putExtra(getString(R.string.logged_in_user), loggedInUser);
+                    if(editedUser.getName().equals(loggedInUser.getName()))
+                    {
+                        Intent intent = new Intent(getActivity(), LoginActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                        requireActivity().startActivity(intent);
+                        requireActivity().finish();
+                    } else
+                    {
+                        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+                        navController.navigate(R.id.nav_users_overview, bundle);
                     }
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    requireActivity().startActivity(intent);
-                    requireActivity().finish();
                 }
             });
         });

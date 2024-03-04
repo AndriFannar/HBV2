@@ -42,22 +42,6 @@ public class UserFragment extends Fragment
             binding.userAddress.setText(loggedInUser.getAddress());
             binding.userEmail.setText(loggedInUser.getEmail());
         }
-
-
-        binding.buttonGoEdit.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getParentFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-
-            EditUserFragment editUserFragment = new EditUserFragment();
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-            bundle.putParcelable(getString(R.string.edited_user), loggedInUser);
-            editUserFragment.setArguments(bundle);
-
-            fragmentTransaction.replace(R.id.super_fragment, editUserFragment);
-            fragmentTransaction.addToBackStack(null); // Add transaction to back stack
-            fragmentTransaction.commit();
-        });
         return view;
     }
 }

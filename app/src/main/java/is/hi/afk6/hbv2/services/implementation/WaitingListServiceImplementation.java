@@ -119,7 +119,7 @@ public class WaitingListServiceImplementation implements WaitingListService
     }
 
     @Override
-    public void updateWaitingListRequestByID(Long requestID, WaitingListRequest updatedRequest, APICallback<WaitingListRequest> callback)
+    public void updateWaitingListRequestByID(WaitingListRequest updatedRequest, APICallback<WaitingListRequest> callback)
     {
         executor.execute(new Runnable() {
             @Override
@@ -130,7 +130,7 @@ public class WaitingListServiceImplementation implements WaitingListService
                     String requestJson = new Gson().toJson(updatedRequest);
 
                     // Send JSON data to API, wait for a return.
-                    JSONObject returnJson = apiService.putRequest("waitingList/update/" + requestID, requestJson);
+                    JSONObject returnJson = apiService.putRequest(API_WAITING_LIST_LOCATION + "update", requestJson);
 
                     if (returnJson != null && returnJson.length() > 0)
                     {

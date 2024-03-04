@@ -65,6 +65,7 @@
     <string name="logged_in_user">loggedInUser</string>
     <string name="edited_user">editedUser</string>
     <string name="waiting_list_request">waitingListRequest</string>
+    <string name="questionnaire">questionnaire</string>
 
     <string name="edit_to_admin">Breyta í kerfisstjóra</string>
 

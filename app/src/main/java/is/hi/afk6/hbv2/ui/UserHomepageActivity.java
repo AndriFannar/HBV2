@@ -3,35 +3,25 @@ package is.hi.afk6.hbv2.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.os.Parcelable;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.fragment.app.Fragment;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
 
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
-
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
-import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
-import is.hi.afk6.hbv2.ui.fragment.UserFragment;
 
 public class UserHomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private AppBarConfiguration mAppBarConfiguration;
@@ -51,10 +41,38 @@ public class UserHomepageActivity extends AppCompatActivity implements Navigatio
         DrawerLayout drawer = binding.mainDrawerLayout;
         NavigationView navigationView = binding.mainNav;
 
-        mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_create_waiting_list_request, R.id.nav_edit_user)
-                .setOpenableLayout(drawer)
-                .build();
+        loggedInUser = (User) getIntent().getParcelableExtra(getString(R.string.logged_in_user));
+
+        Menu menu = navigationView.getMenu();
+
+        if (loggedInUser.getRole() == UserRole.USER)
+        {
+            binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_create_waiting_list_request, R.id.nav_edit_user)
+                    .setOpenableLayout(drawer)
+                    .build();
+        }
+        else if (loggedInUser.getRole() == UserRole.ADMIN)
+        {
+            binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_users_overview, R.id.nav_edit_user)
+                    .setOpenableLayout(drawer)
+                    .build();
+        }
+        else
+        {
+            binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
+            binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_user_fragment, R.id.nav_edit_user)
+                    .setOpenableLayout(drawer)
+                    .build();
+        }
 
 
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
@@ -63,24 +81,13 @@ public class UserHomepageActivity extends AppCompatActivity implements Navigatio
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        loggedInUser = (User) getIntent().getParcelableExtra(getString(R.string.logged_in_user));
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-
         View headerView = navigationView.getHeaderView(0);
         TextView username = headerView.findViewById(R.id.nav_username);
         TextView email = headerView.findViewById(R.id.nav_email);
         username.setText(loggedInUser.getName());
         email.setText(loggedInUser.getEmail());
 
-        if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0)
-        {
-            navController.navigate(R.id.nav_waiting_list_request, bundle);
-        }
-        else
-        {
-            navController.navigate(R.id.nav_create_waiting_list_request, bundle);
-        }
+        navigate(navController);
     }
 
     /**
@@ -115,10 +122,40 @@ public class UserHomepageActivity extends AppCompatActivity implements Navigatio
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-        Log.d("TAG", "onNavigationItemSelected: " + menuItem.getItemId());
+
+        if (loggedInUser.getRole() != UserRole.ADMIN || editedUser == null)
+            bundle.putParcelable(getString(R.string.edited_user), loggedInUser);
+        else
+            bundle.putParcelable(getString(R.string.edited_user), editedUser);
 
         navController.navigate(menuItem.getItemId(), bundle);
 
         return true;
+    }
+
+    private void navigate(NavController navController)
+    {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+        if (loggedInUser.getRole() == UserRole.USER)
+        {
+            if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0)
+            {
+                navController.navigate(R.id.nav_waiting_list_request, bundle);
+            }
+            else
+            {
+                navController.navigate(R.id.nav_create_waiting_list_request, bundle);
+            }
+        }
+        else if (loggedInUser.getRole() == UserRole.ADMIN)
+        {
+            navController.navigate(R.id.nav_users_overview, bundle);
+        }
+        else
+        {
+            navController.navigate(R.id.nav_user_fragment, bundle);
+        }
     }
 }

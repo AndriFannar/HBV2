@@ -5,7 +5,10 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,82 +26,65 @@ import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.QuestionService;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
 import is.hi.afk6.hbv2.services.UserService;
+import is.hi.afk6.hbv2.services.WaitingListService;
 import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
+import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AnswerQuestionnaireFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class AnswerQuestionnaireFragment extends Fragment {
     private List<RadioButton> radioButtons;
-    int[] listi = new int[4];
-    private RadioButton selectedRadioButton;
-    private RadioButton radioButtonOption1;
+    private ArrayList listi;
+    private RadioButton radioButtonOption1;    private RadioButton selectedRadioButton;
+
     private RadioButton radioButtonOption2;
     private RadioButton radioButtonOption3;
     private RadioButton radioButtonOption4;
     private RadioButton radioButtonOption5;
     private RadioGroup radioGroup;
+    private User loggedInUser;
     private Questionnaire questionnaire;
+    private WaitingListRequest waitingListRequest;
 
     private List<Question> questions;
     private int currentQuestionIndex = 0;
     private FragmentAnswerQuestionnaireBinding binding;
     private QuestionnaireService questionnaireService;
     private QuestionService questionService;
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
-    public AnswerQuestionnaireFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AnswerQuestionnaireFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AnswerQuestionnaireFragment newInstance(String param1, String param2) {
-        AnswerQuestionnaireFragment fragment = new AnswerQuestionnaireFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    private WaitingListService waitingListService;
 
     @Override
-    public  void onCreate(@Nullable Bundle saveInstanceState){
+    public  void onCreate(@Nullable Bundle saveInstanceState)
+    {
         super.onCreate(saveInstanceState);
 
-        questionnaireService = new QuestionnaireServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
-        questionService = new QuestionServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
+        if (getArguments() != null)
+        {
+            loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
+            waitingListRequest = getArguments().getParcelable(getString(R.string.waiting_list_request));
+            questionnaire = getArguments().getParcelable(getString(R.string.questionnaire));
+        }
+
+        APIService apiService = new APIServiceImplementation();
+
+        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+        questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+        waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+
+        listi = new ArrayList();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
-        is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
+        FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         // Inflate the layout for this fragment
         View view = binding.getRoot();
         //radioGroup = binding.radioGroup;
@@ -163,7 +149,7 @@ public class AnswerQuestionnaireFragment extends Fragment {
             if(currentQuestionIndex < questions.size()) {
                 if(selectedRadioButton != null){
                 int radioButtonNumber = (int) selectedRadioButton.getTag();
-                listi[currentQuestionIndex-1] = radioButtonNumber;
+                listi.add(radioButtonNumber);
                 if (currentQuestionIndex < questions.size()) {
                     Question nextQuestion = questions.get(currentQuestionIndex);
                     if (nextQuestion != null) {
@@ -192,31 +178,43 @@ public class AnswerQuestionnaireFragment extends Fragment {
                 radioButtonOption4.setVisibility(View.INVISIBLE);
                 radioButtonOption5.setVisibility(View.INVISIBLE);
                 binding.spurning.setText("Takk fyrir að svara");
+
+                waitingListRequest.setQuestionnaireAnswers(listi);
+
+                Log.d("TAG", "Questionnaire answers: " + waitingListRequest.getQuestionnaireAnswers());
+
+                waitingListService.updateWaitingListRequestByID(waitingListRequest, result ->
+                {
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run()
+                        {
+                            Bundle bundle = new Bundle();
+
+                            bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                            bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+                            bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
+
+                            NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                            navController.navigate(R.id.nav_waiting_list_request, bundle);
+                        }
+                    });
+                });
             }
 
         });
 
-        questionnaireService.getQuestionnaireByID(1L, result -> {
-            // Handle the result here, for example:
-            questionnaire = result.getData();
-            if (questionnaire != null) {
-                questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result1 -> {
-                    questions = result1.getData();
-                    if (questions != null && !questions.isEmpty()) {
-                        // Assuming you want to display the first question
-                        Question firstQuestion = questions.get(0);
-                        String questionText = firstQuestion.getQuestionString();
+        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result1 -> {
+            questions = result1.getData();
+            if (questions != null && !questions.isEmpty()) {
+                // Assuming you want to display the first question
+                Question firstQuestion = questions.get(0);
+                String questionText = firstQuestion.getQuestionString();
 
-                        // Set the text using data binding
-                        binding.spurning.setText(questionText);
-                        takkar(firstQuestion.getNumberOfAnswers());
-                        currentQuestionIndex++;
-                    }
-                });
-            } else {
-                // Handle the error, for example:
-                ErrorResponse errorResponse = result.getErrorResponse();
-                // Example: showErrorMessage(errorResponse);
+                // Set the text using data binding
+                binding.spurning.setText(questionText);
+                takkar(firstQuestion.getNumberOfAnswers());
+                currentQuestionIndex++;
             }
         });
 

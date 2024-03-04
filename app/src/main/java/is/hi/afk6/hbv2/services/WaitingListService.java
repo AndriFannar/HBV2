@@ -64,15 +64,14 @@ public interface WaitingListService
     void getWaitingListRequestByStaff(User staff, APICallback<List<WaitingListRequest>> callback);
 
     /**
-     * Update WaitingListRequest by unique ID.
+     * Update WaitingListRequest.
      *
-     * @param requestID      Unique ID of WaitingListRequest to update.
      * @param updatedRequest WaitingListRequest with updated info.
      * @param callback       Callback for when the method has updated the WaitingListRequest, or if update was unsuccessful,
      *                       with an ErrorResponse containing reasons for unsuccessful update.
      *                       The callback will have the object returned from the action as a ResponseWrapper.
      */
-    void updateWaitingListRequestByID(Long requestID, WaitingListRequest updatedRequest, APICallback<WaitingListRequest> callback);
+    void updateWaitingListRequestByID(WaitingListRequest updatedRequest, APICallback<WaitingListRequest> callback);
 
     /**
      * Update status of WaitingListRequest.
