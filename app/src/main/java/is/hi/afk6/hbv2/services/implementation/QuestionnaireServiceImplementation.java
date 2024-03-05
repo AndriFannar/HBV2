@@ -1,13 +1,5 @@
 package is.hi.afk6.hbv2.services.implementation;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -19,7 +11,6 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
-import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
@@ -35,8 +26,8 @@ import is.hi.afk6.hbv2.services.QuestionnaireService;
  */
 public class QuestionnaireServiceImplementation implements QuestionnaireService
 {
-    private APIService apiService;
-    private Executor executor;
+    private final APIService apiService;
+    private final Executor executor;
     private final static String API_QUESTIONNAIRE_LOCATION = "questionnaire/";
 
     public QuestionnaireServiceImplementation(APIService apiService, Executor executor)

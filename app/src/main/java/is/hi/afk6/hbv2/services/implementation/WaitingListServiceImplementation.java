@@ -2,13 +2,8 @@ package is.hi.afk6.hbv2.services.implementation;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -23,8 +18,6 @@ import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.APICallback;
-import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
-import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.serializers.LocalDateSerializer;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
@@ -142,7 +135,7 @@ public class WaitingListServiceImplementation implements WaitingListService
                     }
                     else
                     {
-                        callback.onComplete(new ResponseWrapper<WaitingListRequest>(updatedRequest));
+                        callback.onComplete(new ResponseWrapper<>(updatedRequest));
                     }
                 }
                 catch (Exception e)

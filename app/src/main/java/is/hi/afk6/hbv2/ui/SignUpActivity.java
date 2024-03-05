@@ -52,6 +52,9 @@ public class SignUpActivity extends AppCompatActivity
         });
     }
 
+    /**
+     * Signs up a new User with entered user information.
+     */
     private void signUp()
     {
         // Display loading & hide errors.

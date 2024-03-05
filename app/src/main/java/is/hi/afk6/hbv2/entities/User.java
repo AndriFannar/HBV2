@@ -7,7 +7,6 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 import is.hi.afk6.hbv2.entities.enums.UserRole;
-import kotlin.jvm.Transient;
 
 /**
  * Class to hold User information.
@@ -180,6 +179,7 @@ public class User implements Parcelable
         this.distance = distance;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "User{" +

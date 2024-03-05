@@ -223,26 +223,26 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/waiting_list_questionnaire_linearLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal"
-        app:layout_constraintEnd_toStartOf="@+id/waiting_list_container">
-
-        <Button
-            android:id="@+id/button_answer_questionnaire"
+        <LinearLayout
+            android:id="@+id/waiting_list_questionnaire_linearLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/answer_questionnaire"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/purple_500" />
+            android:layout_marginTop="5dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/waiting_list_container">
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/button_answer_questionnaire"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/answer_questionnaire"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:background="@color/purple_500" />
+
+        </LinearLayout>
 
 
     </LinearLayout>

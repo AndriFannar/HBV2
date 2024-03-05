@@ -1,13 +1,10 @@
 package is.hi.afk6.hbv2;
 
 import android.app.Application;
-import android.content.Intent;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import is.hi.afk6.hbv2.ui.LoginActivity;
 
 /**
  * Main class for the Application.
