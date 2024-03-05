@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.concurrent.Executor;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.QuestionnaireService;

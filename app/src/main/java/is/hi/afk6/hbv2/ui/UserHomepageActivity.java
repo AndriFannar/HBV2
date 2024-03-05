@@ -22,8 +22,9 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
+import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
 
-public class UserHomepageActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class UserHomepageActivity extends AppCompatActivity implements EditUserFragment.Callbacks {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserHomepageBinding binding;
     private User loggedInUser;
@@ -81,11 +82,7 @@ public class UserHomepageActivity extends AppCompatActivity implements Navigatio
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        View headerView = navigationView.getHeaderView(0);
-        TextView username = headerView.findViewById(R.id.nav_username);
-        TextView email = headerView.findViewById(R.id.nav_email);
-        username.setText(loggedInUser.getName());
-        email.setText(loggedInUser.getEmail());
+        updateUserOnMenu(loggedInUser);
 
         navigate(navController);
     }
@@ -157,5 +154,14 @@ public class UserHomepageActivity extends AppCompatActivity implements Navigatio
         {
             navController.navigate(R.id.nav_user_fragment, bundle);
         }
+    }
+
+    public void updateUserOnMenu(User user)
+    {
+        View headerView = binding.mainNav.getHeaderView(0);
+        TextView username = headerView.findViewById(R.id.nav_username);
+        TextView email = headerView.findViewById(R.id.nav_email);
+        username.setText(loggedInUser.getName());
+        email.setText(loggedInUser.getEmail());
     }
 }
