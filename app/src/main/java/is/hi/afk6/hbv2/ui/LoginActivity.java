@@ -3,6 +3,7 @@ package is.hi.afk6.hbv2.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -106,6 +107,7 @@ public class LoginActivity extends AppCompatActivity
                         {
                             // Show error if User was not found.
                             String error = result.getErrorResponse().getErrorDetails().get("login");
+                            Log.d("Error while logging in.", "" + result.getErrorResponse());
                             controlView(false, error);
                         }
                     }

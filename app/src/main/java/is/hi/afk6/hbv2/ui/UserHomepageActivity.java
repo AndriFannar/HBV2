@@ -24,7 +24,7 @@ import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
 
-public class UserHomepageActivity extends AppCompatActivity implements EditUserFragment.Callbacks {
+public class UserHomepageActivity extends AppCompatActivity implements EditUserFragment.Callbacks, NavigationView.OnNavigationItemSelectedListener {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityUserHomepageBinding binding;
     private User loggedInUser;
@@ -82,7 +82,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
 
         navigationView.setNavigationItemSelectedListener(this);
 
-        updateUserOnMenu(loggedInUser);
+        onUserUpdated(loggedInUser);
 
         navigate(navController);
     }
@@ -156,7 +156,8 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         }
     }
 
-    public void updateUserOnMenu(User user)
+    @Override
+    public void onUserUpdated(User user)
     {
         View headerView = binding.mainNav.getHeaderView(0);
         TextView username = headerView.findViewById(R.id.nav_username);

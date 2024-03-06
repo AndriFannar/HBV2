@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,13 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.QuestionService;
@@ -34,26 +37,19 @@ import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
-public class AnswerQuestionnaireFragment extends Fragment {
-    private List<RadioButton> radioButtons;
-    private ArrayList listi;
-    private RadioButton radioButtonOption1;    private RadioButton selectedRadioButton;
-
-    private RadioButton radioButtonOption2;
-    private RadioButton radioButtonOption3;
-    private RadioButton radioButtonOption4;
-    private RadioButton radioButtonOption5;
-    private RadioGroup radioGroup;
+public class AnswerQuestionnaireFragment extends Fragment
+{
     private User loggedInUser;
     private Questionnaire questionnaire;
     private WaitingListRequest waitingListRequest;
-
     private List<Question> questions;
-    private int currentQuestionIndex = 0;
+    private int currentQuestionIndex;
+    Question currentQuestion;
+    private List<Integer> answers;
     private FragmentAnswerQuestionnaireBinding binding;
-    private QuestionnaireService questionnaireService;
     private QuestionService questionService;
     private WaitingListService waitingListService;
+    private RadioGroup answerGroup;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState)
@@ -69,22 +65,49 @@ public class AnswerQuestionnaireFragment extends Fragment {
 
         APIService apiService = new APIServiceImplementation();
 
-        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+        answers = new ArrayList<>();
+        currentQuestionIndex = 0;
+
         questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-
-        listi = new ArrayList();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
-        FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
-        // Inflate the layout for this fragment
+        binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        //radioGroup = binding.radioGroup;
-        // Set a listener to handle radio button selections
 
-        radioButtonOption1 = binding.radioButtonOption1;
+        answerGroup = binding.questionAnswersContainer;
+
+        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), new APICallback<List<Question>>() {
+            @Override
+            public void onComplete(ResponseWrapper<List<Question>> result)
+            {
+                if (result.getData() != null)
+                {
+                    questions = result.getData();
+
+                    requireActivity().runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            setUpQuestion();
+                        }
+                    });
+                }
+            }
+        });
+
+        binding.buttonNextQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                questionAnswered();
+            }
+        });
+
+        /*radioButtonOption1 = binding.radioButtonOption1;
         radioButtonOption2 = binding.radioButtonOption2;
         radioButtonOption3 = binding.radioButtonOption3;
         radioButtonOption4 = binding.radioButtonOption4;
@@ -208,12 +231,78 @@ public class AnswerQuestionnaireFragment extends Fragment {
                 takkar(firstQuestion.getNumberOfAnswers());
                 currentQuestionIndex++;
             }
-        });
+        });*/
 
 
         return view;
     }
-    private void takkar(int numberOfAnswers){
+    private void setUpQuestion()
+    {
+        answerGroup.removeAllViews();
 
+        currentQuestion = questions.get(currentQuestionIndex);
+        Log.d("Question", "Setting up question " + currentQuestionIndex + " with " + currentQuestion.getNumberOfAnswers() + " answers");
+
+        binding.questionText.setText(currentQuestion.getQuestionString());
+
+        RadioButton answer;
+
+        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        {
+            Log.d("Answer", "Setting up answer " + i);
+            answer = new RadioButton(requireActivity());
+            answer.setId(i);
+            answer.setText(String.valueOf(i));
+            answerGroup.addView(answer);
+        }
+    }
+
+    private void questionAnswered()
+    {
+        RadioButton answer;
+
+        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        {
+            answer = answerGroup.findViewById(i);
+
+            if (answer.isChecked())
+            {
+                Log.d("Answer", "Answer " + i + " is checked");
+                answers.add(i);
+                currentQuestionIndex++;
+                break;
+            }
+        }
+
+        Log.d("Question", "Answered question " + currentQuestionIndex + " of " + questions.size() + " questions");
+        if (currentQuestionIndex >= questions.size())
+        {
+            allQuestionsAnswered();
+        }
+        else
+        {
+            setUpQuestion();
+        }
+    }
+
+    private void allQuestionsAnswered()
+    {
+        Log.d("Question", "All questions answered");
+        waitingListRequest.setQuestionnaireAnswers(answers);
+
+        waitingListService.updateWaitingListRequestByID(waitingListRequest, new APICallback<WaitingListRequest>() {
+            @Override
+            public void onComplete(ResponseWrapper<WaitingListRequest> result)
+            {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+                bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
+
+                navController.navigate(R.id.nav_waiting_list_request, bundle);
+            }
+        });
     }
 }

@@ -101,7 +101,8 @@ public class WaitingListRequestFragment extends Fragment
 
         binding.buttonAnswerQuestionnaire.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 Bundle bundle = new Bundle();
 
                 bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);

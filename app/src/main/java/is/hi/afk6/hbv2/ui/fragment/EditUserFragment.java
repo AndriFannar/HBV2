@@ -52,6 +52,14 @@ public class EditUserFragment extends Fragment {
     }
 
     @Override
+    public void onDetach()
+    {
+        super.onDetach();
+
+        callbacks = null;
+    }
+
+    @Override
     public void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
