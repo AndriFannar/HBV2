@@ -34,7 +34,6 @@ public class EditUserFragment extends Fragment {
     private User loggedInUser;
     private FragmentEditUserBinding binding;
     private User editedUser;
-    private List<String> specialization;
     private List<String> role = Arrays.asList("Notandi", "Starfsfólk", "Sjúkraþjálfari", "Kerfisstjóri");
 
 
