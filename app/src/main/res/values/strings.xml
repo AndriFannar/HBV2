@@ -30,6 +30,7 @@
     <string name="phoneNumber">"Símanúmer: "</string>
     <string name="address">"Heimilisfang: "</string>
     <string name="email">"Netfang: "</string>
+    <string name="specialization">"Sérhæfing: "</string>
 
     <!-- Edit User -->
     <string name="edit_user">Breyta notendaupplýsingum</string>

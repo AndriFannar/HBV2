@@ -8,12 +8,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import java.util.Arrays;
+import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -30,6 +34,10 @@ public class EditUserFragment extends Fragment {
     private User loggedInUser;
     private FragmentEditUserBinding binding;
     private User editedUser;
+    private List<String> specialization;
+    private List<String> role = Arrays.asList("Notandi", "Starfsfólk", "Sjúkraþjálfari", "Kerfisstjóri");
+
+
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
@@ -58,6 +66,7 @@ public class EditUserFragment extends Fragment {
         } else {
             inputUserInEdit(editedUser);
             onlyVisibleEditText();
+            setUpRole();
             binding.buttonEditSumbit.setOnClickListener(v -> changeStaffRole());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(editedUser));
         }
@@ -220,6 +229,11 @@ public class EditUserFragment extends Fragment {
         binding.editPhone.setText(user.getPhoneNumber());
         binding.editAddress.setText(user.getAddress());
         binding.editEmail.setText(user.getEmail());
+        if(user.getRole().isElevatedUser()){
+            binding.editStaffSpecialization.setText(user.getRole().getDisplayString());
+        } else {
+            binding.editStaffSpecialization.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void onlyVisibleEditText(){
@@ -231,6 +245,12 @@ public class EditUserFragment extends Fragment {
         binding.editAddress.setFocusableInTouchMode(false);
         binding.editEmail.setFocusable(false);
         binding.editEmail.setFocusableInTouchMode(false);
+    }
+
+    private void setUpRole(){
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, role);
+        roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.staffRoleSpinner.setAdapter(roleAdapter);
     }
 
 }

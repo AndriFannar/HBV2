@@ -21,30 +21,24 @@ import java.util.List;
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
-import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
-import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
-import is.hi.afk6.hbv2.entities.api.ErrorResponse;
-import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.QuestionService;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
-import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.WaitingListService;
 import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class AnswerQuestionnaireFragment extends Fragment {
     private List<RadioButton> radioButtons;
     private ArrayList listi;
-    private RadioButton radioButtonOption1;    private RadioButton selectedRadioButton;
-
+    private RadioButton radioButtonOption1;
+    private RadioButton selectedRadioButton;
     private RadioButton radioButtonOption2;
     private RadioButton radioButtonOption3;
     private RadioButton radioButtonOption4;
