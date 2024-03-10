@@ -179,7 +179,7 @@ public class UsersOverviewFragment extends Fragment {
 
     private Button createViewQuestionnaireAnswersButton() {
         Button viewAnswersButton = new Button(requireContext());
-        String VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT = "Skoða spurningalista";
+        String VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT = "Skoða";
         viewAnswersButton.setText(VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 0,

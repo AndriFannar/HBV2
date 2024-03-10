@@ -9,6 +9,50 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.databinding.FragmentViewQuesionnaireAnswersBinding;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Bundle;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.NavOptions;
+import androidx.navigation.Navigation;
+
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import is.hi.afk6.hbv2.HBV2Application;
+import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.databinding.FragmentCreateWaitingListRequestBinding;
+import is.hi.afk6.hbv2.entities.Questionnaire;
+import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.WaitingListRequest;
+import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
+import is.hi.afk6.hbv2.networking.APIService;
+import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
+import is.hi.afk6.hbv2.services.QuestionnaireService;
+import is.hi.afk6.hbv2.services.UserService;
+import is.hi.afk6.hbv2.services.WaitingListService;
+import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
+import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
+import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -16,6 +60,9 @@ import is.hi.afk6.hbv2.R;
  * create an instance of this fragment.
  */
 public class ViewQuesionnaireAnswersFragment extends Fragment {
+    private FragmentViewQuesionnaireAnswersBinding binding;
+    private User loggedInUser;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
