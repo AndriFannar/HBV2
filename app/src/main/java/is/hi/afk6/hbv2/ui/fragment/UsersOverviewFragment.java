@@ -77,8 +77,10 @@ public class UsersOverviewFragment extends Fragment {
                                     LinearLayout userContainer = createUserContainer();
                                     TextView userName = createTextView(user);
                                     Button button = createButton();
+                                    Button viewAnswers = createViewQuestionnaireAnswersButton();
                                     userContainer.addView(userName);
                                     userContainer.addView(button);
+                                    userContainer.addView(viewAnswers);
                                     button.setOnClickListener(v ->
                                     {
                                         NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
@@ -89,6 +91,16 @@ public class UsersOverviewFragment extends Fragment {
 
                                         navController.navigate(R.id.nav_edit_user, bundle);
                                     });
+
+                                    viewAnswers.setOnClickListener(view -> {
+                                        NavController viewAnswersNavController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                                        bundle.putParcelable(getString(R.string.view_questionnaire_answers), user);
+                                        viewAnswersNavController.navigate(R.id.nav_view_questionnaire_answers, bundle);
+                                    });
+
 
                                     binding.usersContainer.addView(userContainer);
                                 }
@@ -163,6 +175,20 @@ public class UsersOverviewFragment extends Fragment {
         updateButton.setLayoutParams(params);
 
         return updateButton;
+    }
+
+    private Button createViewQuestionnaireAnswersButton() {
+        Button viewAnswersButton = new Button(requireContext());
+        String VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT = "Skoða spurningalista";
+        viewAnswersButton.setText(VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        viewAnswersButton.setLayoutParams(params);
+
+        return viewAnswersButton;
     }
 
     /**

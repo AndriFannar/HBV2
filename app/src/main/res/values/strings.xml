@@ -66,6 +66,7 @@
     <string name="edited_user">editedUser</string>
     <string name="waiting_list_request">waitingListRequest</string>
     <string name="questionnaire">questionnaire</string>
+    <string name="view_questionnaire_answers">Questionnaire Answers</string>
 
     <string name="edit_to_admin">Breyta í kerfisstjóra</string>
 
@@ -74,7 +75,6 @@
     <string name="go_home_button">Heimasíða</string>
 
     <string name="user_overview_header_text">Yfirlit notendur</string>
+    <string name="user_questionnaire_answers_overview_header_text">Svör við spurningalista</string>
     <string name="user_overview_button_text">Uppfæra</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
