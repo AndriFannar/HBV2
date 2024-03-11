@@ -1,6 +1,8 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,6 +63,8 @@ public class WaitingListRequestFragment extends Fragment
         binding = FragmentWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        binding.buttonAnswerQuestionnaire.setClickable(false);
+
         if (loggedInUser.getWaitingListRequestID() == null || loggedInUser.getWaitingListRequestID() == 0)
         {
             goToCreate();
@@ -103,14 +107,17 @@ public class WaitingListRequestFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                Bundle bundle = new Bundle();
+                if (questionnaire != null)
+                {
+                    Bundle bundle = new Bundle();
 
-                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
-                bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                    bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+                    bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
 
-                NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
-                navController.navigate(R.id.nav_answer_questionnaire, bundle);
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                    navController.navigate(R.id.nav_answer_questionnaire, bundle);
+                }
             }
         });
 
@@ -125,6 +132,7 @@ public class WaitingListRequestFragment extends Fragment
             public void onComplete(ResponseWrapper<User> result)
             {
                 staff = result.getData();
+
                 questionnaireService.getQuestionnaireByID(waitingListRequest.getQuestionnaireID(), new APICallback<Questionnaire>()
                 {
                     @Override
@@ -134,7 +142,9 @@ public class WaitingListRequestFragment extends Fragment
                         requireActivity().runOnUiThread(new Runnable()
                         {
                             @Override
-                            public void run() {
+                            public void run()
+                            {
+                                binding.buttonAnswerQuestionnaire.setClickable(true);
                                 setUpView();
                             }
                         });
@@ -154,8 +164,15 @@ public class WaitingListRequestFragment extends Fragment
         binding.waitingListPhysiotherapist.setText(staff.getName());
 
         binding.waitingListStatus.setText(waitingListRequest.isStatus() ? getString(R.string.waiting_list_request_accepted) : getString(R.string.waiting_list_request_pending));
-        if (waitingListRequest.getQuestionnaireID() == null || waitingListRequest.getQuestionnaireID() == 0 || !waitingListRequest.getQuestionnaireAnswers().isEmpty())
+
+        if (waitingListRequest.getQuestionnaireID() == null || questionnaire.getQuestionIDs().isEmpty())
             binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
+        else if (!waitingListRequest.getQuestionnaireAnswers().isEmpty())
+        {
+            binding.buttonAnswerQuestionnaire.setClickable(false);
+            binding.buttonAnswerQuestionnaire.setBackgroundColor(Color.GRAY);
+            binding.buttonAnswerQuestionnaire.setText(getString(R.string.questionnaire_answered));
+        }
     }
 
     private void deleteRequest()

@@ -119,8 +119,12 @@ public class WaitingListServiceImplementation implements WaitingListService
             public void run()
             {
                 try {
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                            .create();
+
                     // Convert User class to String.
-                    String requestJson = new Gson().toJson(updatedRequest);
+                    String requestJson = gson.toJson(updatedRequest);
 
                     // Send JSON data to API, wait for a return.
                     JSONObject returnJson = apiService.putRequest(API_WAITING_LIST_LOCATION + "update", requestJson);
@@ -128,7 +132,6 @@ public class WaitingListServiceImplementation implements WaitingListService
                     if (returnJson != null && returnJson.length() > 0)
                     {
                         // If return is not empty, convert from JSON to ErrorResponse.
-                        Gson gson = new Gson();
                         Type responseType = new TypeToken<ResponseWrapper<WaitingListRequest>>() {}.getType();
 
                         callback.onComplete(gson.fromJson(returnJson.toString(), responseType));

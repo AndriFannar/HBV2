@@ -2,6 +2,8 @@ package is.hi.afk6.hbv2.networking.implementation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import android.util.Log;
+
 import org.json.*;
 
 import java.io.InputStream;
@@ -59,6 +61,8 @@ public class APIServiceImplementation implements APIService
         {
             urlExtension += "?" + object;
         }
+
+        Log.d("API", "Sending object to API: " + object);
 
         URL url = new URL(API_URL + urlExtension);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

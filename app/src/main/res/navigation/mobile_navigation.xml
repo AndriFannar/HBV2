@@ -59,6 +59,9 @@
         android:label="@string/answer_questionnaire"
         android:layout="@layout/fragment_answer_questionnaire">
         <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
+        <argument
             android:name="@string/waiting_list_request"
             app:argType="is.hi.afk6.hbv2.entities.WaitingListRequest" />
         <argument

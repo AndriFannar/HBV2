@@ -49,6 +49,7 @@
     <string name="waiting_list_info_status">Staða fyrirspurnar: </string>
     <string name="delete_request">Eyða fyrirspurn</string>
     <string name="answer_questionnaire">Svara spurningalista</string>
+    <string name="questionnaire_answered">Spurningalista svarað</string>
     <string name="waiting_list_request_accepted">Samþykkt</string>
     <string name="waiting_list_request_pending">Í Bið</string>
 
