@@ -24,6 +24,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
@@ -34,9 +35,7 @@ public class EditUserFragment extends Fragment {
     private User loggedInUser;
     private FragmentEditUserBinding binding;
     private User editedUser;
-    private List<String> role = Arrays.asList("Notandi", "Starfsfólk", "Sjúkraþjálfari", "Kerfisstjóri");
-
-
+    private final List<String> role = Arrays.asList("Notandi", "Starfsfólk", "Sjúkraþjálfari", "Kerfisstjóri");
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState){
@@ -60,6 +59,7 @@ public class EditUserFragment extends Fragment {
         edit_setup();
         if(editedUser.getName().equals(loggedInUser.getName())){
             inputUserInEdit(loggedInUser);
+            removeRoleSpinner();
             binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(loggedInUser));
         } else {
@@ -85,6 +85,7 @@ public class EditUserFragment extends Fragment {
         loggedInUser.setAddress(binding.editAddress.getText().toString());
         loggedInUser.setPhoneNumber(binding.editPhone.getText().toString());
         loggedInUser.setEmail(binding.editEmail.getText().toString());
+        loggedInUser.setSpecialization(binding.editStaffSpecialization.getText().toString());
 
         userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
@@ -102,8 +103,12 @@ public class EditUserFragment extends Fragment {
     }
 
     private void changeStaffRole(){
-        Log.d("TAG", editedUser.getRole().toString());
+        String desiredDisplayString = role.get(binding.staffRoleSpinner.getSelectedItemPosition());
 
+        UserRole newRole = UserRole.fromDisplayString(desiredDisplayString);
+        if (newRole != null) {
+            editedUser.setRole(newRole);
+        }
 
         userService.updateUser(editedUser.getId(), editedUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
@@ -115,6 +120,7 @@ public class EditUserFragment extends Fragment {
                 }
                 else
                 {
+                    Log.d("Updated user", editedUser.toString());
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
@@ -229,9 +235,9 @@ public class EditUserFragment extends Fragment {
         binding.editAddress.setText(user.getAddress());
         binding.editEmail.setText(user.getEmail());
         if(user.getRole().isElevatedUser()){
-            binding.editStaffSpecialization.setText(user.getRole().getDisplayString());
+            binding.editStaffSpecialization.setText(user.getSpecialization());
         } else {
-            binding.editStaffSpecialization.setVisibility(View.INVISIBLE);
+            binding.editStaffSpecialization.setVisibility(View.GONE);
         }
     }
 
@@ -244,12 +250,20 @@ public class EditUserFragment extends Fragment {
         binding.editAddress.setFocusableInTouchMode(false);
         binding.editEmail.setFocusable(false);
         binding.editEmail.setFocusableInTouchMode(false);
+        binding.editStaffSpecialization.setFocusable(false);
+        binding.editStaffSpecialization.setFocusableInTouchMode(false);
     }
 
     private void setUpRole(){
         ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, role);
         roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         binding.staffRoleSpinner.setAdapter(roleAdapter);
+        int userRoleIndex = role.indexOf(editedUser.getRole().getDisplayString());
+        binding.staffRoleSpinner.setSelection(userRoleIndex);
+    }
+
+    private void removeRoleSpinner(){
+        binding.staffRoleSpinner.setVisibility(View.GONE);
     }
 
 }

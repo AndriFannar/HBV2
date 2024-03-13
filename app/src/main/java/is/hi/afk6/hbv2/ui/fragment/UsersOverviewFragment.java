@@ -74,6 +74,7 @@ public class UsersOverviewFragment extends Fragment {
 
                             for (User user : users){
                                 if(!Objects.equals(user.getEmail(), loggedInUser.getEmail())){
+                                    Log.d("User", user.toString());
                                     LinearLayout userContainer = createUserContainer();
                                     TextView userName = createTextView(user);
                                     Button button = createButton();
