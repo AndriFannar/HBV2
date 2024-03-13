@@ -53,6 +53,7 @@ public class AnswerQuestionnaireFragment extends Fragment
     {
         super.onCreate(saveInstanceState);
 
+        // Get the arguments from the bundle
         if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
@@ -74,8 +75,10 @@ public class AnswerQuestionnaireFragment extends Fragment
         binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        // Get the container for the answers.
         answerGroup = binding.contentAnswerQuestionnaire.questionAnswersContainer;
 
+        // Fetch the questions from the API.
         questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), new APICallback<List<Question>>() {
             @Override
             public void onComplete(ResponseWrapper<List<Question>> result)
@@ -106,26 +109,28 @@ public class AnswerQuestionnaireFragment extends Fragment
 
         return view;
     }
+
+    /**
+     * Sets up the next question.
+     */
     private void setUpQuestion()
     {
-
+        // Remove all previous options from the screen.
         answerGroup.removeAllViews();
 
         currentQuestion = questions.get(currentQuestionIndex);
-        Log.d("Question", "Setting up question " + currentQuestionIndex + ", " + currentQuestion.getQuestionString() + " with " + currentQuestion.getNumberOfAnswers() + " answers");
 
         binding.contentAnswerQuestionnaire.questionText.setText(currentQuestion.getQuestionString());
 
         RadioButton answer;
 
+        // Generate a RadioButton for each answer and add to the view.
         for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
         {
-            Log.d("Answer", "Setting up answer " + i);
             answer = new RadioButton(requireActivity());
             answer.setId(i);
             answer.setText(String.valueOf(i));
             answerGroup.addView(answer);
-            Log.d("Answer", "Answer " + i + " set up");
         }
     }
 
@@ -133,23 +138,21 @@ public class AnswerQuestionnaireFragment extends Fragment
     {
         RadioButton answer;
 
+        // Check what answer is correct, and add it to the list of answers.
         for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
         {
             answer = answerGroup.findViewById(i);
 
             if (answer.isChecked())
             {
-                Log.d("Answer", "Answer " + i + " is checked");
                 answers.add(i);
                 currentQuestionIndex++;
-
-                Log.d("Answer", "Answer " + i + " added to answers, which now has answers " + answers.toString());
 
                 break;
             }
         }
 
-        Log.d("Question", "Answered number " + currentQuestionIndex + " of " + questions.size() + " questions");
+        // Check if all questions have been answered
         if (currentQuestionIndex >= questions.size())
         {
             allQuestionsAnswered();
@@ -160,12 +163,16 @@ public class AnswerQuestionnaireFragment extends Fragment
         }
     }
 
+    /**
+     * When all questions have been answered, update the WaitingListRequest and navigate back.
+     */
     private void allQuestionsAnswered()
     {
         waitingListRequest.setQuestionnaireAnswers(answers);
 
         calculateGrade();
 
+        // Send updated WaitingListRequest to API, and navigate back.
         waitingListService.updateWaitingListRequestByID(waitingListRequest, new APICallback<WaitingListRequest>() {
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
@@ -189,6 +196,7 @@ public class AnswerQuestionnaireFragment extends Fragment
         });
     }
 
+    // Calculates the grade of the WaitingListRequest.
     private void calculateGrade() {
         double score = 0;
 

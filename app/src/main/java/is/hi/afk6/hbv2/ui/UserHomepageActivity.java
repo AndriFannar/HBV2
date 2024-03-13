@@ -156,9 +156,15 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         }
     }
 
+    /**
+     * Callback for when a User has been updated.
+     *
+     * @param user Updated User.
+     */
     @Override
     public void onUserUpdated(User user)
     {
+        // Update the text in the Navigation with the new info.
         View headerView = binding.mainNav.getHeaderView(0);
         TextView username = headerView.findViewById(R.id.nav_username);
         TextView email = headerView.findViewById(R.id.nav_email);

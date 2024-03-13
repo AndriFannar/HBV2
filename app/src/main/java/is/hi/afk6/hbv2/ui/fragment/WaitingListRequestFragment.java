@@ -2,7 +2,6 @@ package is.hi.afk6.hbv2.ui.fragment;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,6 +42,7 @@ public class WaitingListRequestFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get arguments.
         if (getArguments() != null) {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
             waitingListRequest = getArguments().getParcelable(getString(R.string.waiting_list_request));
@@ -63,14 +63,17 @@ public class WaitingListRequestFragment extends Fragment
         binding = FragmentWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        // User can't answer Questionnaire until it has been fetched from the API.
         binding.buttonAnswerQuestionnaire.setClickable(false);
 
+        // Check that current User has a WaitingListRequest.
         if (loggedInUser.getWaitingListRequestID() == null || loggedInUser.getWaitingListRequestID() == 0)
         {
             goToCreate();
             return null;
         }
 
+        // If the WaitingListRequest did not come with the Bundle, fetch it from API.
         if (waitingListRequest == null)
         {
             waitingListService.getWaitingListRequestByID(loggedInUser.getWaitingListRequestID(), new APICallback<WaitingListRequest>()
@@ -103,6 +106,7 @@ public class WaitingListRequestFragment extends Fragment
 
         });
 
+        // Navigate to AnswerQuestionnaireFragment.
         binding.buttonAnswerQuestionnaire.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -126,6 +130,7 @@ public class WaitingListRequestFragment extends Fragment
 
     private void fetchData()
     {
+        // Get the staff and questionnaire for the WaitingListRequest.
         userService.getUserByID(waitingListRequest.getStaffID(), new APICallback<User>()
         {
             @Override
@@ -144,6 +149,7 @@ public class WaitingListRequestFragment extends Fragment
                             @Override
                             public void run()
                             {
+                                // User now allowed to answer Questionnaire.
                                 binding.buttonAnswerQuestionnaire.setClickable(true);
                                 setUpView();
                             }
@@ -154,10 +160,11 @@ public class WaitingListRequestFragment extends Fragment
         });
     }
 
+    /**
+     * Insert all info about the WaitingListRequest into the view.
+     */
     private void setUpView()
     {
-
-
         binding.waitingListDate.setText(waitingListRequest.getDateOfRequest().toString());
         binding.waitingListDescription.setText(waitingListRequest.getDescription());
         binding.waitingListBodyPart.setText(questionnaire.getName());
@@ -170,11 +177,14 @@ public class WaitingListRequestFragment extends Fragment
         else if (!waitingListRequest.getQuestionnaireAnswers().isEmpty())
         {
             binding.buttonAnswerQuestionnaire.setClickable(false);
-            binding.buttonAnswerQuestionnaire.setBackgroundColor(Color.GRAY);
             binding.buttonAnswerQuestionnaire.setText(getString(R.string.questionnaire_answered));
+            binding.buttonAnswerQuestionnaire.setAlpha(0.5f);
         }
     }
 
+    /**
+     * Delete the WaitingListRequest.
+     */
     private void deleteRequest()
     {
         waitingListService.deleteWaitingListRequestByID(waitingListRequest.getId(), new APICallback<WaitingListRequest>() {
@@ -185,6 +195,7 @@ public class WaitingListRequestFragment extends Fragment
                     @Override
                     public void run()
                     {
+                        // Set the User's WaitingListRequestID to 0 and navigate to create fragment.
                         loggedInUser.setWaitingListRequestID(0L);
                         goToCreate();
                     }
@@ -194,6 +205,9 @@ public class WaitingListRequestFragment extends Fragment
         });
     }
 
+    /**
+     * Navigates to the CreateWaitingListRequestFragment.
+     */
     private void goToCreate()
     {
         Bundle bundle = new Bundle();

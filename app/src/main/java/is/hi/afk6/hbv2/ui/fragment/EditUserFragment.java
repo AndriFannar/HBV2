@@ -33,6 +33,7 @@ public class EditUserFragment extends Fragment {
     private User editedUser;
     private Callbacks callbacks;
 
+    // Callback for when the User has been updated.
     public interface Callbacks
     {
         void onUserUpdated(User user);
@@ -43,6 +44,7 @@ public class EditUserFragment extends Fragment {
     {
         super.onAttach(context);
 
+        // Make sure the container activity has implemented the callback interface.
         if (!(context instanceof Callbacks))
         {
             throw new ClassCastException(context.toString() + " must implement EditUserFragment.Callbacks");
@@ -63,6 +65,7 @@ public class EditUserFragment extends Fragment {
     public void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
+        // Get arguments.
         if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
@@ -118,8 +121,8 @@ public class EditUserFragment extends Fragment {
                     errorResponse_input(errorResponse);
                 } else
                 {
+                    // Execute the callback.
                     callbacks.onUserUpdated(loggedInUser);
-                    Log.d("User updated", "User updated successfully");
                 }
             });
         });
