@@ -110,7 +110,7 @@ public class EditUserFragment extends Fragment {
             editedUser.setRole(newRole);
         }
 
-        userService.updateUser(editedUser.getId(), editedUser, result -> {
+        userService.updateUser(loggedInUser.getId(), editedUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
 
             requireActivity().runOnUiThread(() -> {
