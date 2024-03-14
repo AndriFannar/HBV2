@@ -2,13 +2,8 @@ package is.hi.afk6.hbv2.services.implementation;
 
 import android.util.Log;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONObject;
-
-import java.lang.reflect.Type;
 import java.time.LocalDate;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -22,9 +17,7 @@ import java.util.concurrent.Executor;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
-import is.hi.afk6.hbv2.entities.api.APICallback;
-import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
-import is.hi.afk6.hbv2.networking.APIService;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.serializers.LocalDateSerializer;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
@@ -126,8 +119,12 @@ public class WaitingListServiceImplementation implements WaitingListService
             public void run()
             {
                 try {
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                            .create();
+
                     // Convert User class to String.
-                    String requestJson = new Gson().toJson(updatedRequest);
+                    String requestJson = gson.toJson(updatedRequest);
 
                     // Send JSON data to API, wait for a return.
                     JSONObject returnJson = apiService.putRequest(API_WAITING_LIST_LOCATION + "update", requestJson);
@@ -135,14 +132,13 @@ public class WaitingListServiceImplementation implements WaitingListService
                     if (returnJson != null && returnJson.length() > 0)
                     {
                         // If return is not empty, convert from JSON to ErrorResponse.
-                        Gson gson = new Gson();
                         Type responseType = new TypeToken<ResponseWrapper<WaitingListRequest>>() {}.getType();
 
                         callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
                     }
                     else
                     {
-                        callback.onComplete(new ResponseWrapper<WaitingListRequest>(updatedRequest));
+                        callback.onComplete(new ResponseWrapper<>(updatedRequest));
                     }
                 }
                 catch (Exception e)

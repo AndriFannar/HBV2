@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +20,7 @@ import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;

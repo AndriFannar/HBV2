@@ -8,7 +8,7 @@ import java.util.List;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.dtos.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
 /**

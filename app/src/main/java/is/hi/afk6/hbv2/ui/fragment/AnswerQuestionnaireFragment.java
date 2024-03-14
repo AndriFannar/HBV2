@@ -20,52 +20,40 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
-import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
-import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
-import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.QuestionService;
-import is.hi.afk6.hbv2.services.QuestionnaireService;
-import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.WaitingListService;
 import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
-public class AnswerQuestionnaireFragment extends Fragment {
-    private List<RadioButton> radioButtons;
-    private ArrayList listi;
-    private RadioButton radioButtonOption1;    private RadioButton selectedRadioButton;
-
-    private RadioButton radioButtonOption2;
-    private RadioButton radioButtonOption3;
-    private RadioButton radioButtonOption4;
-    private RadioButton radioButtonOption5;
-    private RadioGroup radioGroup;
+public class AnswerQuestionnaireFragment extends Fragment
+{
     private User loggedInUser;
     private Questionnaire questionnaire;
     private WaitingListRequest waitingListRequest;
-
     private List<Question> questions;
-    private int currentQuestionIndex = 0;
+    private int currentQuestionIndex;
+    Question currentQuestion;
+    private List<Integer> answers;
     private FragmentAnswerQuestionnaireBinding binding;
-    private QuestionnaireService questionnaireService;
     private QuestionService questionService;
     private WaitingListService waitingListService;
+    private RadioGroup answerGroup;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState)
     {
         super.onCreate(saveInstanceState);
 
+        // Get the arguments from the bundle
         if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
@@ -75,153 +63,148 @@ public class AnswerQuestionnaireFragment extends Fragment {
 
         APIService apiService = new APIServiceImplementation();
 
-        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+        answers = new ArrayList<>();
+        currentQuestionIndex = 0;
+
         questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-
-        listi = new ArrayList();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState ){
-        FragmentAnswerQuestionnaireBinding binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
-        // Inflate the layout for this fragment
+        binding = FragmentAnswerQuestionnaireBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
-        //radioGroup = binding.radioGroup;
-        // Set a listener to handle radio button selections
 
-        radioButtonOption1 = binding.radioButtonOption1;
-        radioButtonOption2 = binding.radioButtonOption2;
-        radioButtonOption3 = binding.radioButtonOption3;
-        radioButtonOption4 = binding.radioButtonOption4;
-        radioButtonOption5 = binding.radioButtonOption5;
+        // Get the container for the answers.
+        answerGroup = binding.contentAnswerQuestionnaire.questionAnswersContainer;
 
-        radioButtons = new ArrayList<>();
-        radioButtons.add(radioButtonOption1);
-        radioButtons.add(radioButtonOption2);
-        radioButtons.add(radioButtonOption3);
-        radioButtons.add(radioButtonOption4);
-        radioButtons.add(radioButtonOption5);
-
-
-        radioButtonOption1.setTag(1);
-        radioButtonOption2.setTag(2);
-        radioButtonOption3.setTag(3);
-        radioButtonOption4.setTag(4);
-        radioButtonOption5.setTag(5);
-        // Set a listener to handle radio button selections
-        radioButtonOption1.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Option 1 is selected
-                selectedRadioButton = radioButtonOption1;
-            }
-        });
-
-        radioButtonOption2.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Option 2 is selected
-                selectedRadioButton = radioButtonOption2;
-            }
-        });
-        radioButtonOption3.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Option 3 is selected
-                selectedRadioButton = radioButtonOption3;
-            }
-        });
-        radioButtonOption4.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Option 4 is selected
-                selectedRadioButton = radioButtonOption4;
-            }
-        });
-        radioButtonOption5.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                // Option 5 is selected
-                selectedRadioButton = radioButtonOption5;
-            }
-        });
-
-        binding.goHomeButton.setOnClickListener(v -> {
-            getParentFragmentManager().popBackStack();
-        });
-        binding.nextQuestionButton.setOnClickListener(v -> {
-            if(currentQuestionIndex < questions.size()) {
-                if(selectedRadioButton != null){
-                int radioButtonNumber = (int) selectedRadioButton.getTag();
-                listi.add(radioButtonNumber);
-                if (currentQuestionIndex < questions.size()) {
-                    Question nextQuestion = questions.get(currentQuestionIndex);
-                    if (nextQuestion != null) {
-                        currentQuestionIndex++;
-                        String questionText = nextQuestion.getQuestionString();
-                        binding.spurning.setText(questionText);
-                        for (RadioButton radioButton : radioButtons) {
-                            radioButton.setChecked(false);
-                        }
-                    } else {
-                        // Handle the error, for example:
-                        binding.spurning.setText("Spurningarnar eru búnar.");
-                        // Example: showErrorMessage(errorResponse);
-                    }
-                } else {
-                    // Handle the error, for example:
-                    binding.spurning.setText("Spurningarnar eru búnar.");
-                    // Example: showErrorMessage(errorResponse);
-                }
-                }
-            }
-            else {
-                radioButtonOption1.setVisibility(View.INVISIBLE);
-                radioButtonOption2.setVisibility(View.INVISIBLE);
-                radioButtonOption3.setVisibility(View.INVISIBLE);
-                radioButtonOption4.setVisibility(View.INVISIBLE);
-                radioButtonOption5.setVisibility(View.INVISIBLE);
-                binding.spurning.setText("Takk fyrir að svara");
-
-                waitingListRequest.setQuestionnaireAnswers(listi);
-
-                Log.d("TAG", "Questionnaire answers: " + waitingListRequest.getQuestionnaireAnswers());
-
-                waitingListService.updateWaitingListRequestByID(waitingListRequest, result ->
+        // Fetch the questions from the API.
+        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), new APICallback<List<Question>>() {
+            @Override
+            public void onComplete(ResponseWrapper<List<Question>> result)
+            {
+                if (result.getData() != null)
                 {
-                    requireActivity().runOnUiThread(new Runnable() {
+                    questions = result.getData();
+
+                    requireActivity().runOnUiThread(new Runnable()
+                    {
                         @Override
                         public void run()
                         {
-                            Bundle bundle = new Bundle();
-
-                            bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-                            bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
-                            bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
-
-                            NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
-                            navController.navigate(R.id.nav_waiting_list_request, bundle);
+                            setUpQuestion();
                         }
                     });
-                });
-            }
-
-        });
-
-        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result1 -> {
-            questions = result1.getData();
-            if (questions != null && !questions.isEmpty()) {
-                // Assuming you want to display the first question
-                Question firstQuestion = questions.get(0);
-                String questionText = firstQuestion.getQuestionString();
-
-                // Set the text using data binding
-                binding.spurning.setText(questionText);
-                takkar(firstQuestion.getNumberOfAnswers());
-                currentQuestionIndex++;
+                }
             }
         });
 
+        binding.contentAnswerQuestionnaire.buttonNextQuestion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                questionAnswered();
+            }
+        });
 
         return view;
     }
-    private void takkar(int numberOfAnswers){
 
+    /**
+     * Sets up the next question.
+     */
+    private void setUpQuestion()
+    {
+        // Remove all previous options from the screen.
+        answerGroup.removeAllViews();
+
+        currentQuestion = questions.get(currentQuestionIndex);
+
+        binding.contentAnswerQuestionnaire.questionText.setText(currentQuestion.getQuestionString());
+
+        RadioButton answer;
+
+        // Generate a RadioButton for each answer and add to the view.
+        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        {
+            answer = new RadioButton(requireActivity());
+            answer.setId(i);
+            answer.setText(String.valueOf(i));
+            answerGroup.addView(answer);
+        }
+    }
+
+    private void questionAnswered()
+    {
+        RadioButton answer;
+
+        // Check what answer is correct, and add it to the list of answers.
+        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        {
+            answer = answerGroup.findViewById(i);
+
+            if (answer.isChecked())
+            {
+                answers.add(i);
+                currentQuestionIndex++;
+
+                break;
+            }
+        }
+
+        // Check if all questions have been answered
+        if (currentQuestionIndex >= questions.size())
+        {
+            allQuestionsAnswered();
+        }
+        else
+        {
+            setUpQuestion();
+        }
+    }
+
+    /**
+     * When all questions have been answered, update the WaitingListRequest and navigate back.
+     */
+    private void allQuestionsAnswered()
+    {
+        waitingListRequest.setQuestionnaireAnswers(answers);
+
+        calculateGrade();
+
+        // Send updated WaitingListRequest to API, and navigate back.
+        waitingListService.updateWaitingListRequestByID(waitingListRequest, new APICallback<WaitingListRequest>() {
+            @Override
+            public void onComplete(ResponseWrapper<WaitingListRequest> result)
+            {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+                bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
+
+                requireActivity().runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        navController.navigate(R.id.nav_waiting_list_request, bundle);
+                    }
+                });
+            }
+        });
+    }
+
+    // Calculates the grade of the WaitingListRequest.
+    private void calculateGrade() {
+        double score = 0;
+
+        for (int i = 0; i < answers.size(); i++)
+        {
+            score += answers.get(i) * questions.get(i).getWeight();
+        }
+
+        waitingListRequest.setGrade(score);
     }
 }
