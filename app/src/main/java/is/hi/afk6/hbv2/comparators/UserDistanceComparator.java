@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.comparators;
 
 import android.location.Location;
-import android.util.Log;
 
 import java.util.Comparator;
 

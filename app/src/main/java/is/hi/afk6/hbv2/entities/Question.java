@@ -42,7 +42,7 @@ public class Question implements Parcelable
     public Question(String questionString, double weight, int numberOfAnswers) {
         this.questionString = questionString;
         this.weight = weight;
-
+        this.numberOfAnswers = numberOfAnswers;
         this.questionnaireIDs = new ArrayList<>();
     }
 
@@ -125,6 +125,19 @@ public class Question implements Parcelable
 
     public void setAnswer(Integer answer) {
         this.answer = answer;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Question{" +
+                "id=" + id +
+                ", questionString='" + questionString + '\'' +
+                ", weight=" + weight +
+                ", questionnaireIDs=" + questionnaireIDs +
+                ", numberOfAnswers=" + numberOfAnswers +
+                ", answer=" + answer +
+                '}';
     }
 
     @Override

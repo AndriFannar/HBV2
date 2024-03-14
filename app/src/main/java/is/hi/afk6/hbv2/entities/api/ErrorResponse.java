@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.entities.api;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -55,6 +57,7 @@ public class ErrorResponse
         this.errorDetails.put(error, detail);
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "ErrorResponse{" +

@@ -103,6 +103,17 @@ public class Questionnaire implements Parcelable
         this.displayOnForm = displayOnForm;
     }
 
+    @NonNull
+    @Override
+    public String toString() {
+        return "Questionnaire{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", questionIDs=" + questionIDs +
+                ", displayOnForm=" + displayOnForm +
+                '}';
+    }
+
     @Override
     public int describeContents() {
         return 0;
