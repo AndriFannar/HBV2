@@ -39,4 +39,13 @@ public enum UserRole
     {
         return this.elevatedUser;
     }
+
+    public static UserRole fromDisplayString(String displayString) {
+        for (UserRole role : UserRole.values()) {
+            if (role.displayString.equals(displayString)) {
+                return role;
+            }
+        }
+        return null;
+    }
 }
