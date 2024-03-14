@@ -9,14 +9,11 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -26,7 +23,7 @@ import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.dtos.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.UserService;
@@ -168,7 +165,6 @@ public class UserServiceImplementation implements UserService
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                ;
                 getUsersByRole(role, includeElevated, new APICallback<List<User>>() {
                     @Override
                     public void onComplete(ResponseWrapper<List<User>> result)
@@ -224,13 +220,13 @@ public class UserServiceImplementation implements UserService
                 }
                 else
                 {
-                    Log.e("UserServiceImplementation", "Could not find location for user: " + user.getName());
+                    Log.e("GetLocationFromAddress", "Could not find location for user: " + user.getName());
                 }
             }
         }
         catch (IOException e)
         {
-            e.printStackTrace();
+            Log.e("GetLocationFromAddress", "Error getting location from address: " + e);
         }
     }
 
@@ -258,7 +254,7 @@ public class UserServiceImplementation implements UserService
                     }
                     else
                     {
-                        callback.onComplete(new ResponseWrapper<User>(updatedUser));
+                        callback.onComplete(new ResponseWrapper<>(updatedUser));
                     }
                 }
                 catch (Exception e)

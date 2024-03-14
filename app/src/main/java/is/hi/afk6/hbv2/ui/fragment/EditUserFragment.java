@@ -2,6 +2,7 @@ package is.hi.afk6.hbv2.ui.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,11 +37,41 @@ public class EditUserFragment extends Fragment {
     private FragmentEditUserBinding binding;
     private User editedUser;
     private final List<String> role = Arrays.asList("Notandi", "Starfsfólk", "Sjúkraþjálfari", "Kerfisstjóri");
+    private Callbacks callbacks;
+
+    // Callback for when the User has been updated.
+    public interface Callbacks
+    {
+        void onUserUpdated(User user);
+    }
 
     @Override
-    public  void onCreate(@Nullable Bundle saveInstanceState){
+    public void onAttach(@NonNull Context context)
+    {
+        super.onAttach(context);
+
+        // Make sure the container activity has implemented the callback interface.
+        if (!(context instanceof Callbacks))
+        {
+            throw new ClassCastException(context.toString() + " must implement EditUserFragment.Callbacks");
+        }
+
+        callbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+
+        callbacks = null;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
+        // Get arguments.
         if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
@@ -57,12 +88,14 @@ public class EditUserFragment extends Fragment {
         View view = binding.getRoot();
 
         edit_setup();
-        if(editedUser.getName().equals(loggedInUser.getName())){
+        if(editedUser.getName().equals(loggedInUser.getName()))
+        {
             inputUserInEdit(loggedInUser);
             removeRoleSpinner();
             binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(loggedInUser));
-        } else {
+        } else
+        {
             inputUserInEdit(editedUser);
             onlyVisibleEditText();
             setUpRole();
@@ -95,12 +128,14 @@ public class EditUserFragment extends Fragment {
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
-                } else {
-                    Log.d("User updated", "User updated successfully");
+                } else
+                {
+                    // Execute the callback.
+                    callbacks.onUserUpdated(loggedInUser);
                 }
             });
         });
-    }
+    }   
 
     private void changeStaffRole(){
         String desiredDisplayString = role.get(binding.staffRoleSpinner.getSelectedItemPosition());

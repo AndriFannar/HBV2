@@ -1,4 +1,6 @@
-package is.hi.afk6.hbv2.entities.api;
+package is.hi.afk6.hbv2.callbacks;
+
+import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 
 /**
  * Interface for API Callbacks.
