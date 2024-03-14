@@ -62,6 +62,7 @@ public class APIServiceImplementation implements APIService
             urlExtension += "?" + object;
         }
 
+        Log.d("API", "Sending request to API: " + requestMethod + " " + API_URL + urlExtension);
         Log.d("API", "Sending object to API: " + object);
 
         URL url = new URL(API_URL + urlExtension);

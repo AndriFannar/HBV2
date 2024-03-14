@@ -15,6 +15,7 @@ public interface APIService
      * Performs a get request with the specified URL.
      *
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
+     * @param requestParam String representation of object to send with the request.
      * @return             JSONObject returned from API.
      */
     JSONObject getRequest(String urlExtension, String requestParam);

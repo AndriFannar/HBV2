@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -107,8 +108,38 @@ public class WaitingListServiceImplementation implements WaitingListService
     }
 
     @Override
-    public void getWaitingListRequestByStaff(User staff, APICallback<List<WaitingListRequest>> callback) {
+    public void getWaitingListRequestByStaff(User staff, APICallback<List<WaitingListRequest>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    // Send JSON data to API, wait for a return.
+                    JSONObject returnJson = apiService.getRequest(API_WAITING_LIST_LOCATION + "getByStaffID/" + staff.getId(), "");
 
+                    if (returnJson != null && returnJson.length() > 0)
+                    {
+                        Gson gson = new GsonBuilder()
+                                .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                                .create();
+
+                        // If return is not empty, convert from JSON to ErrorResponse.
+                        Type responseType = new TypeToken<ResponseWrapper<List<WaitingListRequest>>>() {}.getType();
+
+                        callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    }
+                    else
+                    {
+                        callback.onComplete(new ResponseWrapper<>(new ArrayList<>()));
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override

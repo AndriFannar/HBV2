@@ -60,7 +60,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_users_overview, R.id.nav_edit_user)
+                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_edit_user)
                     .setOpenableLayout(drawer)
                     .build();
         }
@@ -148,7 +148,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         }
         else if (loggedInUser.getRole() == UserRole.ADMIN)
         {
-            navController.navigate(R.id.nav_users_overview, bundle);
+            navController.navigate(R.id.nav_waiting_list_overview, bundle);
         }
         else
         {

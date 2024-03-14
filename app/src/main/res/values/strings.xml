@@ -15,7 +15,8 @@
     <string name="signup_email">Tölvupóstur</string>
     <string name="signup_password">Lykilorð</string>
 
-    <string name="user_homepage_test">Heimaskjár notanda</string>
+    <!-- UserFragment -->
+    <string name="user_view">Upplýsingar notanda</string>
     <string name="user_name">"Notandi: "</string>
     <string name="name">Nafn</string>
     <string name="phoneNumber">"Símanúmer: "</string>
@@ -66,5 +67,8 @@
 
     <string name="user_overview_header_text">Yfirlit notendur</string>
     <string name="user_overview_button_text">Uppfæra</string>
+
+    <!-- WaitingListRequestOverview -->
+    <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
 
 </resources>
