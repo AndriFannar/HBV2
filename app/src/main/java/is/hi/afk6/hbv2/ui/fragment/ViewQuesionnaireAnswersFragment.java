@@ -13,49 +13,30 @@ import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
-import is.hi.afk6.hbv2.services.QuestionService;
-import is.hi.afk6.hbv2.services.UserService;
-import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
-import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import java.util.ArrayList;
-import is.hi.afk6.hbv2.entities.Question;
-import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.networking.APIService;
-import is.hi.afk6.hbv2.services.QuestionnaireService;
 import is.hi.afk6.hbv2.services.WaitingListService;
-import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class ViewQuesionnaireAnswersFragment extends Fragment {
     private FragmentViewQuesionnaireAnswersBinding binding;
     private User selectedUser;
-    private Questionnaire questionnaire;
     private WaitingListRequest waitingListRequest;
-    private List<Question> questions;
     private List<Integer> answers;
-    private UserService userService;
-    private QuestionnaireService questionnaireService;
     private WaitingListService waitingListService;
-    private QuestionService questionService;
-    private static final String TAG = "ViewQuesionnaireAnswersFragment";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             selectedUser = getArguments().getParcelable(getString(R.string.view_questionnaire_answers));
         }
-
         APIService apiService = new APIServiceImplementation();
 
-        userService = new UserServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-
         answers = new ArrayList<>();
     }
 
@@ -70,6 +51,12 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         return view;
     }
 
+    /**
+     * Retrieves a waiting list request by its ID from the waitingListService and updates the UI
+     * with the details of the request, including questionnaire answers.
+     *
+     * @param requestId The ID of the waiting list request to retrieve.
+     */
     private void getRequest(Long requestId) {
         controlView(true, "");
         waitingListService.getWaitingListRequestByID(requestId, new APICallback<WaitingListRequest>() {
@@ -104,26 +91,34 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         });
         }
 
+    /**
+     * Creates a TextView for displaying a questionnaire question.
+     *
+     * @param questionNr The number of the question.
+     * @return A TextView configured to display the question number.
+     */
     private TextView createQuestionTextView(int questionNr) {
-        TextView questionAnswer = new TextView(requireContext());
-        questionAnswer.setText(String.format("Spurning %s: ", questionNr));
+        TextView question = new TextView(requireContext());
+        question.setText(String.format("Spurning %s: ", questionNr));
 
-        // Set margins (in pixels) for top and bottom
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.display_questionnaire_answers);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, marginInPixels, 0, marginInPixels);
-
-        // Apply weight to the TextView
         params.weight = 1.0f;
+        question.setLayoutParams(params);
 
-        // Set the params to your TextView
-        questionAnswer.setLayoutParams(params);
-        return questionAnswer;
+        return question;
     }
 
+    /**
+     * Creates a TextView for displaying a questionnaire answer.
+     *
+     * @param answer The answer value to display.
+     * @return A TextView configured to display the provided answer.
+     */
     private TextView createAnswerTextView(int answer){
         TextView questionAnswer = new TextView(requireContext());
         questionAnswer.setText(String.valueOf(answer));
@@ -135,16 +130,17 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
         params.setMargins(0, marginInPixels, 0, marginInPixels);
-
-        // Apply weight to the TextView
         params.weight = 1.0f;
         questionAnswer.setLayoutParams(params);
         return questionAnswer;
     }
 
-
+    /**
+     * Updates the UI with details from the provided WaitingListRequest.
+     *
+     * @param waitingListRequest The WaitingListRequest containing the data to update the UI.
+     */
     private void updateUIWithWaitingListRequest(WaitingListRequest waitingListRequest) {
-        // Update UI elements with waitingListRequest data
         if (binding != null) {
             float grade = (float) waitingListRequest.getGrade();
             binding.selectedUserName.setText(selectedUser.getName());
@@ -177,7 +173,11 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Creates a LinearLayout container for displaying a single answer.
+     *
+     * @return A LinearLayout configured to contain a single answer.
+     */
     private LinearLayout createAnswerContainer(){
         LinearLayout answerContainer = new LinearLayout(requireContext());
         answerContainer.setOrientation(LinearLayout.HORIZONTAL);
