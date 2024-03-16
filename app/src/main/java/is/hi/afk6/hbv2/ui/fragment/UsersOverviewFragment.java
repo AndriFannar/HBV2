@@ -61,7 +61,7 @@ public class UsersOverviewFragment extends Fragment {
      * Gets all the users that uses the app and displays them
      */
     public void getUsers(){
-        controlView(true, "");
+        //controlView(true, "");
         userService.getAllUsers(new APICallback<List<User>>() {
             @Override
             public void onComplete(ResponseWrapper<List<User>> result) {
