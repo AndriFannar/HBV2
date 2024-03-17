@@ -123,7 +123,6 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         TextView questionAnswer = new TextView(requireContext());
         questionAnswer.setText(String.valueOf(answer));
 
-        // Set margins (in pixels) for top and bottom
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.display_questionnaire_answers);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -136,15 +135,18 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     }
 
     /**
-     * Updates the UI with details from the provided WaitingListRequest.
+     * Updates the UI elements with the information from the provided WaitingListRequest object.
+     * If the provided Binding object is not null, this method sets the name of the selected user,
+     * the user's grade, and the description text based on the information in the WaitingListRequest object.
      *
-     * @param waitingListRequest The WaitingListRequest containing the data to update the UI.
+     * @param waitingListRequest The WaitingListRequest object containing the information to be displayed.
      */
     private void updateUIWithWaitingListRequest(WaitingListRequest waitingListRequest) {
         if (binding != null) {
             float grade = (float) waitingListRequest.getGrade();
             binding.selectedUserName.setText(selectedUser.getName());
-            binding.selectedUserGrade.setText(String.valueOf(grade));
+            binding.selectedUserGrade.setText(String.format(" - %s stig", String.valueOf((int) grade)));
+            binding.descriptionText.setText(waitingListRequest.getDescription());
         }
     }
 
