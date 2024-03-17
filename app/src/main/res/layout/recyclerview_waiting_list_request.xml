@@ -1,63 +1,60 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/waiting_list_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/margin_medium"
     android:layout_marginRight="@dimen/margin_medium"
-    android:gravity="center_vertical">
+    android:layout_marginTop="@dimen/margin_medium"
+    android:layout_marginBottom="@dimen/margin_medium"
+    android:orientation="vertical"
+    android:gravity="center_vertical"
+    android:background="@color/pale_yellow">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/waiting_list_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="@dimen/margin_medium"
+            android:text="@string/waiting_list_info"/>
 
-            <TextView
-                android:id="@+id/waiting_list_description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="@dimen/margin_medium"
-                android:text="@string/waiting_list_info"/>
+        <TextView
+            android:id="@+id/waiting_list_questionnaire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="@dimen/margin_medium"
+            android:text="@string/waiting_list_info"/>
 
-            <TextView
-                android:id="@+id/waiting_list_questionnaire"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="@dimen/margin_medium"
-                android:text="@string/waiting_list_info"/>
+    </LinearLayout>
 
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/waiting_list_overview_detail"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/waiting_list_overview_detail"
-            android:visibility="gone"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/waiting_list_priority"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="@dimen/margin_medium"
+            android:text="@string/waiting_list_info"/>
 
-            <TextView
-                android:id="@+id/waiting_list_priority"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="@dimen/margin_medium"
-                android:text="@string/waiting_list_info"/>
-
-            <TextView
-                android:id="@+id/waiting_list_state"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="@dimen/margin_medium"
-                android:text="@string/waiting_list_info"/>
-
-        </LinearLayout>
-
+        <TextView
+            android:id="@+id/waiting_list_state"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_margin="@dimen/margin_medium"
+            android:text="@string/waiting_list_info"/>
 
     </LinearLayout>
 
 
-</FrameLayout>
+</LinearLayout>

@@ -1,5 +1,6 @@
 package is.hi.afk6.hbv2.adapters;
 
+import android.graphics.Color;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -83,8 +84,13 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
             }
         });
 
-        binding.waitingListDescription.setText(waitingListRequests.get(position).getDescription());
-        binding.waitingListQuestionnaire.setText(waitingListRequests.get(position).getDateOfRequest().toString());
+        WaitingListRequest current = waitingListRequests.get(holder.getAdapterPosition());
+
+        if (current.isStatus())
+            binding.waitingListBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
+
+        binding.waitingListDescription.setText(current.getDescription());
+        binding.waitingListQuestionnaire.setText(current.getDateOfRequest().toString());
     }
 
     @Override

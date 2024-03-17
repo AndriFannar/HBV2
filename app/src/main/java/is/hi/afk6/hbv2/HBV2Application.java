@@ -42,6 +42,15 @@ public class HBV2Application extends Application
     }
 
     /**
+     * Get the executorService.
+     *
+     * @return Application's ExecutorService.
+     */
+    public ExecutorService getExecutorService() {
+        return this.executorService;
+    }
+
+    /**
      * Get an executor to run asynchronous tasks.
      *
      * @return Executor to run Runnable asynchronous tasks.
