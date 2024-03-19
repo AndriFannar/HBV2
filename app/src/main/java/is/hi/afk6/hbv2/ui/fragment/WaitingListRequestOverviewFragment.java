@@ -18,6 +18,7 @@ import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.adapters.WaitingListRequestAdapter;
 import is.hi.afk6.hbv2.callbacks.APICallback;
+import is.hi.afk6.hbv2.callbacks.WaitingListOverviewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentWaitingListRequestOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
@@ -34,7 +35,7 @@ import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
  * @since 14/03/2024
  * @version 1.0
  */
-public class WaitingListRequestOverviewFragment extends Fragment
+public class WaitingListRequestOverviewFragment extends Fragment implements WaitingListOverviewCallback
 {
     private FragmentWaitingListRequestOverviewBinding binding;
     private User loggedInUser;
@@ -72,6 +73,7 @@ public class WaitingListRequestOverviewFragment extends Fragment
      */
     private void populateList()
     {
+        WaitingListRequestOverviewFragment that = this;
         waitingListService.getWaitingListRequestByStaff(loggedInUser, new APICallback<List<WaitingListRequest>>()
         {
             @Override
@@ -79,14 +81,12 @@ public class WaitingListRequestOverviewFragment extends Fragment
             {
                 if (result.getData() != null)
                 {
-                    Log.d("WaitingListRequestOverviewFragment", "Populating list with " + result.getData().size() + " items.");
                     requireActivity().runOnUiThread(new Runnable()
                     {
                         @Override
                         public void run()
                         {
-                            Log.d("WaitingListRequestOverviewFragment", "Populating list with " + result.getData().size() + " items.");
-                            WaitingListRequestAdapter adapter = new WaitingListRequestAdapter(result.getData());
+                            WaitingListRequestAdapter adapter = new WaitingListRequestAdapter(result.getData(), that);
 
                             binding.requestOverviewRecyclerView.setAdapter(adapter);
                         }
@@ -108,5 +108,10 @@ public class WaitingListRequestOverviewFragment extends Fragment
 
             }
         });
+    }
+
+    @Override
+    public void onWaitingListRequestClicked(int position) {
+        Log.d("WaitingListRequestOverviewFragment", "WaitingListRequest clicked at position " + position);
     }
 }

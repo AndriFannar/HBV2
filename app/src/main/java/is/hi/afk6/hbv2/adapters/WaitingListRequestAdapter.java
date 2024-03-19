@@ -11,9 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.callbacks.WaitingListOverviewCallback;
 import is.hi.afk6.hbv2.databinding.RecyclerviewWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
@@ -28,6 +30,8 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
 {
     // WaitingListRequests to display
     private List<WaitingListRequest> waitingListRequests;
+    private RecyclerviewWaitingListRequestBinding binding;
+    private WaitingListOverviewCallback callback;
 
     private int expandedPos = -1;
 
@@ -53,9 +57,10 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
      *
      * @param waitingListRequests WaitingListRequests to display.
      */
-    public WaitingListRequestAdapter(List<WaitingListRequest> waitingListRequests)
+    public WaitingListRequestAdapter(List<WaitingListRequest> waitingListRequests, WaitingListOverviewCallback callback)
     {
         this.waitingListRequests = waitingListRequests;
+        this.callback = callback;
     }
 
     @NonNull
@@ -70,8 +75,9 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position)
     {
-        RecyclerviewWaitingListRequestBinding binding = holder.getBinding();
+        binding = holder.getBinding();
 
+        // Extend or collapse the item when clicked.
         boolean isExpanded = position == expandedPos;
         binding.waitingListOverviewDetail.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
         holder.itemView.setActivated(isExpanded);
@@ -84,13 +90,34 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
             }
         });
 
-        WaitingListRequest current = waitingListRequests.get(holder.getAdapterPosition());
+        setView(waitingListRequests.get(holder.getAdapterPosition()));
 
+        binding.acceptWaitingListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                callback.onWaitingListRequestClicked(holder.getAdapterPosition());
+            }
+        });
+    }
+
+    private void setView(WaitingListRequest current)
+    {
         if (current.isStatus())
+        {
             binding.waitingListBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
+            binding.acceptWaitingListButton.setVisibility(View.GONE);
+        }
 
-        binding.waitingListDescription.setText(current.getPatient().getName());
-        binding.waitingListQuestionnaire.setText(current.getDescription());
+        binding.waitingListPatient.setText(current.getPatient().getName().split(" ")[0]);
+        binding.waitingListGrade.setText(String.valueOf(current.getGrade()));
+
+        binding.waitingListQuestionnaire.setText(current.getQuestionnaire().getName());
+
+        binding.waitingListDescription.setText(current.getDescription());
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        binding.waitingListDate.setText(current.getDateOfRequest().format(formatter));
     }
 
     @Override
