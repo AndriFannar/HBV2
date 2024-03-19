@@ -89,8 +89,8 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
         if (current.isStatus())
             binding.waitingListBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
 
-        binding.waitingListDescription.setText(current.getDescription());
-        binding.waitingListQuestionnaire.setText(current.getDateOfRequest().toString());
+        binding.waitingListDescription.setText(current.getPatient().getName());
+        binding.waitingListQuestionnaire.setText(current.getDescription());
     }
 
     @Override

@@ -95,4 +95,18 @@ public class WaitingListRequestOverviewFragment extends Fragment
             }
         });
     }
+
+    public void fetchDataLinear()
+    {
+        waitingListService.getWaitingListRequestByStaff(loggedInUser, new APICallback<List<WaitingListRequest>>()
+        {
+            @Override
+            public void onComplete(ResponseWrapper<List<WaitingListRequest>> result)
+            {
+                List<WaitingListRequest> requests = result.getData();
+
+
+            }
+        });
+    }
 }

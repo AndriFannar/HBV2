@@ -130,8 +130,12 @@ public class WaitingListRequestFragment extends Fragment
 
     private void fetchData()
     {
+        staff = waitingListRequest.getStaff();
+        questionnaire = waitingListRequest.getQuestionnaire();
+        setUpView();
+
         // Get the staff and questionnaire for the WaitingListRequest.
-        userService.getUserByID(waitingListRequest.getStaffID(), new APICallback<User>()
+        /*userService.getUserByID(waitingListRequest.getStaffID(), new APICallback<User>()
         {
             @Override
             public void onComplete(ResponseWrapper<User> result)
@@ -157,7 +161,7 @@ public class WaitingListRequestFragment extends Fragment
                     }
                 });
             }
-        });
+        });*/
     }
 
     /**
@@ -172,7 +176,7 @@ public class WaitingListRequestFragment extends Fragment
 
         binding.waitingListStatus.setText(waitingListRequest.isStatus() ? getString(R.string.waiting_list_request_accepted) : getString(R.string.waiting_list_request_pending));
 
-        if (waitingListRequest.getQuestionnaireID() == null || questionnaire.getQuestionIDs().isEmpty())
+        if (waitingListRequest.getQuestionnaire() == null || questionnaire.getQuestions().isEmpty())
             binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
         else if (!waitingListRequest.getQuestionnaireAnswers().isEmpty())
         {
