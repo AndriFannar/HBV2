@@ -1,6 +1,10 @@
 package is.hi.afk6.hbv2.callbacks;
 
+import is.hi.afk6.hbv2.entities.WaitingListRequest;
+
 public interface WaitingListOverviewCallback
 {
-    void onWaitingListRequestClicked(int position);
+    void onViewWaitingListRequestClicked(WaitingListRequest waitingListRequest);
+
+    void onAcceptWaitingListRequestClicked(WaitingListRequest waitingListRequest);
 }

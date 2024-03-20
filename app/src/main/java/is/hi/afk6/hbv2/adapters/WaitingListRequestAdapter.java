@@ -96,7 +96,19 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
             @Override
             public void onClick(View v)
             {
-                callback.onWaitingListRequestClicked(holder.getAdapterPosition());
+                WaitingListRequest clicked = waitingListRequests.get(holder.getAdapterPosition());
+                callback.onAcceptWaitingListRequestClicked(clicked);
+                clicked.setStatus(true);
+
+                setView(clicked);
+            }
+        });
+
+        binding.viewWaitingListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                callback.onViewWaitingListRequestClicked(waitingListRequests.get(holder.getAdapterPosition()));
             }
         });
     }

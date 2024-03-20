@@ -111,7 +111,21 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     }
 
     @Override
-    public void onWaitingListRequestClicked(int position) {
-        Log.d("WaitingListRequestOverviewFragment", "WaitingListRequest clicked at position " + position);
+    public void onAcceptWaitingListRequestClicked(WaitingListRequest request)
+    {
+        waitingListService.updateWaitingListRequestStatus(request.getId(), true, new APICallback<WaitingListRequest>()
+        {
+            @Override
+            public void onComplete(ResponseWrapper<WaitingListRequest> result)
+            {
+                Log.d("WaitingListRequestOverviewFragment", "Request accepted: " + result.getData());
+            }
+        });
+    }
+
+    @Override
+    public void onViewWaitingListRequestClicked(WaitingListRequest request)
+    {
+        Log.d("WaitingListRequestOverviewFragment", "Viewing request: " + request);
     }
 }

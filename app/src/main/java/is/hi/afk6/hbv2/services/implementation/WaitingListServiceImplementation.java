@@ -181,8 +181,21 @@ public class WaitingListServiceImplementation implements WaitingListService
     }
 
     @Override
-    public void updateWaitingListRequestStatus(Long requestID, boolean newStatus, APICallback<WaitingListRequest> callback) {
-
+    public void updateWaitingListRequestStatus(Long requestID, boolean newStatus, APICallback<WaitingListRequest> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                if (newStatus)
+                {
+                    apiService.putRequest(API_WAITING_LIST_LOCATION + "accept/" + requestID, "");
+                }
+                else
+                {
+                    apiService.putRequest(API_WAITING_LIST_LOCATION + "reject/" + requestID, "");
+                }
+            }
+        });
     }
 
     @Override
