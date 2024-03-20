@@ -9,6 +9,8 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentViewQuesionnaireAnswersBinding;
 import java.util.List;
 import is.hi.afk6.hbv2.HBV2Application;
+import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -18,7 +20,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.networking.APIService;
+import is.hi.afk6.hbv2.services.QuestionService;
+import is.hi.afk6.hbv2.services.QuestionnaireService;
 import is.hi.afk6.hbv2.services.WaitingListService;
+import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
+import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class ViewQuesionnaireAnswersFragment extends Fragment {
@@ -27,6 +33,11 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     private WaitingListRequest waitingListRequest;
     private List<Integer> answers;
     private WaitingListService waitingListService;
+    private QuestionnaireService questionnaireService;
+    private QuestionService questionService;
+    private Questionnaire questionnaire;
+    private List<Question> questions;
+    private static final String TAG = "ViewQuesionnaireAnswersFragment";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -36,8 +47,12 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         }
         APIService apiService = new APIServiceImplementation();
 
+        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+        questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
+        questions = new ArrayList<>();
         answers = new ArrayList<>();
+
     }
 
     @Override
@@ -69,37 +84,53 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
                             waitingListRequest = result.getData();
                             updateUIWithWaitingListRequest(waitingListRequest);
                             answers = waitingListRequest.getQuestionnaireAnswers();
-                            int questionNr = 1;
-                            for (Integer answer : answers) {
-                                LinearLayout answerContainer = createAnswerContainer();
-                                TextView question = createQuestionTextView(questionNr);
-                                questionNr++;
-                                TextView questionAnswer = createAnswerTextView(answer);
-                                answerContainer.addView(question);
-                                answerContainer.addView(questionAnswer);
-                                binding.answersContainer.addView(answerContainer);
-                            }
+                            questionnaireService.getQuestionnaireByID(waitingListRequest.getQuestionnaireID(), result1 -> {
+                                questionnaire = result1.getData();
+
+                                if (questionnaire != null) {
+                                    questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result2 -> {
+                                        questions = result2.getData();
+
+                                        if (questions != null && answers.size() == questions.size()) {
+                                            requireActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+
+                                                    for (int i = 0; i < questions.size(); i++) {
+                                                        LinearLayout answersContainer = createAnswerContainer();
+                                                        TextView question = createQuestionTextView(questions.get(i));
+                                                        TextView answer = createAnswerTextView(answers.get(i));
+                                                        answersContainer.addView(question);
+                                                        answersContainer.addView(answer);
+                                                        binding.answersContainer.addView(answersContainer);
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
                             controlView(false, "");
                         }
-                     else {
-                        String error = result.getErrorResponse().getErrorDetails().get("answer");
-                        controlView(false, error);
+                        else {
+                            String error = result.getErrorResponse().getErrorDetails().get("answer");
+                            controlView(false, error);
                         }
                     }
                 });
             }
         });
-        }
+    }
 
     /**
      * Creates a TextView for displaying a questionnaire question.
      *
-     * @param questionNr The number of the question.
+     * @param question The number of the question.
      * @return A TextView configured to display the question number.
      */
-    private TextView createQuestionTextView(int questionNr) {
-        TextView question = new TextView(requireContext());
-        question.setText(String.format("Spurning %s: ", questionNr));
+    private TextView createQuestionTextView(Question question) {
+        TextView questionView = new TextView(requireContext());
+        questionView.setText(String.format(question.getQuestionString()));
 
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.display_questionnaire_answers);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -108,9 +139,9 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         );
         params.setMargins(0, marginInPixels, 0, marginInPixels);
         params.weight = 1.0f;
-        question.setLayoutParams(params);
+        questionView.setLayoutParams(params);
 
-        return question;
+        return questionView;
     }
 
     /**
