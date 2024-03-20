@@ -18,7 +18,7 @@
 
         <TextView
             android:id="@+id/signup_text"
-            style="@style/Theme.HBV2.TextViewStyle"
+            style="@style/Theme.HBV2.HeaderTextStyle"
             android:text="@string/signup_text"
             android:visibility="visible" />
 

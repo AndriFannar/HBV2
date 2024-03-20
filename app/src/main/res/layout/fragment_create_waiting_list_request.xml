@@ -13,7 +13,7 @@
 
         <TextView
             android:id="@+id/register_waiting_list"
-            style="@style/Theme.HBV2.TextViewStyle"
+            style="@style/Theme.HBV2.HeaderTextStyle"
             android:text="@string/register_waiting_list" />
 
         <LinearLayout
