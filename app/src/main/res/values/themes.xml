@@ -22,4 +22,83 @@
     <style name="Theme.HBV2.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="Theme.HBV2.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Theme.HBV2.HeaderTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:layout_margin">@dimen/padding</item>
+    </style>
+
+    <style name="Theme.HBV2.TextViewStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
+    </style>
+
+    <style name="Theme.HBV2.InputTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/touch_height</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:ems">10</item>
+        <item name="android:padding">@dimen/padding</item>
+    </style>
+
+    <style name="Theme.HBV2.InputTextAreaStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
+        <item name="android:inputType">textMultiLine</item>
+        <item name="android:overScrollMode">always</item>
+        <item name="android:lines">6</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:ems">10</item>
+        <item name="android:padding">@dimen/padding</item>
+    </style>
+
+    <style name="Theme.HBV2.ErrorTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/error_red</item>
+        <item name="android:layout_marginTop">1dp</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:visibility">invisible</item>
+    </style>
+
+    <style name="Theme.HBV2.SpinnerStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/touch_height</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
+        <item name="android:background">@drawable/spinner_background</item>
+        <item name="android:layout_marginBottom">@dimen/vertical_margin</item>
+    </style>
+
+    <style name="Theme.HBV2.ButtonStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_background</item>
+        <item name="android:elevation">@dimen/padding</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="Theme.HBV2.FragmentLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
+        <item name="android:layout_marginLeft">@dimen/fragment_margin_side</item>
+        <item name="android:layout_marginRight">@dimen/fragment_margin_side</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
 </resources>
