@@ -50,20 +50,12 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         if (loggedInUser.getRole() == UserRole.USER) {
             binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
 
-            if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0) {
-                mAppBarConfiguration = new AppBarConfiguration.Builder(
-                        R.id.nav_waiting_list_request,R.id.nav_user_fragment, R.id.nav_edit_user)
-                        .setOpenableLayout(drawer)
-                        .build();
+            mAppBarConfiguration = new AppBarConfiguration.Builder(
+                    R.id.nav_create_waiting_list_request, R.id.nav_waiting_list_request, R.id.nav_user_fragment)
+                    .setOpenableLayout(drawer)
+                    .build();
 
-                binding.mainNav.getMenu().findItem(R.id.nav_edit_user).setVisible(false);
-
-            } else {
-                mAppBarConfiguration = new AppBarConfiguration.Builder(
-                        R.id.nav_create_waiting_list_request, R.id.nav_edit_user)
-                        .setOpenableLayout(drawer)
-                        .build();
-            }
+            binding.mainNav.getMenu().findItem(R.id.nav_edit_user).setVisible(false);
         } else if (loggedInUser.getRole() == UserRole.ADMIN) {
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
 
@@ -138,15 +130,11 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
         if (loggedInUser.getRole() == UserRole.USER) {
-            navController.navigate(R.id.nav_user_fragment, bundle);
-
-            /**
-             *  if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0) {
-             *                 navController.navigate(R.id.nav_waiting_list_request, bundle);
-             *             } else {
-             *                 navController.navigate(R.id.nav_create_waiting_list_request, bundle);
-             *             }
-             */
+            if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0) {
+                navController.navigate(R.id.nav_waiting_list_request, bundle);
+            } else {
+                navController.navigate(R.id.nav_create_waiting_list_request, bundle);
+            }
 
 
         } else if (loggedInUser.getRole() == UserRole.ADMIN) {

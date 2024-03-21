@@ -56,7 +56,7 @@ public class EditUserFragment extends Fragment {
         // Make sure the container activity has implemented the callback interface.
         if (!(context instanceof Callbacks))
         {
-            throw new ClassCastException(context.toString() + " must implement EditUserFragment.Callbacks");
+            throw new ClassCastException(context + " must implement EditUserFragment.Callbacks");
         }
 
         callbacks = (Callbacks) context;
@@ -133,9 +133,8 @@ public class EditUserFragment extends Fragment {
                     errorResponse_input(errorResponse);
                 } else
                 {
-                    changeMenuBar();
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);;
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
                     navController.navigate(R.id.nav_user_fragment, bundle);
@@ -257,20 +256,6 @@ public class EditUserFragment extends Fragment {
             });
         });
     }
-
-    /**
-     * AI help with code
-     */
-    private void changeMenuBar(){
-        NavigationView navigationView = requireActivity().findViewById(R.id.main_nav);
-
-        MenuItem userFragmentMenuItem = navigationView.getMenu().findItem(R.id.nav_edit_user);
-        userFragmentMenuItem.setVisible(false);
-
-        MenuItem editUserMenuItem = navigationView.getMenu().findItem(R.id.nav_user_fragment);
-        editUserMenuItem.setVisible(true);
-    }
-
 
 
     /**

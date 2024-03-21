@@ -53,15 +53,6 @@ public class UserFragment extends Fragment
     }
 
     private void changeFragment(){
-        NavigationView navigationView = requireActivity().findViewById(R.id.main_nav);
-
-        // Hide nav_user_fragment
-        MenuItem userFragmentMenuItem = navigationView.getMenu().findItem(R.id.nav_user_fragment);
-        userFragmentMenuItem.setVisible(false);
-
-        // Show nav_edit_user
-        MenuItem editUserMenuItem = navigationView.getMenu().findItem(R.id.nav_edit_user);
-        editUserMenuItem.setVisible(true);
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
         bundle.putParcelable(getString(R.string.edited_user), loggedInUser);
