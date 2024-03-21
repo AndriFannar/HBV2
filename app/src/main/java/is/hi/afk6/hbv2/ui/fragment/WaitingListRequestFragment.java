@@ -1,6 +1,5 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
