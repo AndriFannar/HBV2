@@ -107,7 +107,10 @@ public class LoginActivity extends AppCompatActivity
                         {
                             // Show error if User was not found.
                             String error = result.getErrorResponse().getErrorDetails().get("login");
-                            Log.d("Error while logging in.", "" + result.getErrorResponse());
+
+                            // If there is no error under login from the API, an API error has occurred.
+                            if (error == null) error = getString(R.string.general_error);
+
                             controlView(false, error);
                         }
                     }

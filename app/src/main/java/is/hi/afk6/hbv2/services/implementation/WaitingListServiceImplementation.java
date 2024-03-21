@@ -19,6 +19,7 @@ import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.callbacks.APICallback;
+import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.serializers.LocalDateSerializer;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
@@ -58,10 +59,13 @@ public class WaitingListServiceImplementation implements WaitingListService
                 // Convert SignUp info to String.
                 String requestJson = gson.toJson(request);
 
-                Log.d("Request", requestJson);
-
                 // Send info to API and get a return object.
-                JSONObject returnJson = apiService.postRequest(API_WAITING_LIST_LOCATION + "create", requestJson);
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_WAITING_LIST_LOCATION + "create",
+                        Request.POST,
+                        null,
+                        requestJson
+                );
 
                 if (returnJson != null)
                 {
@@ -86,7 +90,12 @@ public class WaitingListServiceImplementation implements WaitingListService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest(API_WAITING_LIST_LOCATION + "view/" + requestID, "");
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_WAITING_LIST_LOCATION + "view/" + requestID,
+                        Request.GET,
+                        null,
+                        ""
+                );
 
                 if (returnJson != null)
                 {
@@ -116,7 +125,12 @@ public class WaitingListServiceImplementation implements WaitingListService
             {
                 try {
                     // Send JSON data to API, wait for a return.
-                    JSONObject returnJson = apiService.getRequest(API_WAITING_LIST_LOCATION + "getByStaffID/" + staff.getId(), "");
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_WAITING_LIST_LOCATION + "getByStaffID/" + staff.getId(),
+                            Request.GET,
+                            null,
+                            ""
+                    );
 
                     if (returnJson != null && returnJson.length() > 0)
                     {
@@ -158,7 +172,12 @@ public class WaitingListServiceImplementation implements WaitingListService
                     String requestJson = gson.toJson(updatedRequest);
 
                     // Send JSON data to API, wait for a return.
-                    JSONObject returnJson = apiService.putRequest(API_WAITING_LIST_LOCATION + "update", requestJson);
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_WAITING_LIST_LOCATION + "update",
+                            Request.PUT,
+                            null,
+                            requestJson
+                    );
 
                     if (returnJson != null && returnJson.length() > 0)
                     {
@@ -185,15 +204,16 @@ public class WaitingListServiceImplementation implements WaitingListService
     {
         executor.execute(new Runnable() {
             @Override
-            public void run() {
-                if (newStatus)
-                {
-                    apiService.putRequest(API_WAITING_LIST_LOCATION + "accept/" + requestID, "");
-                }
-                else
-                {
-                    apiService.putRequest(API_WAITING_LIST_LOCATION + "reject/" + requestID, "");
-                }
+            public void run()
+            {
+                String[] requestParam = new String[] { "status=" + newStatus };
+
+                apiService.makeNetworkRequest(
+                        API_WAITING_LIST_LOCATION + "setStatus/" + requestID,
+                        Request.PUT,
+                        requestParam,
+                        ""
+                );
             }
         });
     }
@@ -210,8 +230,14 @@ public class WaitingListServiceImplementation implements WaitingListService
             @Override
             public void run()
             {
-                apiService.deleteRequest(API_WAITING_LIST_LOCATION + "delete/" + requestID);
-                callback.onComplete(null);
+                apiService.makeNetworkRequest(
+                        API_WAITING_LIST_LOCATION + "delete/" + requestID,
+                        Request.DELETE,
+                        null,
+                        ""
+                );
+
+                callback.onComplete(new ResponseWrapper<>(new WaitingListRequest()));
             }
         });
     }

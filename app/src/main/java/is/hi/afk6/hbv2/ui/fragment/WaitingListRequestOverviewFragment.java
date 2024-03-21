@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -118,6 +117,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
             {
+                // Afgrls sér nafn sjúklings, grade, dags.
                 Log.d("WaitingListRequestOverviewFragment", "Request accepted: " + result.getData());
             }
         });

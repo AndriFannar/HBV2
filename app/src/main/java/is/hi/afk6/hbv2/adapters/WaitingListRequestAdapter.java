@@ -100,7 +100,7 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
                 callback.onAcceptWaitingListRequestClicked(clicked);
                 clicked.setStatus(true);
 
-                setView(clicked);
+                notifyDataSetChanged();
             }
         });
 

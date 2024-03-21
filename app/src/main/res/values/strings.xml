@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">HBV2</string>
 
+    <string name="general_error">Villa hefur komið upp. Vinsamlegast reynið aftur.</string>
+
     <string name="menu_change_user">Breyta Notendaupplýsingum</string>
 
     <string name="login_text">Skrá inn</string>

@@ -24,6 +24,7 @@ import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.dtos.SignUpDTO;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.callbacks.APICallback;
+import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.UserService;
@@ -60,7 +61,12 @@ public class UserServiceImplementation implements UserService
                 String signUpJSON = new Gson().toJson(signUpInfo);
 
                 // Send info to API and get a return object.
-                JSONObject returnJson = apiService.postRequest(API_USER_LOCATION + "signUp", signUpJSON);
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_USER_LOCATION + "signUp",
+                        Request.POST,
+                        null,
+                        signUpJSON
+                );
 
                 if (returnJson != null)
                 {
@@ -81,7 +87,12 @@ public class UserServiceImplementation implements UserService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest(API_USER_LOCATION + "getAll", "");
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_USER_LOCATION + "getAll",
+                        Request.GET,
+                        null,
+                        ""
+                );
 
                 if (returnJson != null)
                 {
@@ -102,7 +113,12 @@ public class UserServiceImplementation implements UserService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest(API_USER_LOCATION + "view/" + userID, "");
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_USER_LOCATION + "view/" + userID,
+                        Request.GET,
+                        null,
+                        ""
+                );
 
                 if (returnJson != null)
                 {
@@ -133,12 +149,19 @@ public class UserServiceImplementation implements UserService
             @Override
             public void run() {
 
-                String urlExtension = API_USER_LOCATION;
-                urlExtension += includeElevated ? "getByRoleElevated" : "getByRole";
+                String urlExtension = API_USER_LOCATION + "getByRole";
 
-                String roleJson = "userRole=" + role.toString();
+                String[] requestParams = new String[2];
 
-                JSONObject returnJson = apiService.getRequest(urlExtension, roleJson);
+                requestParams[0] = ("userRole=" + role.toString());
+                requestParams[1] = ("elevated=" + includeElevated);
+
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        urlExtension,
+                        Request.GET,
+                        requestParams,
+                        ""
+                );
 
                 if (returnJson != null && returnJson.length() > 0)
                 {
@@ -242,7 +265,12 @@ public class UserServiceImplementation implements UserService
                     String userJson = new Gson().toJson(updatedUser);
 
                     // Send JSON data to API, wait for a return.
-                    JSONObject returnJson = apiService.putRequest(API_USER_LOCATION + "update/" + requestingUserID, userJson);
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_USER_LOCATION + "update/" + requestingUserID,
+                            Request.PUT,
+                            null,
+                            userJson
+                    );
 
                     if (returnJson != null && returnJson.length() > 0)
                     {
@@ -272,8 +300,14 @@ public class UserServiceImplementation implements UserService
             @Override
             public void run()
             {
-                apiService.deleteRequest(API_USER_LOCATION + "delete/" + userID);
-                callback.onComplete(null);
+                apiService.makeNetworkRequest(
+                        API_USER_LOCATION + "delete/" + userID,
+                        Request.DELETE,
+                        null,
+                        ""
+                );
+
+                callback.onComplete(new ResponseWrapper<>(new User()));
             }
         });
     }
@@ -290,7 +324,12 @@ public class UserServiceImplementation implements UserService
                     String loginJson = new Gson().toJson(login);
 
                     // Send LogIn data as JSON to API, wait for a return.
-                    JSONObject returnJson = apiService.postRequest(API_USER_LOCATION + "login", loginJson);
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_USER_LOCATION + "login",
+                            Request.POST,
+                            null,
+                            loginJson
+                    );
 
                     if (returnJson != null)
                     {
