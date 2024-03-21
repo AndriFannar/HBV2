@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/frameLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -134,6 +134,11 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </LinearLayout>
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/update_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_user"/>
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
