@@ -55,22 +55,15 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
                     .setOpenableLayout(drawer)
                     .build();
         }
-        else if (loggedInUser.getRole() == UserRole.ADMIN)
+        else if (loggedInUser.getRole().isStaffMember())
         {
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
+
+            if (loggedInUser.getRole() != UserRole.ADMIN)
+                binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_edit_user)
-                    .setOpenableLayout(drawer)
-                    .build();
-        }
-        else
-        {
-            binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
-            binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
-
-            mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_user_fragment, R.id.nav_edit_user)
                     .setOpenableLayout(drawer)
                     .build();
         }
@@ -146,13 +139,9 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
                 navController.navigate(R.id.nav_create_waiting_list_request, bundle);
             }
         }
-        else if (loggedInUser.getRole() == UserRole.ADMIN)
+        else if (loggedInUser.getRole().isStaffMember())
         {
             navController.navigate(R.id.nav_waiting_list_overview, bundle);
-        }
-        else
-        {
-            navController.navigate(R.id.nav_user_fragment, bundle);
         }
     }
 

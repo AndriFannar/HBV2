@@ -74,5 +74,6 @@
     <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
     <string name="requests_overview_view_button_text">Skoða</string>
     <string name="requests_overview_accept_button_text">Samþykkja</string>
+    <string name="requests_overview_delete_button_text">Eyða</string>
 
 </resources>

@@ -78,8 +78,32 @@ public class WaitingListServiceImplementation implements WaitingListService
     }
 
     @Override
-    public void getAllWaitingListRequests(APICallback<List<WaitingListRequest>> callback) {
+    public void getAllWaitingListRequests(APICallback<List<WaitingListRequest>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                // Fetch User with corresponding ID from API.
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_WAITING_LIST_LOCATION + "getAll",
+                        Request.GET,
+                        null,
+                        ""
+                );
 
+                if (returnJson != null)
+                {
+                    // Convert response from JSON to User class if response is not null.
+                    Gson gson = new GsonBuilder()
+                            .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
+                            .create();
+
+                    Type responseType = new TypeToken<ResponseWrapper<List<WaitingListRequest>>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override

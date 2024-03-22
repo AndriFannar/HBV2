@@ -2,11 +2,9 @@ package is.hi.afk6.hbv2.adapters;
 
 import android.graphics.Color;
 import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,8 +13,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import is.hi.afk6.hbv2.R;
-import is.hi.afk6.hbv2.callbacks.WaitingListOverviewCallback;
-import is.hi.afk6.hbv2.databinding.RecyclerviewWaitingListRequestBinding;
+import is.hi.afk6.hbv2.callbacks.WaitingListViewCallback;
+import is.hi.afk6.hbv2.databinding.RecyclerviewPhysioWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
 /**
@@ -26,27 +24,27 @@ import is.hi.afk6.hbv2.entities.WaitingListRequest;
  * @since 14/03/2024
  * @version 1.0
  */
-public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListRequestAdapter.ViewHolder>
+public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<WaitingListRequestPhysioAdapter.ViewHolder>
 {
     // WaitingListRequests to display
     private List<WaitingListRequest> waitingListRequests;
-    private RecyclerviewWaitingListRequestBinding binding;
-    private WaitingListOverviewCallback callback;
+    private RecyclerviewPhysioWaitingListRequestBinding binding;
+    private WaitingListViewCallback callback;
 
     private int expandedPos = -1;
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         // Binding for each item in the RecyclerView
-        private RecyclerviewWaitingListRequestBinding binding;
+        private RecyclerviewPhysioWaitingListRequestBinding binding;
 
         public ViewHolder(View view)
         {
             super(view);
-            binding = RecyclerviewWaitingListRequestBinding.bind(view);
+            binding = RecyclerviewPhysioWaitingListRequestBinding.bind(view);
         }
 
-        public RecyclerviewWaitingListRequestBinding getBinding()
+        public RecyclerviewPhysioWaitingListRequestBinding getBinding()
         {
             return binding;
         }
@@ -57,7 +55,7 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
      *
      * @param waitingListRequests WaitingListRequests to display.
      */
-    public WaitingListRequestAdapter(List<WaitingListRequest> waitingListRequests, WaitingListOverviewCallback callback)
+    public WaitingListRequestPhysioAdapter(List<WaitingListRequest> waitingListRequests, WaitingListViewCallback callback)
     {
         this.waitingListRequests = waitingListRequests;
         this.callback = callback;
@@ -67,7 +65,7 @@ public class WaitingListRequestAdapter extends RecyclerView.Adapter<WaitingListR
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recyclerview_waiting_list_request, parent, false);
+                .inflate(R.layout.recyclerview_physio_waiting_list_request, parent, false);
 
         return new ViewHolder(view);
     }

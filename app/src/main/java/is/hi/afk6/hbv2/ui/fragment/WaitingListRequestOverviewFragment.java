@@ -15,13 +15,16 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
-import is.hi.afk6.hbv2.adapters.WaitingListRequestAdapter;
+import is.hi.afk6.hbv2.adapters.WaitingListRequestPhysioAdapter;
+import is.hi.afk6.hbv2.adapters.WaitingListRequestReceptionAdapter;
 import is.hi.afk6.hbv2.callbacks.APICallback;
-import is.hi.afk6.hbv2.callbacks.WaitingListOverviewCallback;
+import is.hi.afk6.hbv2.callbacks.WaitingListDeleteCallback;
+import is.hi.afk6.hbv2.callbacks.WaitingListViewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentWaitingListRequestOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.WaitingListService;
@@ -34,7 +37,7 @@ import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
  * @since 14/03/2024
  * @version 1.0
  */
-public class WaitingListRequestOverviewFragment extends Fragment implements WaitingListOverviewCallback
+public class WaitingListRequestOverviewFragment extends Fragment implements WaitingListViewCallback, WaitingListDeleteCallback
 {
     private FragmentWaitingListRequestOverviewBinding binding;
     private User loggedInUser;
@@ -73,40 +76,54 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     private void populateList()
     {
         WaitingListRequestOverviewFragment that = this;
-        waitingListService.getWaitingListRequestByStaff(loggedInUser, new APICallback<List<WaitingListRequest>>()
+        if (loggedInUser.getRole().isElevatedUser())
         {
-            @Override
-            public void onComplete(ResponseWrapper<List<WaitingListRequest>> result)
+            waitingListService.getWaitingListRequestByStaff(loggedInUser, new APICallback<List<WaitingListRequest>>()
             {
-                if (result.getData() != null)
+                @Override
+                public void onComplete(ResponseWrapper<List<WaitingListRequest>> result)
                 {
-                    requireActivity().runOnUiThread(new Runnable()
+                    if (result.getData() != null)
                     {
-                        @Override
-                        public void run()
+                        requireActivity().runOnUiThread(new Runnable()
                         {
-                            WaitingListRequestAdapter adapter = new WaitingListRequestAdapter(result.getData(), that);
+                            @Override
+                            public void run()
+                            {
+                                Log.d("WaitingListRequestOverviewFragment", "Admin/Physio");
+                                WaitingListRequestPhysioAdapter adapter = new WaitingListRequestPhysioAdapter(result.getData(), that);
 
-                            binding.requestOverviewRecyclerView.setAdapter(adapter);
-                        }
-                    });
+                                binding.requestOverviewRecyclerView.setAdapter(adapter);
+                            }
+                        });
+                    }
                 }
-            }
-        });
-    }
-
-    public void fetchDataLinear()
-    {
-        waitingListService.getWaitingListRequestByStaff(loggedInUser, new APICallback<List<WaitingListRequest>>()
+            });
+        }
+        else if (loggedInUser.getRole() == UserRole.STAFF)
         {
-            @Override
-            public void onComplete(ResponseWrapper<List<WaitingListRequest>> result)
+            waitingListService.getAllWaitingListRequests(new APICallback<List<WaitingListRequest>>()
             {
-                List<WaitingListRequest> requests = result.getData();
+                @Override
+                public void onComplete(ResponseWrapper<List<WaitingListRequest>> result)
+                {
+                    if (result.getData() != null)
+                    {
+                        requireActivity().runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                Log.d("WaitingListRequestOverviewFragment", "Staff");
+                                WaitingListRequestReceptionAdapter adapter = new WaitingListRequestReceptionAdapter(result.getData(), that);
 
-
-            }
-        });
+                                binding.requestOverviewRecyclerView.setAdapter(adapter);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 
     @Override
@@ -127,5 +144,18 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     public void onViewWaitingListRequestClicked(WaitingListRequest request)
     {
         Log.d("WaitingListRequestOverviewFragment", "Viewing request: " + request);
+    }
+
+    @Override
+    public void onDeleteWaitingListRequestClicked(WaitingListRequest waitingListRequest)
+    {
+        waitingListService.deleteWaitingListRequestByID(waitingListRequest.getId(), new APICallback<WaitingListRequest>()
+        {
+            @Override
+            public void onComplete(ResponseWrapper<WaitingListRequest> result)
+            {
+                Log.d("WaitingListRequestOverviewFragment", "Deleted request: " + waitingListRequest);
+            }
+        });
     }
 }
