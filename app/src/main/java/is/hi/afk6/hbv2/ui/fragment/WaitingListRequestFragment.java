@@ -74,6 +74,7 @@ public class WaitingListRequestFragment extends Fragment
 
             // User can't answer Questionnaire until it has been fetched from the API.
             binding.buttonAnswerQuestionnaire.setClickable(false);
+            binding.buttonAcceptRequest.setVisibility(View.INVISIBLE);
 
             // Check that current User has a WaitingListRequest.
             if (loggedInUser.getWaitingListRequestID() == null || loggedInUser.getWaitingListRequestID() == 0) {
@@ -81,11 +82,12 @@ public class WaitingListRequestFragment extends Fragment
                 return null;
             }
         }
+
         // If the WaitingListRequest did not come with the Bundle, fetch it from API.
         if (waitingListRequest == null)
         {
             if(loggedInUser.getRole().isElevatedUser()){
-                waitingListService.getWaitingListRequestByID(47L, new APICallback<WaitingListRequest>()
+                waitingListService.getWaitingListRequestByID(50L, new APICallback<WaitingListRequest>()
                 {
                     @Override
                     public void onComplete(ResponseWrapper<WaitingListRequest> result)
@@ -131,6 +133,23 @@ public class WaitingListRequestFragment extends Fragment
                 deleteRequest();
             }
 
+        });
+        binding.buttonAcceptRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                waitingListService.updateWaitingListRequestStatus(waitingListRequest.getId(),true, new APICallback<WaitingListRequest>(){
+                    @Override
+                    public void onComplete(ResponseWrapper<WaitingListRequest> result) {
+                        requireActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                waitingListRequest.setStatus(true);
+                                setUpView();
+                            }
+                        });
+                    }
+                });
+            }
         });
 
 
