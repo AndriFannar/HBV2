@@ -148,7 +148,9 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         }
         else if (loggedInUser.getRole() == UserRole.ADMIN)
         {
-            navController.navigate(R.id.nav_users_overview, bundle);
+            // Muna að lagalínu
+            // Upprunalega navController.navigate(R.id.nav_users_overview, bundle);
+            navController.navigate(R.id.nav_waiting_list_request, bundle);
         }
         else
         {
