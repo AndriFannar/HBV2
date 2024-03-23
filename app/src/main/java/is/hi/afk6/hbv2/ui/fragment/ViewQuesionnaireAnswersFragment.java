@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
@@ -37,8 +36,15 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     private QuestionService questionService;
     private Questionnaire questionnaire;
     private List<Question> questions;
-    private static final String TAG = "ViewQuestionnaireAnswersFragment";
 
+    /**
+     * Called when the fragment is starting. This method is invoked during the creation of the fragment.
+     * It initializes necessary services and data structures.
+     *
+     * @param savedInstanceState If the fragment is being re-initialized after previously being shut down then
+     *                           this Bundle contains the data it most recently supplied in {@link #onSaveInstanceState(Bundle)}.
+     *                           Note: Otherwise it is null.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,9 +58,21 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         questions = new ArrayList<>();
         answers = new ArrayList<>();
-
     }
 
+    /**
+     * Called to have the fragment instantiate its user interface view. This method is called between
+     * {@link #onCreate(Bundle)} and {@link #onActivityCreated(Bundle)}.
+     *
+     * @param inflater           The LayoutInflater object that can be used to inflate any views in the fragment,
+     *                           typically obtained from {@link android.app.Activity#getLayoutInflater()}.
+     * @param container          If non-null, this is the parent view that the fragment's UI should be attached to.
+     *                           The fragment should not add the view itself, but this can be used to generate
+     *                           the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed from a previous saved state
+     *                           as given here.
+     * @return The View for the fragment's UI, or null.
+     */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
