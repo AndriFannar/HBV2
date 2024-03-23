@@ -1,6 +1,8 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,8 +14,6 @@ import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
-import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -37,7 +37,7 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     private QuestionService questionService;
     private Questionnaire questionnaire;
     private List<Question> questions;
-    private static final String TAG = "ViewQuesionnaireAnswersFragment";
+    private static final String TAG = "ViewQuestionnaireAnswersFragment";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +56,7 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentViewQuesionnaireAnswersBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
@@ -74,52 +74,41 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
      */
     private void getRequest(Long requestId) {
         controlView(true, "");
-        waitingListService.getWaitingListRequestByID(requestId, new APICallback<WaitingListRequest>() {
-            @Override
-            public void onComplete(ResponseWrapper<WaitingListRequest> result) {
-                requireActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (result.getData() != null) {
-                            waitingListRequest = result.getData();
-                            updateUIWithWaitingListRequest(waitingListRequest);
-                            answers = waitingListRequest.getQuestionnaireAnswers();
-                            questionnaireService.getQuestionnaireByID(waitingListRequest.getQuestionnaireID(), result1 -> {
-                                questionnaire = result1.getData();
+        waitingListService.getWaitingListRequestByID(requestId, result -> requireActivity().runOnUiThread(() -> {
+            if (result.getData() != null) {
+                waitingListRequest = result.getData();
+                updateUIWithWaitingListRequest(waitingListRequest);
+                answers = waitingListRequest.getQuestionnaireAnswers();
+                questionnaireService.getQuestionnaireByID(waitingListRequest.getQuestionnaireID(), result1 -> {
+                    questionnaire = result1.getData();
 
-                                if (questionnaire != null) {
-                                    questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result2 -> {
-                                        questions = result2.getData();
+                    if (questionnaire != null) {
+                        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result2 -> {
+                            questions = result2.getData();
 
-                                        if (questions != null && answers.size() == questions.size()) {
-                                            requireActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
+                            if (questions != null && answers.size() == questions.size()) {
+                                requireActivity().runOnUiThread(() -> {
 
-                                                    for (int i = 0; i < questions.size(); i++) {
-                                                        LinearLayout answersContainer = createAnswerContainer();
-                                                        TextView question = createQuestionTextView(questions.get(i));
-                                                        TextView answer = createAnswerTextView(answers.get(i));
-                                                        answersContainer.addView(question);
-                                                        answersContainer.addView(answer);
-                                                        binding.answersContainer.addView(answersContainer);
-                                                    }
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-                            controlView(false, "");
-                        }
-                        else {
-                            String error = result.getErrorResponse().getErrorDetails().get("answer");
-                            controlView(false, error);
-                        }
+                                    for (int i = 0; i < questions.size(); i++) {
+                                        LinearLayout answersContainer = createAnswerContainer();
+                                        TextView question = createQuestionTextView(questions.get(i));
+                                        TextView answer = createAnswerTextView(answers.get(i));
+                                        answersContainer.addView(question);
+                                        answersContainer.addView(answer);
+                                        binding.answersContainer.addView(answersContainer);
+                                    }
+                                });
+                            }
+                        });
                     }
                 });
+                controlView(false, "");
             }
-        });
+            else {
+                String error = result.getErrorResponse().getErrorDetails().get("answer");
+                controlView(false, error);
+            }
+        }));
     }
 
     /**
@@ -176,7 +165,7 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         if (binding != null) {
             float grade = (float) waitingListRequest.getGrade();
             binding.selectedUserName.setText(selectedUser.getName());
-            binding.selectedUserGrade.setText(String.format(" - %s stig", String.valueOf((int) grade)));
+            binding.selectedUserGrade.setText(String.format(" - %s stig", (int) grade));
             binding.descriptionText.setText(waitingListRequest.getDescription());
         }
     }
