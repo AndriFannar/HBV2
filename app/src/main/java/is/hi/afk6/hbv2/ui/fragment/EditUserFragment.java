@@ -138,6 +138,9 @@ public class EditUserFragment extends Fragment {
 
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
                     navController.navigate(R.id.nav_user_fragment, bundle);
+                    
+                    //edit_setup();
+                    //callbacks.onUserUpdated(loggedInUser);
                 }
             });
         });

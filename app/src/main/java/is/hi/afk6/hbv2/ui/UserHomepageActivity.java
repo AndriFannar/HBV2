@@ -135,8 +135,6 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
             } else {
                 navController.navigate(R.id.nav_create_waiting_list_request, bundle);
             }
-
-
         } else if (loggedInUser.getRole() == UserRole.ADMIN) {
             navController.navigate(R.id.nav_users_overview, bundle);
         } else {
