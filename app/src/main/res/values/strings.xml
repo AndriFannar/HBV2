@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">HBV2</string>
 
+    <string name="general_error">Villa hefur komið upp. Vinsamlegast reynið aftur.</string>
+
     <string name="menu_change_user">Breyta Notendaupplýsingum</string>
 
     <string name="login_text">Skrá inn</string>
@@ -15,7 +17,8 @@
     <string name="signup_email">Tölvupóstur</string>
     <string name="signup_password">Lykilorð</string>
 
-    <string name="user_homepage_test">Heimaskjár notanda</string>
+    <!-- UserFragment -->
+    <string name="user_view">Upplýsingar notanda</string>
     <string name="user_name">"Notandi: "</string>
     <string name="name">Nafn</string>
     <string name="phoneNumber">"Símanúmer: "</string>
@@ -49,13 +52,10 @@
     <string name="waiting_list_info_description">Lýsing: </string>
     <string name="waiting_list_info_physiotherapist">Sjúkraþjálfari: </string>
     <string name="waiting_list_info_status">Staða fyrirspurnar: </string>
-    <string name="delete_request">Eyða</string>
     <string name="answer_questionnaire">Svara spurningalista</string>
     <string name="questionnaire_answered">Spurningalista svarað</string>
     <string name="waiting_list_request_accepted">Samþykkt</string>
     <string name="waiting_list_request_pending">Í Bið</string>
-
-    <string name="staff_accept">Samþykkja</string>
 
     <!-- Bundles -->
     <string name="logged_in_user">loggedInUser</string>
@@ -69,6 +69,12 @@
     <string name="go_home_button">Heimasíða</string>
 
     <string name="user_overview_header_text">Yfirlit notendur</string>
-    <string name="user_questionnaire_answers_overview_header_text">Svör við spurningalista</string>
     <string name="user_overview_button_text">Uppfæra</string>
+    <string name="user_questionnaire_answers_overview_header_text">Svör við spurningalista</string>
+
+    <!-- WaitingListRequestOverview -->
+    <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
+    <string name="requests_overview_view_button_text">Skoða</string>
+    <string name="requests_overview_accept_button_text">Samþykkja</string>
+    <string name="requests_overview_delete_button_text">Eyða</string>
 </resources>

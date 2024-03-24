@@ -79,7 +79,7 @@ public class AnswerQuestionnaireFragment extends Fragment
         answerGroup = binding.contentAnswerQuestionnaire.questionAnswersContainer;
 
         // Fetch the questions from the API.
-        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), new APICallback<List<Question>>() {
+        /*questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), new APICallback<List<Question>>() {
             @Override
             public void onComplete(ResponseWrapper<List<Question>> result)
             {
@@ -97,7 +97,10 @@ public class AnswerQuestionnaireFragment extends Fragment
                     });
                 }
             }
-        });
+        });*/
+
+        questions = questionnaire.getQuestions();
+        setUpQuestion();
 
         binding.contentAnswerQuestionnaire.buttonNextQuestion.setOnClickListener(new View.OnClickListener() {
             @Override

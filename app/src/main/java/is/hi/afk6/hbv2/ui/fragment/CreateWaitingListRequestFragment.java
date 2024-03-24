@@ -233,10 +233,10 @@ public class CreateWaitingListRequestFragment extends Fragment {
 
         // Create a new WaitingListRequest from the info.
         WaitingListRequest request = new WaitingListRequest(
-                loggedInUser.getId(),
-                staff.get(binding.staffSpinner.getSelectedItemPosition()).getId(),
+                loggedInUser,
+                staff.get(binding.staffSpinner.getSelectedItemPosition()),
                 binding.waitingListInfo.getText().toString(),
-                displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition()).getId()
+                displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition())
         );
 
         // Save the new WaitingListRequest to the API.

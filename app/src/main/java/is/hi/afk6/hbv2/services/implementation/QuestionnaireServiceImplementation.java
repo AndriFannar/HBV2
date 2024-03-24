@@ -13,6 +13,7 @@ import java.util.concurrent.Executor;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
 
@@ -54,7 +55,12 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
             public void run()
             {
                 // Fetch User with corresponding ID from API.
-                JSONObject returnJson = apiService.getRequest(API_QUESTIONNAIRE_LOCATION + "get/" + questionnaireID, "");
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTIONNAIRE_LOCATION + "get/" + questionnaireID,
+                        Request.GET,
+                        null,
+                        ""
+                );
 
                 if (returnJson != null)
                 {
@@ -74,7 +80,12 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
             @Override
             public void run()
             {
-                JSONObject returnJson = apiService.getRequest(API_QUESTIONNAIRE_LOCATION + "getAllToDisplay", "");
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTIONNAIRE_LOCATION + "getAllToDisplay",
+                        Request.GET,
+                        null,
+                        ""
+                );
 
                 if (returnJson != null && returnJson.length() > 0)
                 {

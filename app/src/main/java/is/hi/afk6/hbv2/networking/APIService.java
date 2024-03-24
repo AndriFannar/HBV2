@@ -2,6 +2,8 @@ package is.hi.afk6.hbv2.networking;
 
 import org.json.JSONObject;
 
+import is.hi.afk6.hbv2.entities.enums.Request;
+
 /**
  * Connect to an API and make Get, Post, Put & Delete requests.
  *
@@ -12,36 +14,12 @@ import org.json.JSONObject;
 public interface APIService
 {
     /**
-     * Performs a get request with the specified URL.
+     * Send a request to the API.
      *
      * @param urlExtension Extension on top of the base URL specified in the class, if defined.
+     * @param requestParam String representation of object to send with the request as a request parameter.
+     * @param requestBody  String representation of object to send with the request as a request body.
      * @return             JSONObject returned from API.
      */
-    JSONObject getRequest(String urlExtension, String requestParam);
-
-    /**
-     * Performs a post request with the specified URL.
-     *
-     * @param urlExtension Extension on top of the base URL specified in the class, if defined.
-     * @param object       JSONObject to post to API.
-     * @return             JSONObject returned from API.
-     */
-    JSONObject postRequest(String urlExtension, String object);
-
-    /**
-     * Performs a put request with the specified URL.
-     *
-     * @param urlExtension Extension on top of the base URL specified in the class, if defined.
-     * @param object       JSONObject to put to API.
-     * @return             JSONObject returned from API.
-     */
-    JSONObject putRequest(String urlExtension, String object);
-
-    /**
-     * Performs a delete request with the specified URL.
-     *
-     * @param urlExtension Extension on top of the base URL specified in the class, if defined.
-     * @return             JSONObject returned from API.
-     */
-    JSONObject deleteRequest(String urlExtension);
+    JSONObject makeNetworkRequest(String urlExtension, Request requestType, String[] requestParam, String requestBody);
 }
