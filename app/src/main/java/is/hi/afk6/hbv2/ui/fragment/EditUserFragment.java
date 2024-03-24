@@ -2,12 +2,15 @@ package is.hi.afk6.hbv2.ui.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,11 +18,17 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.navigation.NavigationView;
+
+import java.util.Arrays;
+import java.util.List;
+
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentEditUserBinding;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
@@ -30,11 +39,42 @@ public class EditUserFragment extends Fragment {
     private User loggedInUser;
     private FragmentEditUserBinding binding;
     private User editedUser;
+    private final List<String> role = Arrays.asList("Notandi", "Starfsfólk", "Sjúkraþjálfari", "Kerfisstjóri");
+    private Callbacks callbacks;
+
+    // Callback for when the User has been updated.
+    public interface Callbacks
+    {
+        void onUserUpdated(User user);
+    }
 
     @Override
-    public  void onCreate(@Nullable Bundle saveInstanceState){
+    public void onAttach(@NonNull Context context)
+    {
+        super.onAttach(context);
+
+        // Make sure the container activity has implemented the callback interface.
+        if (!(context instanceof Callbacks))
+        {
+            throw new ClassCastException(context + " must implement EditUserFragment.Callbacks");
+        }
+
+        callbacks = (Callbacks) context;
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+
+        callbacks = null;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle saveInstanceState){
         super.onCreate(saveInstanceState);
 
+        // Get arguments.
         if (getArguments() != null)
         {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
@@ -51,13 +91,17 @@ public class EditUserFragment extends Fragment {
         View view = binding.getRoot();
 
         edit_setup();
-        if(editedUser.getName().equals(loggedInUser.getName())){
+        if(editedUser.getName().equals(loggedInUser.getName()))
+        {
             inputUserInEdit(loggedInUser);
+            removeRoleSpinner();
             binding.buttonEditSumbit.setOnClickListener(v -> validateUpdate());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(loggedInUser));
-        } else {
+        } else
+        {
             inputUserInEdit(editedUser);
             onlyVisibleEditText();
+            setUpRole();
             binding.buttonEditSumbit.setOnClickListener(v -> changeStaffRole());
             binding.editDeleteButton.setOnClickListener(v -> deleteUserAlert(editedUser));
         }
@@ -77,6 +121,7 @@ public class EditUserFragment extends Fragment {
         loggedInUser.setAddress(binding.editAddress.getText().toString());
         loggedInUser.setPhoneNumber(binding.editPhone.getText().toString());
         loggedInUser.setEmail(binding.editEmail.getText().toString());
+        loggedInUser.setSpecialization(binding.editStaffSpecialization.getText().toString());
 
         userService.updateUser(loggedInUser.getId(), loggedInUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
@@ -86,18 +131,30 @@ public class EditUserFragment extends Fragment {
                 if(errorResponse != null){
                     edit_setup();
                     errorResponse_input(errorResponse);
-                } else {
-                    Log.d("User updated", "User updated successfully");
+                } else
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                    navController.navigate(R.id.nav_user_fragment, bundle);
+                    
+                    //edit_setup();
+                    //callbacks.onUserUpdated(loggedInUser);
                 }
             });
         });
-    }
+    }   
 
     private void changeStaffRole(){
-        Log.d("TAG", editedUser.getRole().toString());
+        String desiredDisplayString = role.get(binding.staffRoleSpinner.getSelectedItemPosition());
 
+        UserRole newRole = UserRole.fromDisplayString(desiredDisplayString);
+        if (newRole != null) {
+            editedUser.setRole(newRole);
+        }
 
-        userService.updateUser(editedUser.getId(), editedUser, result -> {
+        userService.updateUser(loggedInUser.getId(), editedUser, result -> {
             ErrorResponse errorResponse = result.getErrorResponse();
 
             requireActivity().runOnUiThread(() -> {
@@ -107,6 +164,7 @@ public class EditUserFragment extends Fragment {
                 }
                 else
                 {
+                    Log.d("Updated user", editedUser.toString());
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
@@ -203,7 +261,6 @@ public class EditUserFragment extends Fragment {
     }
 
 
-
     /**
      * Sets the error texts as invisible, so they don't show up
      * when opening the edit screen.
@@ -220,6 +277,11 @@ public class EditUserFragment extends Fragment {
         binding.editPhone.setText(user.getPhoneNumber());
         binding.editAddress.setText(user.getAddress());
         binding.editEmail.setText(user.getEmail());
+        if(user.getRole().isElevatedUser()){
+            binding.editStaffSpecialization.setText(user.getSpecialization());
+        } else {
+            binding.editStaffSpecialization.setVisibility(View.GONE);
+        }
     }
 
     private void onlyVisibleEditText(){
@@ -231,6 +293,20 @@ public class EditUserFragment extends Fragment {
         binding.editAddress.setFocusableInTouchMode(false);
         binding.editEmail.setFocusable(false);
         binding.editEmail.setFocusableInTouchMode(false);
+        binding.editStaffSpecialization.setFocusable(false);
+        binding.editStaffSpecialization.setFocusableInTouchMode(false);
+    }
+
+    private void setUpRole(){
+        ArrayAdapter<String> roleAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, role);
+        roleAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.staffRoleSpinner.setAdapter(roleAdapter);
+        int userRoleIndex = role.indexOf(editedUser.getRole().getDisplayString());
+        binding.staffRoleSpinner.setSelection(userRoleIndex);
+    }
+
+    private void removeRoleSpinner(){
+        binding.staffRoleSpinner.setVisibility(View.GONE);
     }
 
 }

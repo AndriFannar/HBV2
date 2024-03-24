@@ -2,6 +2,8 @@ package is.hi.afk6.hbv2.networking.implementation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import android.util.Log;
+
 import org.json.*;
 
 import java.io.InputStream;
@@ -24,6 +26,7 @@ public class APIServiceImplementation implements APIService
 {
     // Base API URL.
     private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
+    /** @noinspection SpellCheckingInspection*/
     private final String API_PASS = "Kclj6G!2$CRpnOog";
 
     // Long timeout since base level Render host goes offline when not in use
@@ -58,6 +61,8 @@ public class APIServiceImplementation implements APIService
         {
             urlExtension += "?" + object;
         }
+
+        Log.d("API", "Sending object to API: " + object);
 
         URL url = new URL(API_URL + urlExtension);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();

@@ -18,7 +18,7 @@ import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;

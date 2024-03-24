@@ -172,6 +172,7 @@ public class WaitingListRequest implements Parcelable
         this.grade = grade;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "WaitingListRequest{" +
