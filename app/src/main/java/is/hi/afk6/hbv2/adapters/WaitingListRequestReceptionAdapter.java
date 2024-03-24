@@ -1,5 +1,6 @@
 package is.hi.afk6.hbv2.adapters;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
@@ -79,7 +80,7 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position)
     {
         binding = holder.getBinding();
 
