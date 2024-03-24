@@ -37,14 +37,12 @@ import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 public class AnswerQuestionnaireFragment extends Fragment
 {
     private User loggedInUser;
-    private Questionnaire questionnaire;
     private WaitingListRequest waitingListRequest;
     private List<Question> questions;
     private int currentQuestionIndex;
     Question currentQuestion;
     private List<Integer> answers;
     private FragmentAnswerQuestionnaireBinding binding;
-    private QuestionService questionService;
     private WaitingListService waitingListService;
     private RadioGroup answerGroup;
 
@@ -58,7 +56,6 @@ public class AnswerQuestionnaireFragment extends Fragment
         {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
             waitingListRequest = getArguments().getParcelable(getString(R.string.waiting_list_request));
-            questionnaire = getArguments().getParcelable(getString(R.string.questionnaire));
         }
 
         APIService apiService = new APIServiceImplementation();
@@ -66,7 +63,6 @@ public class AnswerQuestionnaireFragment extends Fragment
         answers = new ArrayList<>();
         currentQuestionIndex = 0;
 
-        questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
     }
 
@@ -78,28 +74,7 @@ public class AnswerQuestionnaireFragment extends Fragment
         // Get the container for the answers.
         answerGroup = binding.contentAnswerQuestionnaire.questionAnswersContainer;
 
-        // Fetch the questions from the API.
-        /*questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), new APICallback<List<Question>>() {
-            @Override
-            public void onComplete(ResponseWrapper<List<Question>> result)
-            {
-                if (result.getData() != null)
-                {
-                    questions = result.getData();
-
-                    requireActivity().runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            setUpQuestion();
-                        }
-                    });
-                }
-            }
-        });*/
-
-        questions = questionnaire.getQuestions();
+        questions = waitingListRequest.getQuestionnaire().getQuestions();
         setUpQuestion();
 
         binding.contentAnswerQuestionnaire.buttonNextQuestion.setOnClickListener(new View.OnClickListener() {
@@ -185,7 +160,6 @@ public class AnswerQuestionnaireFragment extends Fragment
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
                 bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
-                bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
 
                 requireActivity().runOnUiThread(new Runnable()
                 {

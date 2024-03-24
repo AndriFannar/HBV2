@@ -62,7 +62,6 @@
     <string name="edited_user">editedUser</string>
     <string name="waiting_list_request">waitingListRequest</string>
     <string name="questionnaire">questionnaire</string>
-    <string name="view_questionnaire_answers">Spurningalisti</string>
 
     <string name="questions">Spurningar</string>
     <string name="next_question_button">Næsta spurning</string>
@@ -77,4 +76,5 @@
     <string name="requests_overview_view_button_text">Skoða</string>
     <string name="requests_overview_accept_button_text">Samþykkja</string>
     <string name="requests_overview_delete_button_text">Eyða</string>
+    <string name="requests_overview_no_requests_text">Engar Fyrirspurnir skráðar</string>
 </resources>

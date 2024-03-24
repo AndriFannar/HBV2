@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
@@ -126,6 +128,26 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
         }
     }
 
+    private void viewControl(boolean loading, boolean empty)
+    {
+        if (loading)
+        {
+            binding.requestOverviewRecyclerView.setVisibility(View.GONE);
+            binding.requestOverviewProgressBar.setVisibility(View.VISIBLE);
+        }
+        else if (empty)
+        {
+            binding.requestOverviewRecyclerView.setVisibility(View.GONE);
+            binding.requestOverviewProgressBar.setVisibility(View.GONE);
+            binding.requestOverviewError.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            binding.requestOverviewRecyclerView.setVisibility(View.VISIBLE);
+            binding.requestOverviewProgressBar.setVisibility(View.GONE);
+        }
+    }
+
     @Override
     public void onAcceptWaitingListRequestClicked(WaitingListRequest request)
     {
@@ -144,6 +166,13 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     public void onViewWaitingListRequestClicked(WaitingListRequest request)
     {
         Log.d("WaitingListRequestOverviewFragment", "Viewing request: " + request);
+
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+        bundle.putParcelable(getString(R.string.waiting_list_request), request);
+        navController.navigate(R.id.nav_waiting_list_request, bundle);
     }
 
     @Override

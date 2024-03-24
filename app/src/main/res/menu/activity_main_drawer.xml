@@ -8,16 +8,13 @@
             android:id="@+id/nav_waiting_list_request"
             android:title="@string/waiting_list_title" />
         <item
-            android:id="@+id/nav_user_fragment"
-            android:title="@string/user_view" />
-        <item
             android:id="@+id/nav_waiting_list_overview"
             android:title="@string/requests_overview_header_text" />
         <item
             android:id="@+id/nav_users_overview"
             android:title="@string/user_overview_header_text" />
         <item
-            android:id="@+id/nav_edit_user"
-            android:title="@string/menu_change_user" />
+            android:id="@+id/nav_user_fragment"
+            android:title="@string/user_view" />
     </group>
 </menu>

@@ -53,8 +53,6 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
                     R.id.nav_create_waiting_list_request, R.id.nav_waiting_list_request, R.id.nav_user_fragment)
                     .setOpenableLayout(drawer)
                     .build();
-
-            binding.mainNav.getMenu().findItem(R.id.nav_edit_user).setVisible(false);
         }
         else if (loggedInUser.getRole().isStaffMember())
         {
@@ -64,7 +62,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
                 binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_edit_user)
+                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment)
                     .setOpenableLayout(drawer)
                     .build();
         }

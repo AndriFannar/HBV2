@@ -17,10 +17,9 @@
                 android:id="@+id/requests_overview_header"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"
-                android:layout_marginTop="20dp"
+                android:theme="@style/Theme.HBV2.HeaderTextStyle"
+                android:layout_marginBottom="@dimen/fragment_margin"
+                android:layout_marginTop="@dimen/fragment_margin"
                 android:gravity="center"
                 android:text="@string/requests_overview_header_text" />
 
@@ -52,7 +51,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
-                    android:textColor="#F44336"
+                    android:textColor="@color/error_red"
+                    android:text="@string/requests_overview_no_requests_text"
                     android:textSize="20sp"
                     android:visibility="invisible" />
 

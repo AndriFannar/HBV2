@@ -2,10 +2,10 @@
     android:id="@+id/waiting_list_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/margin_medium"
-    android:layout_marginRight="@dimen/margin_medium"
-    android:layout_marginTop="@dimen/margin_medium"
-    android:layout_marginBottom="@dimen/margin_medium"
+    android:layout_marginLeft="@dimen/fragment_margin"
+    android:layout_marginRight="@dimen/fragment_margin"
+    android:layout_marginTop="@dimen/fragment_margin"
+    android:layout_marginBottom="@dimen/fragment_margin"
     android:orientation="vertical"
     android:gravity="center_vertical"
     android:background="@color/pale_yellow">
@@ -20,7 +20,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_margin="@dimen/margin_medium"
+            android:layout_margin="@dimen/fragment_margin"
             android:layout_weight="2"/>
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_margin="@dimen/margin_medium"
+            android:layout_margin="@dimen/fragment_margin"
             android:layout_weight="1"/>
 
         <TextView
@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_margin="@dimen/margin_medium"
+            android:layout_margin="@dimen/fragment_margin"
             android:layout_weight="2"/>
 
     </LinearLayout>
@@ -59,7 +59,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_margin="@dimen/fragment_margin"
                 android:layout_weight="7"/>
 
             <TextView
@@ -67,7 +67,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_margin="@dimen/fragment_margin"
                 android:layout_weight="4"/>
 
         </LinearLayout>
@@ -81,7 +81,7 @@
                 android:id="@+id/view_waiting_list_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_margin="@dimen/fragment_margin"
                 android:text="@string/requests_overview_view_button_text"
                 android:layout_weight="6"/>
 
@@ -89,7 +89,7 @@
                 android:id="@+id/accept_waiting_list_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/margin_medium"
+                android:layout_margin="@dimen/fragment_margin"
                 android:text="@string/requests_overview_accept_button_text"
                 android:layout_weight="5"/>
 
