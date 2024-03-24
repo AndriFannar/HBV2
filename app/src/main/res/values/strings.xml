@@ -94,4 +94,9 @@
         <item>Dagsetning</item>
         <item>Nafn sjúklings</item>
     </string-array>
+
+    <!-- EditWaitingListRequest -->
+    <string name="edit_request_title">Breyta Fyrirspurn</string>
+    <string name="edit_request_priority">Forgangur</string>
+    <string name="edit_request_button_text">Uppfæra</string>
 </resources>

@@ -130,6 +130,17 @@ public class WaitingListRequestFragment extends Fragment
             }
         });
 
+        binding.buttonEditRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+
+                navigate(R.id.nav_edit_waiting_list_request, bundle);
+            }
+        });
+
         return view;
     }
 
