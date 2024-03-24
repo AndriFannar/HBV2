@@ -3,39 +3,26 @@ package is.hi.afk6.hbv2.ui.fragment;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentViewQuesionnaireAnswersBinding;
 import java.util.List;
-import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import java.util.ArrayList;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
-import is.hi.afk6.hbv2.networking.APIService;
-import is.hi.afk6.hbv2.services.QuestionService;
-import is.hi.afk6.hbv2.services.QuestionnaireService;
-import is.hi.afk6.hbv2.services.WaitingListService;
-import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class ViewQuesionnaireAnswersFragment extends Fragment {
     private FragmentViewQuesionnaireAnswersBinding binding;
-    private User selectedUser;
+    private User loggedInUser;
     private WaitingListRequest waitingListRequest;
-    private List<Integer> answers;
-    private WaitingListService waitingListService;
-    private QuestionnaireService questionnaireService;
-    private QuestionService questionService;
-    private Questionnaire questionnaire;
-    private List<Question> questions;
 
     /**
      * Called when the fragment is starting. This method is invoked during the creation of the fragment.
@@ -48,16 +35,12 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            selectedUser = getArguments().getParcelable(getString(R.string.view_questionnaire_answers));
-        }
-        APIService apiService = new APIServiceImplementation();
 
-        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        questions = new ArrayList<>();
-        answers = new ArrayList<>();
+        if (getArguments() != null)
+        {
+            loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
+            waitingListRequest = getArguments().getParcelable(getString(R.string.waiting_list_request));
+        }
     }
 
     /**
@@ -75,58 +58,40 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
      */
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         binding = FragmentViewQuesionnaireAnswersBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
-        if(selectedUser != null && selectedUser.getWaitingListRequestID() != null) {
-            getRequest(selectedUser.getWaitingListRequestID());
+
+        if (waitingListRequest != null)
+        {
+            updateUIWithWaitingListRequest(waitingListRequest);
+            List<Integer> answers = waitingListRequest.getQuestionnaireAnswers();
+            Questionnaire questionnaire = waitingListRequest.getQuestionnaire();
+            List<Question> questions = questionnaire.getQuestions();
+
+            if (questions != null && answers.size() == questions.size())
+            {
+                for (int i = 0; i < questions.size(); i++) {
+                    LinearLayout answersContainer = createAnswerContainer();
+                    TextView question = createQuestionTextView(questions.get(i));
+                    TextView answer = createAnswerTextView(answers.get(i));
+                    answersContainer.addView(question);
+                    answersContainer.addView(answer);
+                    binding.answersContainer.addView(answersContainer);
+                }
+            }
         }
+        else
+        {
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+            navController.navigate(R.id.nav_waiting_list_overview, bundle);
+        }
+
         return view;
-    }
-
-    /**
-     * Retrieves a waiting list request by its ID from the waitingListService and updates the UI
-     * with the details of the request, including questionnaire answers.
-     *
-     * @param requestId The ID of the waiting list request to retrieve.
-     */
-    private void getRequest(Long requestId) {
-        controlView(true, "");
-        waitingListService.getWaitingListRequestByID(requestId, result -> requireActivity().runOnUiThread(() -> {
-            if (result.getData() != null) {
-                waitingListRequest = result.getData();
-                updateUIWithWaitingListRequest(waitingListRequest);
-                answers = waitingListRequest.getQuestionnaireAnswers();
-                questionnaireService.getQuestionnaireByID(waitingListRequest.getQuestionnaireID(), result1 -> {
-                    questionnaire = result1.getData();
-
-                    if (questionnaire != null) {
-                        questionService.getAllQuestionsFromList(questionnaire.getQuestionIDs(), result2 -> {
-                            questions = result2.getData();
-
-                            if (questions != null && answers.size() == questions.size()) {
-                                requireActivity().runOnUiThread(() -> {
-
-                                    for (int i = 0; i < questions.size(); i++) {
-                                        LinearLayout answersContainer = createAnswerContainer();
-                                        TextView question = createQuestionTextView(questions.get(i));
-                                        TextView answer = createAnswerTextView(answers.get(i));
-                                        answersContainer.addView(question);
-                                        answersContainer.addView(answer);
-                                        binding.answersContainer.addView(answersContainer);
-                                    }
-                                });
-                            }
-                        });
-                    }
-                });
-                controlView(false, "");
-            }
-            else {
-                String error = result.getErrorResponse().getErrorDetails().get("answer");
-                controlView(false, error);
-            }
-        }));
     }
 
     /**
@@ -139,7 +104,7 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         TextView questionView = new TextView(requireContext());
         questionView.setText(String.format(question.getQuestionString()));
 
-        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.display_questionnaire_answers);
+        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.fragment_margin);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -161,7 +126,7 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         TextView questionAnswer = new TextView(requireContext());
         questionAnswer.setText(String.valueOf(answer));
 
-        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.display_questionnaire_answers);
+        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.fragment_margin);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
@@ -182,34 +147,9 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     private void updateUIWithWaitingListRequest(WaitingListRequest waitingListRequest) {
         if (binding != null) {
             float grade = (float) waitingListRequest.getGrade();
-            binding.selectedUserName.setText(selectedUser.getName());
+            binding.selectedUserName.setText(loggedInUser.getName());
             binding.selectedUserGrade.setText(String.format(" - %s stig", (int) grade));
             binding.descriptionText.setText(waitingListRequest.getDescription());
-        }
-    }
-
-    /**
-     * Controls many parts of the view of the login Activity.
-     *
-     * @param loading Is there data being actively fetched?
-     * @param error   Error to display on UI, if any.
-     */
-    private void controlView(boolean loading, String error)
-    {
-        if (loading)
-        {
-            binding.usersError.setVisibility(View.INVISIBLE);
-            binding.usersProgressBar.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            binding.usersProgressBar.setVisibility(View.GONE);
-
-            if (!error.isEmpty())
-            {
-                binding.usersError.setText(error);
-                binding.usersError.setVisibility(View.VISIBLE);
-            }
         }
     }
 

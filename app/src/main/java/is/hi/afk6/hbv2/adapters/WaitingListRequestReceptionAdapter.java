@@ -1,10 +1,12 @@
 package is.hi.afk6.hbv2.adapters;
 
+import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +16,10 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.WaitingListDeleteCallback;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestBodyPartComparator;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestDateComparator;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestGradeComparator;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestPatientNameComparator;
 import is.hi.afk6.hbv2.databinding.RecyclerviewReceptionWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
@@ -24,7 +30,7 @@ import is.hi.afk6.hbv2.entities.WaitingListRequest;
  * @since 22/03/2024
  * @version 1.0
  */
-public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<WaitingListRequestReceptionAdapter.ViewHolder>
+public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<WaitingListRequestReceptionAdapter.ViewHolder> implements AdapterView.OnItemSelectedListener
 {
     // WaitingListRequests to display
     private List<WaitingListRequest> waitingListRequests;
@@ -33,6 +39,9 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
 
     private int expandedPos = -1;
 
+    /**
+     * ViewHolder for the WaitingListRequestAdapter.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         // Binding for each item in the RecyclerView
@@ -71,7 +80,7 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position)
+    public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position)
     {
         binding = holder.getBinding();
 
@@ -104,6 +113,11 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
         });
     }
 
+    /**
+     * Set the view for a WaitingListRequest.
+     *
+     * @param current WaitingListRequest to display.
+     */
     private void setView(WaitingListRequest current)
     {
         if (current.isStatus())
@@ -120,5 +134,29 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
     @Override
     public int getItemCount() {
         return waitingListRequests.size();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        switch (position)
+        {
+            case 0:
+                waitingListRequests.sort(new WaitingListRequestGradeComparator());
+                break;
+            case 1:
+                waitingListRequests.sort(new WaitingListRequestDateComparator());
+                break;
+            case 2:
+                waitingListRequests.sort(new WaitingListRequestPatientNameComparator());
+                break;
+        }
+
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

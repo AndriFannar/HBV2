@@ -4,12 +4,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import java.util.List;
 
@@ -65,6 +67,22 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
 
         binding.requestOverviewRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        int sortOptions;
+
+        if (loggedInUser.getRole().isElevatedUser())
+           sortOptions = R.array.requests_overview_physio_sort_options;
+        else
+            sortOptions = R.array.requests_overview_reception_sort_options;
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                sortOptions,
+                android.R.layout.simple_spinner_item
+        );
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.requestsOverviewSortSpinner.setAdapter(adapter);
+
         populateList();
 
         return view;
@@ -75,6 +93,8 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
      */
     private void populateList()
     {
+        viewControl(true, false);
+
         WaitingListRequestOverviewFragment that = this;
         if (loggedInUser.getRole().isElevatedUser())
         {
@@ -90,9 +110,9 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             @Override
                             public void run()
                             {
-                                Log.d("WaitingListRequestOverviewFragment", "Admin/Physio");
+                                viewControl(false, result.getData().isEmpty());
                                 WaitingListRequestPhysioAdapter adapter = new WaitingListRequestPhysioAdapter(result.getData(), that);
-
+                                binding.requestsOverviewSortSpinner.setOnItemSelectedListener(adapter);
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
                             }
                         });
@@ -114,15 +134,35 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             @Override
                             public void run()
                             {
-                                Log.d("WaitingListRequestOverviewFragment", "Staff");
+                                viewControl(false, result.getData().isEmpty());
                                 WaitingListRequestReceptionAdapter adapter = new WaitingListRequestReceptionAdapter(result.getData(), that);
-
+                                binding.requestsOverviewSortSpinner.setOnItemSelectedListener(adapter);
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
                             }
                         });
                     }
                 }
             });
+        }
+    }
+
+    private void viewControl(boolean loading, boolean empty)
+    {
+        if (loading)
+        {
+            binding.requestOverviewRecyclerView.setVisibility(View.GONE);
+            binding.requestOverviewProgressBar.setVisibility(View.VISIBLE);
+        }
+        else if (empty)
+        {
+            binding.requestOverviewRecyclerView.setVisibility(View.GONE);
+            binding.requestOverviewProgressBar.setVisibility(View.GONE);
+            binding.requestOverviewError.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            binding.requestOverviewRecyclerView.setVisibility(View.VISIBLE);
+            binding.requestOverviewProgressBar.setVisibility(View.GONE);
         }
     }
 
@@ -134,8 +174,6 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
             {
-                // Afgrls sér nafn sjúklings, grade, dags.
-                Log.d("WaitingListRequestOverviewFragment", "Request accepted: " + result.getData());
             }
         });
     }
@@ -143,7 +181,12 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     @Override
     public void onViewWaitingListRequestClicked(WaitingListRequest request)
     {
-        Log.d("WaitingListRequestOverviewFragment", "Viewing request: " + request);
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+        bundle.putParcelable(getString(R.string.waiting_list_request), request);
+        navController.navigate(R.id.nav_waiting_list_request, bundle);
     }
 
     @Override
@@ -154,7 +197,6 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
             {
-                Log.d("WaitingListRequestOverviewFragment", "Deleted request: " + waitingListRequest);
             }
         });
     }

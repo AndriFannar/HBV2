@@ -13,7 +13,7 @@
 
         <TextView
             style="@style/Theme.HBV2.HeaderTextStyle"
-            android:text="@string/edit_user"/>
+            android:text="@string/user_view"/>
 
         <LinearLayout
             android:id="@+id/layout_wrapper_name"

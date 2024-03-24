@@ -4,7 +4,6 @@ import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -26,6 +25,7 @@ import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
+import is.hi.afk6.hbv2.exceptions.LocationCalculationException;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.UserService;
 
@@ -243,13 +243,13 @@ public class UserServiceImplementation implements UserService
                 }
                 else
                 {
-                    Log.e("GetLocationFromAddress", "Could not find location for user: " + user.getName());
+                    throw new LocationCalculationException("Could not find location for user: " + user.getName());
                 }
             }
         }
         catch (IOException e)
         {
-            Log.e("GetLocationFromAddress", "Error getting location from address: " + e);
+            throw new LocationCalculationException("Error getting location from address: " + e);
         }
     }
 

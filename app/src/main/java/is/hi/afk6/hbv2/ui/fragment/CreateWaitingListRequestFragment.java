@@ -12,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
-import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
@@ -67,7 +66,7 @@ public class CreateWaitingListRequestFragment extends Fragment {
 
     // Asks for Location Service permission.
     // If use of Location Services is allowed, then get last known location, otherwise have no special order.
-    private ActivityResultLauncher<String> requestPermisssionLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<String> requestPermissionLauncher = registerForActivityResult(
             new ActivityResultContracts.RequestPermission(),
             new ActivityResultCallback<Boolean>() {
                 @Override
@@ -99,12 +98,12 @@ public class CreateWaitingListRequestFragment extends Fragment {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             getLastKnownLocation();
         } else {
-            requestPermisssionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
+            requestPermissionLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION);
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentCreateWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
@@ -229,7 +228,7 @@ public class CreateWaitingListRequestFragment extends Fragment {
             return;
         }
 
-        controlView(true, false, false);
+        controlView(false, true, false);
 
         // Create a new WaitingListRequest from the info.
         WaitingListRequest request = new WaitingListRequest(
@@ -269,7 +268,6 @@ public class CreateWaitingListRequestFragment extends Fragment {
         });
     }
 
-    NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.nav_create_waiting_list_request, false).build();
     /**
      * Displays loading when sending in a request.
      *
@@ -324,7 +322,6 @@ public class CreateWaitingListRequestFragment extends Fragment {
     private void getLastKnownLocation()
     {
         // Initialize currentLocation variable and get the LocationProvider.
-        Location currentLocation = null;
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireActivity());
 
         // Build the LocationRequest.

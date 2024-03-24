@@ -2,7 +2,6 @@ package is.hi.afk6.hbv2.ui.fragment;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -11,14 +10,10 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.navigation.ui.AppBarConfiguration;
-
-import com.google.android.material.navigation.NavigationView;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.ui.UserHomepageActivity;
 
 public class UserFragment extends Fragment
 {
