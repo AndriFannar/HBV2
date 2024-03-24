@@ -33,6 +33,9 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
 
     private int expandedPos = -1;
 
+    /**
+     * ViewHolder for the WaitingListRequestAdapter.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         // Binding for each item in the RecyclerView
@@ -104,6 +107,11 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
         });
     }
 
+    /**
+     * Set the view for a WaitingListRequest.
+     *
+     * @param current WaitingListRequest to display.
+     */
     private void setView(WaitingListRequest current)
     {
         if (current.isStatus())

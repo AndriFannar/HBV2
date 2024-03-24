@@ -12,33 +12,17 @@ import android.view.ViewGroup;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentViewQuesionnaireAnswersBinding;
 import java.util.List;
-import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import java.util.ArrayList;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
-import is.hi.afk6.hbv2.networking.APIService;
-import is.hi.afk6.hbv2.services.QuestionService;
-import is.hi.afk6.hbv2.services.QuestionnaireService;
-import is.hi.afk6.hbv2.services.WaitingListService;
-import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class ViewQuesionnaireAnswersFragment extends Fragment {
     private FragmentViewQuesionnaireAnswersBinding binding;
     private User loggedInUser;
     private WaitingListRequest waitingListRequest;
-    private List<Integer> answers;
-    private WaitingListService waitingListService;
-    private QuestionnaireService questionnaireService;
-    private QuestionService questionService;
-    private Questionnaire questionnaire;
-    private List<Question> questions;
 
     /**
      * Called when the fragment is starting. This method is invoked during the creation of the fragment.
@@ -82,9 +66,9 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         if (waitingListRequest != null)
         {
             updateUIWithWaitingListRequest(waitingListRequest);
-            answers = waitingListRequest.getQuestionnaireAnswers();
-            questionnaire = waitingListRequest.getQuestionnaire();
-            questions = questionnaire.getQuestions();
+            List<Integer> answers = waitingListRequest.getQuestionnaireAnswers();
+            Questionnaire questionnaire = waitingListRequest.getQuestionnaire();
+            List<Question> questions = questionnaire.getQuestions();
 
             if (questions != null && answers.size() == questions.size())
             {

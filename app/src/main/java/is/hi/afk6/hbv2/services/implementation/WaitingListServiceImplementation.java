@@ -1,7 +1,5 @@
 package is.hi.afk6.hbv2.services.implementation;
 
-import android.util.Log;
-
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;

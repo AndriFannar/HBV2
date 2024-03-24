@@ -21,6 +21,7 @@ import java.util.Scanner;
 
 import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.exceptions.APIConnectionException;
+import is.hi.afk6.hbv2.exceptions.APIOutputStreamException;
 import is.hi.afk6.hbv2.networking.APIService;
 
 /**
@@ -85,7 +86,6 @@ public class APIServiceImplementation implements APIService
         try
         {
             // Create and set up URL connection.
-            Log.d("API", "API URL:" + API_URL + urlExtension);
             URL url = new URL(API_URL + urlExtension);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("X-API-KEY", API_PASS);
@@ -107,7 +107,7 @@ public class APIServiceImplementation implements APIService
                 }
                 catch (IOException exception)
                 {
-                    throw new RuntimeException(exception);
+                    throw new APIOutputStreamException(exception.getMessage());
                 }
             }
 

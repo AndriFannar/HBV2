@@ -3,7 +3,6 @@ package is.hi.afk6.hbv2.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -29,7 +28,6 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
     private ActivityUserHomepageBinding binding;
     private User loggedInUser;
     private User editedUser;
-    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +38,12 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
 
         //setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.mainDrawerLayout;
-        navigationView = binding.mainNav;
+        NavigationView navigationView = binding.mainNav;
 
         loggedInUser = (User) getIntent().getParcelableExtra(getString(R.string.logged_in_user));
 
-        Menu menu = navigationView.getMenu();
-
         if (loggedInUser.getRole() == UserRole.USER) {
+            binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_overview).setVisible(false);
             binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
@@ -123,7 +120,8 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
-        if (loggedInUser.getRole() == UserRole.USER) {
+        if (loggedInUser.getRole() == UserRole.USER)
+        {
             if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0) {
                 navController.navigate(R.id.nav_waiting_list_request, bundle);
             } else {

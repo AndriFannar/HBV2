@@ -5,6 +5,9 @@
 
     <string name="menu_change_user">Breyta Notendaupplýsingum</string>
 
+    <string name="yes">Já</string>
+    <string name="no">Nei</string>
+
     <string name="login_text">Skrá inn</string>
     <string name="login_email">Tölvupóstur</string>
     <string name="login_password">Lykilorð</string>
@@ -35,6 +38,7 @@
     <string name="edit_error_email">Netfang ólölegt</string>
     <string name="edit_text">Breyta upplýsingum\n</string>
     <string name="edit_delete">Eyða aðgangi</string>
+    <string name="delete_user_warning">Ertu viss um að þú viljir eyða aðganginum?</string>
 
     <!-- Register to Waiting List -->
     <string name="register_waiting_list_title">Senda fyrirspurn</string>
@@ -56,6 +60,7 @@
     <string name="questionnaire_answered">Spurningalista svarað</string>
     <string name="waiting_list_request_accepted">Samþykkt</string>
     <string name="waiting_list_request_pending">Í Bið</string>
+    <string name="delete_request_warning">Ertu viss um að þú viljir eyða fyrirspurninni?</string>
 
     <!-- Bundles -->
     <string name="logged_in_user">loggedInUser</string>

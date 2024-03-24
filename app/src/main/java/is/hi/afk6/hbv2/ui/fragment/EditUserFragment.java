@@ -5,9 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -17,8 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import com.google.android.material.navigation.NavigationView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -133,19 +129,20 @@ public class EditUserFragment extends Fragment {
                     errorResponse_input(errorResponse);
                 } else
                 {
+                    callbacks.onUserUpdated(loggedInUser);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
                     navController.navigate(R.id.nav_user_fragment, bundle);
-                    
-                    //edit_setup();
-                    //callbacks.onUserUpdated(loggedInUser);
                 }
             });
         });
-    }   
+    }
 
+    /**
+     * Changes the role of a user.
+     */
     private void changeStaffRole(){
         String desiredDisplayString = role.get(binding.staffRoleSpinner.getSelectedItemPosition());
 
@@ -164,7 +161,6 @@ public class EditUserFragment extends Fragment {
                 }
                 else
                 {
-                    Log.d("Updated user", editedUser.toString());
                     NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
@@ -216,13 +212,13 @@ public class EditUserFragment extends Fragment {
         Activity activity = getActivity();
         if (activity != null) {
             AlertDialog.Builder build = new AlertDialog.Builder(activity);
-            build.setMessage("Ertu viss að þú viljir eyða aðganginum?");
+            build.setMessage(R.string.delete_user_warning);
             build.setCancelable(false);
-            build.setPositiveButton("Já", (dialog, which) -> {
+            build.setPositiveButton(R.string.yes, (dialog, which) -> {
                 deleteAccount(deletedUser);
             });
 
-            build.setNegativeButton("Nei", (dialog, which) -> {
+            build.setNegativeButton(R.string.no, (dialog, which) -> {
                 dialog.cancel();
             });
 
@@ -237,8 +233,9 @@ public class EditUserFragment extends Fragment {
     public void deleteAccount(User deletedUser){
         userService.deleteUserByID(deletedUser.getId(), result -> {
             requireActivity().runOnUiThread(() -> {
-                if(result != null){
-                    Log.d("TAG", "could not delete");
+                if(result != null)
+                {
+                    throw new RuntimeException("Error deleting user");
                 } else {
                     if(editedUser.getName().equals(loggedInUser.getName()))
                     {

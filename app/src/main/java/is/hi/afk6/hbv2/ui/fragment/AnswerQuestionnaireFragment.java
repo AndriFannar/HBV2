@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,15 +22,12 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
 import is.hi.afk6.hbv2.entities.Question;
-import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
-import is.hi.afk6.hbv2.services.QuestionService;
 import is.hi.afk6.hbv2.services.WaitingListService;
-import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class AnswerQuestionnaireFragment extends Fragment

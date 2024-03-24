@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,10 +57,11 @@ public class WaitingListRequestFragment extends Fragment
         binding = FragmentWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        if(waitingListRequest != null && loggedInUser.getWaitingListRequestID() != 0)
+        if(waitingListRequest == null && (loggedInUser.getWaitingListRequestID() != 0 || loggedInUser.getWaitingListRequestID() != null))
+        {
             fetchRequest();
-
-        if (waitingListRequest == null)
+        }
+        else if (waitingListRequest == null)
         {
             Bundle bundle = new Bundle();
             bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
@@ -70,14 +73,16 @@ public class WaitingListRequestFragment extends Fragment
 
             return view;
         }
-
-        setUpView();
+        else
+        {
+            setUpView();
+        }
 
 
         binding.buttonDeleteRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRequest();
+                deleteRequestAlert();
             }
 
         });
@@ -141,6 +146,8 @@ public class WaitingListRequestFragment extends Fragment
                 if (result.getData() != null)
                 {
                     waitingListRequest = result.getData();
+
+                    requireActivity().runOnUiThread(WaitingListRequestFragment.this::setUpView);
                 }
             }
         });
@@ -170,6 +177,8 @@ public class WaitingListRequestFragment extends Fragment
         }
         else
         {
+            binding.buttonAcceptRequest.setVisibility(View.GONE);
+
             if (waitingListRequest.getQuestionnaire() == null || waitingListRequest.getQuestionnaire().getQuestions().isEmpty())
                 binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
             else if (!waitingListRequest.getQuestionnaireAnswers().isEmpty())
@@ -187,6 +196,27 @@ public class WaitingListRequestFragment extends Fragment
         binding.waitingListPhysiotherapist.setText(waitingListRequest.getStaff().getName());
 
         binding.waitingListStatus.setText(waitingListRequest.isStatus() ? getString(R.string.waiting_list_request_accepted) : getString(R.string.waiting_list_request_pending));
+    }
+
+    /**
+     * Shows an alert dialog to confirm the deletion of the User's request.
+     */
+    public void deleteRequestAlert()
+    {
+        Activity activity = getActivity();
+
+        if (activity != null)
+        {
+            AlertDialog.Builder build = new AlertDialog.Builder(activity);
+            build.setMessage(R.string.delete_request_warning);
+            build.setCancelable(false);
+            build.setPositiveButton(R.string.yes, (dialog, which) -> deleteRequest());
+
+            build.setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel());
+
+            AlertDialog alert = build.create();
+            alert.show();
+        }
     }
 
     /**

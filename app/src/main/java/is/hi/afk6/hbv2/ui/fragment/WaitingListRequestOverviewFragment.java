@@ -8,7 +8,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,6 +76,8 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
      */
     private void populateList()
     {
+        viewControl(true, false);
+
         WaitingListRequestOverviewFragment that = this;
         if (loggedInUser.getRole().isElevatedUser())
         {
@@ -92,7 +93,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             @Override
                             public void run()
                             {
-                                Log.d("WaitingListRequestOverviewFragment", "Admin/Physio");
+                                viewControl(false, result.getData().isEmpty());
                                 WaitingListRequestPhysioAdapter adapter = new WaitingListRequestPhysioAdapter(result.getData(), that);
 
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
@@ -116,7 +117,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             @Override
                             public void run()
                             {
-                                Log.d("WaitingListRequestOverviewFragment", "Staff");
+                                viewControl(false, result.getData().isEmpty());
                                 WaitingListRequestReceptionAdapter adapter = new WaitingListRequestReceptionAdapter(result.getData(), that);
 
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
@@ -156,8 +157,6 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
             {
-                // Afgrls sér nafn sjúklings, grade, dags.
-                Log.d("WaitingListRequestOverviewFragment", "Request accepted: " + result.getData());
             }
         });
     }
@@ -165,8 +164,6 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     @Override
     public void onViewWaitingListRequestClicked(WaitingListRequest request)
     {
-        Log.d("WaitingListRequestOverviewFragment", "Viewing request: " + request);
-
         NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
 
         Bundle bundle = new Bundle();
@@ -183,7 +180,6 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
             @Override
             public void onComplete(ResponseWrapper<WaitingListRequest> result)
             {
-                Log.d("WaitingListRequestOverviewFragment", "Deleted request: " + waitingListRequest);
             }
         });
     }

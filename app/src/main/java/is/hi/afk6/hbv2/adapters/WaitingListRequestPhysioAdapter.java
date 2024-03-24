@@ -33,6 +33,9 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
 
     private int expandedPos = -1;
 
+    /**
+     * ViewHolder for the WaitingListRequestAdapter.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         // Binding for each item in the RecyclerView
@@ -111,6 +114,11 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
         });
     }
 
+    /**
+     * Set the view for a WaitingListRequest.
+     *
+     * @param current WaitingListRequest to make view for.
+     */
     private void setView(WaitingListRequest current)
     {
         if (current.isStatus())
