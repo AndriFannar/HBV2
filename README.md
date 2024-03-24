@@ -8,7 +8,7 @@ This is a port of last year's Java Spring Application, which can be found [here]
 
 ### API
 The API used for this app is a conversion of last year's Java Spring Application to a REST-ful API.
-It is currently hosted on Render and can be accessed at the following [URL](https://hbv1-api.onrender.com/api/v1/).
+It is currently hosted on Render and can be accessed at [https://hbv1-api.onrender.com/api/v1/](https://hbv1-api.onrender.com/api/v1/).
 * The API source code can be found [on GitHub](https://github.com/AndriFannar/HBV1/tree/api).
 * The API documentation can be found [here](https://andrifannar.github.io/HBV1/target/site/index.html).
 
