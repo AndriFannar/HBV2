@@ -130,7 +130,7 @@ public class EditUserFragment extends Fragment {
                     errorResponse_input(errorResponse);
                 } else
                 {
-                    // Execute the callback.
+                    edit_setup();
                     callbacks.onUserUpdated(loggedInUser);
                 }
             });
