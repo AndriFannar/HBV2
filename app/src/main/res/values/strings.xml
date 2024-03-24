@@ -76,10 +76,22 @@
     <string name="user_overview_button_text">Uppfæra</string>
     <string name="user_questionnaire_answers_overview_header_text">Svör við spurningalista</string>
 
-    <!-- WaitingListRequestOverview -->
+    <!-- WaitingListRequestsOverview -->
     <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
     <string name="requests_overview_view_button_text">Skoða</string>
     <string name="requests_overview_accept_button_text">Samþykkja</string>
     <string name="requests_overview_delete_button_text">Eyða</string>
     <string name="requests_overview_no_requests_text">Engar Fyrirspurnir skráðar</string>
+    <string name="requests_overview_sort_spinner_hint">Raða eftir:</string>
+    <string-array name="requests_overview_physio_sort_options">
+        <item>Forgangur</item>
+        <item>Dagsetning</item>
+        <item>Nafn sjúklings</item>
+        <item>Líkamshluti</item>
+    </string-array>
+    <string-array name="requests_overview_reception_sort_options">
+        <item>Forgangur</item>
+        <item>Dagsetning</item>
+        <item>Nafn sjúklings</item>
+    </string-array>
 </resources>

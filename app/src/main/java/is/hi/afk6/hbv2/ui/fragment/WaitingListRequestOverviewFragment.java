@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import java.util.List;
 
@@ -66,6 +67,22 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
 
         binding.requestOverviewRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        int sortOptions;
+
+        if (loggedInUser.getRole().isElevatedUser())
+           sortOptions = R.array.requests_overview_physio_sort_options;
+        else
+            sortOptions = R.array.requests_overview_reception_sort_options;
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
+                requireContext(),
+                sortOptions,
+                android.R.layout.simple_spinner_item
+        );
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        binding.requestsOverviewSortSpinner.setAdapter(adapter);
+
         populateList();
 
         return view;
@@ -95,7 +112,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             {
                                 viewControl(false, result.getData().isEmpty());
                                 WaitingListRequestPhysioAdapter adapter = new WaitingListRequestPhysioAdapter(result.getData(), that);
-
+                                binding.requestsOverviewSortSpinner.setOnItemSelectedListener(adapter);
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
                             }
                         });
@@ -119,7 +136,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             {
                                 viewControl(false, result.getData().isEmpty());
                                 WaitingListRequestReceptionAdapter adapter = new WaitingListRequestReceptionAdapter(result.getData(), that);
-
+                                binding.requestsOverviewSortSpinner.setOnItemSelectedListener(adapter);
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
                             }
                         });

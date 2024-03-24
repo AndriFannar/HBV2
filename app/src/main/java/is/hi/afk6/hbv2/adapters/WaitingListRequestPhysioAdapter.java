@@ -5,6 +5,7 @@ import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,10 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.WaitingListViewCallback;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestBodyPartComparator;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestDateComparator;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestGradeComparator;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestPatientNameComparator;
 import is.hi.afk6.hbv2.databinding.RecyclerviewPhysioWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
@@ -24,7 +29,7 @@ import is.hi.afk6.hbv2.entities.WaitingListRequest;
  * @since 14/03/2024
  * @version 1.0
  */
-public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<WaitingListRequestPhysioAdapter.ViewHolder>
+public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<WaitingListRequestPhysioAdapter.ViewHolder> implements AdapterView.OnItemSelectedListener
 {
     // WaitingListRequests to display
     private List<WaitingListRequest> waitingListRequests;
@@ -141,5 +146,33 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
     @Override
     public int getItemCount() {
         return waitingListRequests.size();
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        switch (position)
+        {
+            case 0:
+                waitingListRequests.sort(new WaitingListRequestGradeComparator());
+                break;
+            case 1:
+                waitingListRequests.sort(new WaitingListRequestDateComparator());
+                break;
+            case 2:
+                waitingListRequests.sort(new WaitingListRequestPatientNameComparator());
+                break;
+            case 3:
+                waitingListRequests.sort(new WaitingListRequestBodyPartComparator());
+                break;
+        }
+
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent)
+    {
+
     }
 }
