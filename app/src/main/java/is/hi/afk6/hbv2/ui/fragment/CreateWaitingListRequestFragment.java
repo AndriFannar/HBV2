@@ -15,7 +15,6 @@ import androidx.navigation.NavController;
 import androidx.navigation.NavOptions;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -259,7 +258,7 @@ public class CreateWaitingListRequestFragment extends Fragment {
                             bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
                             NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
-                            NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.nav_create_waiting_list_request, false).build();
+                            navController.popBackStack(R.id.nav_create_waiting_list_request, true);
                             navController.navigate(R.id.nav_waiting_list_request, bundle);
                         } else {
                             controlView(false, false, true);
@@ -270,7 +269,7 @@ public class CreateWaitingListRequestFragment extends Fragment {
         });
     }
 
-
+    NavOptions navOptions = new NavOptions.Builder().setPopUpTo(R.id.nav_create_waiting_list_request, false).build();
     /**
      * Displays loading when sending in a request.
      *

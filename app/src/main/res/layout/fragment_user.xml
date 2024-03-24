@@ -83,6 +83,12 @@
                 style="@style/Theme.HBV2.TextViewStyle" />
         </LinearLayout>
 
+        <Button
+            android:id="@+id/update_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_user"/>
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
