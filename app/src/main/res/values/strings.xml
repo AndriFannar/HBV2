@@ -47,11 +47,11 @@
     <string name="waiting_list_title">Yfirlit yfir fyrirspurn</string>
     <string name="waiting_list_info">Fyrirspurn á biðlista:</string>
     <string name="waiting_list_info_date">Dagsetning: </string>
+    <string name="waiting_list_info_priority">Forgangur: </string>
     <string name="waiting_list_info_bodyPart">Líkamshluti: </string>
     <string name="waiting_list_info_description">Lýsing: </string>
     <string name="waiting_list_info_physiotherapist">Sjúkraþjálfari: </string>
     <string name="waiting_list_info_status">Staða fyrirspurnar: </string>
-    <string name="delete_request">Eyða fyrirspurn</string>
     <string name="answer_questionnaire">Svara spurningalista</string>
     <string name="questionnaire_answered">Spurningalista svarað</string>
     <string name="waiting_list_request_accepted">Samþykkt</string>
@@ -62,6 +62,7 @@
     <string name="edited_user">editedUser</string>
     <string name="waiting_list_request">waitingListRequest</string>
     <string name="questionnaire">questionnaire</string>
+    <string name="view_questionnaire_answers">Spurningalisti</string>
 
     <string name="questions">Spurningar</string>
     <string name="next_question_button">Næsta spurning</string>
@@ -69,11 +70,11 @@
 
     <string name="user_overview_header_text">Yfirlit notendur</string>
     <string name="user_overview_button_text">Uppfæra</string>
+    <string name="user_questionnaire_answers_overview_header_text">Svör við spurningalista</string>
 
     <!-- WaitingListRequestOverview -->
     <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
     <string name="requests_overview_view_button_text">Skoða</string>
     <string name="requests_overview_accept_button_text">Samþykkja</string>
     <string name="requests_overview_delete_button_text">Eyða</string>
-
 </resources>

@@ -1,139 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/frameLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.099">
+        style="@style/Theme.HBV2.FormLayoutStyle"
+        app:layout_constraintVertical_bias="0.158"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            style="@style/Theme.HBV2.HeaderTextStyle"
+            android:text="@string/edit_user"/>
 
         <LinearLayout
             android:id="@+id/layout_wrapper_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_info_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:padding="2dp"
-                android:text="@string/user_name"
-                android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle"
+                android:layout_marginEnd="@dimen/padding"
+                android:text="@string/user_name" />
 
             <TextView
                 android:id="@+id/user_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="9dp"
-                android:fontFamily="sans-serif-medium"
-                android:padding="2dp"
-                android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_wrapper_phoneNr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="@+id/layout_wrapper_name">
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_info_phoneNr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:padding="2dp"
-                android:text="@string/phoneNumber"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/user_address"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle"
+                android:layout_marginEnd="@dimen/padding"
+                android:text="@string/phoneNumber" />
 
             <TextView
                 android:id="@+id/user_phoneNr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="9dp"
-                android:fontFamily="sans-serif-medium"
-                android:padding="2dp"
-                android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_wrapper_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="60dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_info_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:padding="2dp"
-                android:text="@string/address"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/user_address"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle"
+                android:layout_marginEnd="@dimen/padding"
+                android:text="@string/address" />
 
             <TextView
                 android:id="@+id/user_address"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="9dp"
-                android:fontFamily="sans-serif-medium"
-                android:padding="2dp"
-                android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/layout_wrapper_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="90dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/user_info_emial"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:padding="2dp"
-                android:text="@string/email"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toStartOf="@+id/user_address"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle"
+                android:layout_marginEnd="@dimen/padding"
+                android:text="@string/email" />
 
             <TextView
                 android:id="@+id/user_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="9dp"
-                android:fontFamily="sans-serif-medium"
-                android:padding="2dp"
-                android:textSize="20sp"
-                app:layout_constraintTop_toTopOf="parent" />
+                style="@style/Theme.HBV2.TextViewStyle" />
         </LinearLayout>
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/update_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_user"/>
+
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

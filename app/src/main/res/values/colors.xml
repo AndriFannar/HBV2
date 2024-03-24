@@ -11,4 +11,5 @@
 
     <color name="pale_yellow">#FEFBDE</color>
     <color name="pale_green">#E4FEDE</color>
+    <color name="error_red">#F44336</color>
 </resources>

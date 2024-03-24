@@ -29,10 +29,10 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
     private ActivityUserHomepageBinding binding;
     private User loggedInUser;
     private User editedUser;
+    private NavigationView navigationView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityUserHomepageBinding.inflate(getLayoutInflater());
@@ -40,20 +40,21 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
 
         //setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.mainDrawerLayout;
-        NavigationView navigationView = binding.mainNav;
+        navigationView = binding.mainNav;
 
         loggedInUser = (User) getIntent().getParcelableExtra(getString(R.string.logged_in_user));
 
         Menu menu = navigationView.getMenu();
 
-        if (loggedInUser.getRole() == UserRole.USER)
-        {
+        if (loggedInUser.getRole() == UserRole.USER) {
             binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_create_waiting_list_request, R.id.nav_edit_user)
+                    R.id.nav_create_waiting_list_request, R.id.nav_waiting_list_request, R.id.nav_user_fragment)
                     .setOpenableLayout(drawer)
                     .build();
+
+            binding.mainNav.getMenu().findItem(R.id.nav_edit_user).setVisible(false);
         }
         else if (loggedInUser.getRole().isStaffMember())
         {
@@ -67,7 +68,6 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
                     .setOpenableLayout(drawer)
                     .build();
         }
-
 
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -88,10 +88,9 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
      * @param loggedInUser        User to be displayed on homepage.
      * @param bundleExtraEdited   String to associate with the edited User.
      * @param editedUser          Edited User.
-     * @return                    Intent to this Activity.
+     * @return Intent to this Activity.
      */
-    public static Intent newIntent(Context packageContext, String bundleExtraLoggedIn, User loggedInUser, String bundleExtraEdited, User editedUser)
-    {
+    public static Intent newIntent(Context packageContext, String bundleExtraLoggedIn, User loggedInUser, String bundleExtraEdited, User editedUser) {
         Intent intent = new Intent(packageContext, UserHomepageActivity.class);
         intent.putExtra(bundleExtraLoggedIn, loggedInUser);
         intent.putExtra(bundleExtraEdited, editedUser);
@@ -106,8 +105,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem)
-    {
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
 
         Bundle bundle = new Bundle();
@@ -123,19 +121,14 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         return true;
     }
 
-    private void navigate(NavController navController)
-    {
+    private void navigate(NavController navController) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
-        if (loggedInUser.getRole() == UserRole.USER)
-        {
-            if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0)
-            {
+        if (loggedInUser.getRole() == UserRole.USER) {
+            if (loggedInUser.getWaitingListRequestID() != null && loggedInUser.getWaitingListRequestID() != 0) {
                 navController.navigate(R.id.nav_waiting_list_request, bundle);
-            }
-            else
-            {
+            } else {
                 navController.navigate(R.id.nav_create_waiting_list_request, bundle);
             }
         }
@@ -151,8 +144,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
      * @param user Updated User.
      */
     @Override
-    public void onUserUpdated(User user)
-    {
+    public void onUserUpdated(User user) {
         // Update the text in the Navigation with the new info.
         View headerView = binding.mainNav.getHeaderView(0);
         TextView username = headerView.findViewById(R.id.nav_username);

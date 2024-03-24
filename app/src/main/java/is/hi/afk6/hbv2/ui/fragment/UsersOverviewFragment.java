@@ -7,27 +7,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import java.util.List;
 import java.util.Objects;
-
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
 public class UsersOverviewFragment extends Fragment {
-
     private FragmentUsersOverviewBinding binding;
     private UserService userService;
     private List<User> users;
@@ -37,12 +33,10 @@ public class UsersOverviewFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
-
         if (getArguments() != null) {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
         }
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,14 +44,16 @@ public class UsersOverviewFragment extends Fragment {
     {
         binding = FragmentUsersOverviewBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
-
         getUsers();
 
         return view;
     }
 
     /**
-     * Gets all the users that uses the app and displays them
+     * Retrieves users from the userService and populates the UI with user data,
+     * including buttons for editing user details and viewing questionnaire answers.
+     * This method asynchronously fetches user data from the API and updates the UI accordingly.
+     * It also handles user interactions such as button clicks for editing and viewing answers.
      */
     public void getUsers(){
         controlView(true, "");
@@ -78,6 +74,11 @@ public class UsersOverviewFragment extends Fragment {
                                     Button button = createButton();
                                     userContainer.addView(userName);
                                     userContainer.addView(button);
+                                    Button viewAnswers = new Button(getContext());
+                                    if(user.getWaitingListRequestID() > 0) {
+                                        viewAnswers = createViewQuestionnaireAnswersButton();
+                                        userContainer.addView(viewAnswers);
+                                        }
                                     button.setOnClickListener(v ->
                                     {
                                         NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
@@ -85,10 +86,17 @@ public class UsersOverviewFragment extends Fragment {
                                         Bundle bundle = new Bundle();
                                         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
                                         bundle.putParcelable(getString(R.string.edited_user), user);
-
                                         navController.navigate(R.id.nav_edit_user, bundle);
                                     });
 
+                                    viewAnswers.setOnClickListener(view -> {
+                                        NavController viewAnswersNavController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+                                        Bundle bundle = new Bundle();
+                                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                                        bundle.putParcelable(getString(R.string.view_questionnaire_answers), user);
+                                        viewAnswersNavController.navigate(R.id.nav_view_questionnaire_answers, bundle);
+                                    });
                                     binding.usersContainer.addView(userContainer);
                                 }
                             }
@@ -162,6 +170,25 @@ public class UsersOverviewFragment extends Fragment {
         updateButton.setLayoutParams(params);
 
         return updateButton;
+    }
+
+    /**
+     * Creates a Button widget for viewing questionnaire answers.
+     *
+     * @return A Button widget configured for viewing questionnaire answers.
+     */
+    private Button createViewQuestionnaireAnswersButton() {
+        Button viewAnswersButton = new Button(requireContext());
+        String VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT = "Skoða";
+        viewAnswersButton.setText(VIEW_QUESTIONNAIRE_ANSWERS_BUTTON_TEXT);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        viewAnswersButton.setLayoutParams(params);
+
+        return viewAnswersButton;
     }
 
     /**

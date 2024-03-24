@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,6 +17,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+
+import com.google.android.material.navigation.NavigationView;
 
 import java.util.Arrays;
 import java.util.List;
@@ -53,7 +56,7 @@ public class EditUserFragment extends Fragment {
         // Make sure the container activity has implemented the callback interface.
         if (!(context instanceof Callbacks))
         {
-            throw new ClassCastException(context.toString() + " must implement EditUserFragment.Callbacks");
+            throw new ClassCastException(context + " must implement EditUserFragment.Callbacks");
         }
 
         callbacks = (Callbacks) context;
@@ -130,8 +133,14 @@ public class EditUserFragment extends Fragment {
                     errorResponse_input(errorResponse);
                 } else
                 {
-                    // Execute the callback.
-                    callbacks.onUserUpdated(loggedInUser);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                    navController.navigate(R.id.nav_user_fragment, bundle);
+                    
+                    //edit_setup();
+                    //callbacks.onUserUpdated(loggedInUser);
                 }
             });
         });
@@ -250,7 +259,6 @@ public class EditUserFragment extends Fragment {
             });
         });
     }
-
 
 
     /**

@@ -11,6 +11,7 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
+
     </fragment>
 
     <fragment
@@ -31,6 +32,7 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
+
     </fragment>
 
     <fragment
@@ -41,6 +43,7 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
+
     </fragment>
 
     <fragment
@@ -78,4 +81,8 @@
             android:name="@string/questionnaire"
             app:argType="is.hi.afk6.hbv2.entities.Questionnaire" />
     </fragment>
+    <fragment
+        android:id="@+id/nav_view_questionnaire_answers"
+        android:name="is.hi.afk6.hbv2.ui.fragment.ViewQuesionnaireAnswersFragment"
+        android:label="@string/view_questionnaire_answers" />
 </navigation>
