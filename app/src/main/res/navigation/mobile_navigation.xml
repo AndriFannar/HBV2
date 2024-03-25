@@ -1,20 +1,27 @@
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_create_waiting_list_request">
+    app:startDestination="@+id/nav_user_fragment">
 
     <fragment
         android:id="@+id/nav_user_fragment"
         android:name="is.hi.afk6.hbv2.ui.fragment.UserFragment"
-        android:label="UserFragment"
+        android:label="@string/user_view"
         android:layout="@layout/fragment_user">
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
-        <action
-            android:id="@+id/action_nav_user_fragment_to_nav_users_overview2"
-            app:destination="@id/nav_users_overview" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_waiting_list_overview"
+        android:name="is.hi.afk6.hbv2.ui.fragment.WaitingListRequestOverviewFragment"
+        android:label="@string/requests_overview_header_text"
+        android:layout="@layout/fragment_waiting_list_request_overview">
+        <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
     </fragment>
 
     <fragment
@@ -25,9 +32,7 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
-        <action
-            android:id="@+id/action_nav_create_waiting_list_request_to_nav_edit_user"
-            app:destination="@id/nav_edit_user" />
+
     </fragment>
 
     <fragment
@@ -38,12 +43,10 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
-        <action
-            android:id="@+id/action_nav_waiting_list_request_to_nav_edit_user"
-            app:destination="@id/nav_edit_user" />
-        <action
-            android:id="@+id/action_nav_waiting_list_request_to_nav_answer_questionnaire"
-            app:destination="@id/nav_answer_questionnaire" />
+        <argument
+            android:name="@string/waiting_list_request"
+            app:argType="is.hi.afk6.hbv2.entities.WaitingListRequest" />
+
     </fragment>
 
     <fragment
@@ -54,15 +57,6 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
-        <action
-            android:id="@+id/action_nav_edit_user_to_nav_waiting_list_request"
-            app:destination="@id/nav_waiting_list_request" />
-        <action
-            android:id="@+id/action_nav_edit_user_to_nav_create_waiting_list_request"
-            app:destination="@id/nav_create_waiting_list_request" />
-        <action
-            android:id="@+id/action_nav_edit_user_to_nav_users_overview"
-            app:destination="@id/nav_users_overview" />
     </fragment>
 
     <fragment
@@ -73,12 +67,6 @@
         <argument
             android:name="@string/logged_in_user"
             app:argType="is.hi.afk6.hbv2.entities.User" />
-        <action
-            android:id="@+id/action_nav_users_overview_to_nav_edit_user"
-            app:destination="@id/nav_edit_user" />
-        <action
-            android:id="@+id/action_nav_users_overview_to_nav_user_fragment"
-            app:destination="@id/nav_user_fragment" />
     </fragment>
 
     <fragment
@@ -87,10 +75,31 @@
         android:label="@string/answer_questionnaire"
         android:layout="@layout/fragment_answer_questionnaire">
         <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
+        <argument
             android:name="@string/waiting_list_request"
             app:argType="is.hi.afk6.hbv2.entities.WaitingListRequest" />
         <argument
             android:name="@string/questionnaire"
             app:argType="is.hi.afk6.hbv2.entities.Questionnaire" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_view_questionnaire_answers"
+        android:name="is.hi.afk6.hbv2.ui.fragment.ViewQuesionnaireAnswersFragment"
+        android:label="@string/user_questionnaire_answers_overview_header_text" />
+
+    <fragment
+        android:id="@+id/nav_edit_waiting_list_request"
+        android:name="is.hi.afk6.hbv2.ui.fragment.EditWaitingListRequestFragment"
+        android:label="@string/edit_request_title"
+        android:layout="@layout/fragment_edit_waiting_list_request">
+        <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
+        <argument
+            android:name="@string/waiting_list_request"
+            app:argType="is.hi.afk6.hbv2.entities.WaitingListRequest" />
     </fragment>
 </navigation>

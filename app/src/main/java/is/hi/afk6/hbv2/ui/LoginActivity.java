@@ -3,7 +3,6 @@ package is.hi.afk6.hbv2.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,7 +13,7 @@ import is.hi.afk6.hbv2.databinding.ActivityLoginBinding;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
@@ -107,6 +106,10 @@ public class LoginActivity extends AppCompatActivity
                         {
                             // Show error if User was not found.
                             String error = result.getErrorResponse().getErrorDetails().get("login");
+
+                            // If there is no error under login from the API, an API error has occurred.
+                            if (error == null) error = getString(R.string.general_error);
+
                             controlView(false, error);
                         }
                     }

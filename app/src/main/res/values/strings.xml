@@ -1,15 +1,12 @@
 <resources>
     <string name="app_name">HBV2</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Heim</string>
+    <string name="general_error">Villa hefur komið upp. Vinsamlegast reynið aftur.</string>
+
     <string name="menu_change_user">Breyta Notendaupplýsingum</string>
-    <string name="admin_see_users">Sjá alla notendur</string>
+
+    <string name="yes">Já</string>
+    <string name="no">Nei</string>
 
     <string name="login_text">Skrá inn</string>
     <string name="login_email">Tölvupóstur</string>
@@ -22,14 +19,15 @@
     <string name="signup_address">Heimilisfang</string>
     <string name="signup_email">Tölvupóstur</string>
     <string name="signup_password">Lykilorð</string>
-    <string name="signup_confirm">Stofna aðgang</string>
 
-    <string name="user_homepage_test">Heimaskjár notanda</string>
+    <!-- UserFragment -->
+    <string name="user_view">Upplýsingar notanda</string>
     <string name="user_name">"Notandi: "</string>
     <string name="name">Nafn</string>
     <string name="phoneNumber">"Símanúmer: "</string>
     <string name="address">"Heimilisfang: "</string>
     <string name="email">"Netfang: "</string>
+    <string name="specialization">"Sérhæfing: "</string>
 
     <!-- Edit User -->
     <string name="edit_user">Breyta notendaupplýsingum</string>
@@ -40,6 +38,7 @@
     <string name="edit_error_email">Netfang ólölegt</string>
     <string name="edit_text">Breyta upplýsingum\n</string>
     <string name="edit_delete">Eyða aðgangi</string>
+    <string name="delete_user_warning">Ertu viss um að þú viljir eyða aðganginum?</string>
 
     <!-- Register to Waiting List -->
     <string name="register_waiting_list_title">Senda fyrirspurn</string>
@@ -52,14 +51,16 @@
     <string name="waiting_list_title">Yfirlit yfir fyrirspurn</string>
     <string name="waiting_list_info">Fyrirspurn á biðlista:</string>
     <string name="waiting_list_info_date">Dagsetning: </string>
+    <string name="waiting_list_info_priority">Forgangur: </string>
     <string name="waiting_list_info_bodyPart">Líkamshluti: </string>
     <string name="waiting_list_info_description">Lýsing: </string>
     <string name="waiting_list_info_physiotherapist">Sjúkraþjálfari: </string>
     <string name="waiting_list_info_status">Staða fyrirspurnar: </string>
-    <string name="delete_request">Eyða fyrirspurn</string>
     <string name="answer_questionnaire">Svara spurningalista</string>
+    <string name="questionnaire_answered">Spurningalista svarað</string>
     <string name="waiting_list_request_accepted">Samþykkt</string>
     <string name="waiting_list_request_pending">Í Bið</string>
+    <string name="delete_request_warning">Ertu viss um að þú viljir eyða fyrirspurninni?</string>
 
     <!-- Bundles -->
     <string name="logged_in_user">loggedInUser</string>
@@ -67,12 +68,35 @@
     <string name="waiting_list_request">waitingListRequest</string>
     <string name="questionnaire">questionnaire</string>
 
-    <string name="edit_to_admin">Breyta í kerfisstjóra</string>
-
     <string name="questions">Spurningar</string>
     <string name="next_question_button">Næsta spurning</string>
     <string name="go_home_button">Heimasíða</string>
 
     <string name="user_overview_header_text">Yfirlit notendur</string>
     <string name="user_overview_button_text">Uppfæra</string>
+    <string name="user_questionnaire_answers_overview_header_text">Svör við spurningalista</string>
+
+    <!-- WaitingListRequestsOverview -->
+    <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
+    <string name="requests_overview_view_button_text">Skoða</string>
+    <string name="requests_overview_accept_button_text">Samþykkja</string>
+    <string name="requests_overview_delete_button_text">Eyða</string>
+    <string name="requests_overview_no_requests_text">Engar Fyrirspurnir skráðar</string>
+    <string name="requests_overview_sort_spinner_hint">Raða eftir:</string>
+    <string-array name="requests_overview_physio_sort_options">
+        <item>Forgangur</item>
+        <item>Dagsetning</item>
+        <item>Nafn sjúklings</item>
+        <item>Líkamshluti</item>
+    </string-array>
+    <string-array name="requests_overview_reception_sort_options">
+        <item>Forgangur</item>
+        <item>Dagsetning</item>
+        <item>Nafn sjúklings</item>
+    </string-array>
+
+    <!-- EditWaitingListRequest -->
+    <string name="edit_request_title">Breyta Fyrirspurn</string>
+    <string name="edit_request_priority">Forgangur</string>
+    <string name="edit_request_button_text">Uppfæra</string>
 </resources>

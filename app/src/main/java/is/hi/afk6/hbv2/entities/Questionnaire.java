@@ -19,7 +19,7 @@ public class Questionnaire implements Parcelable
 {
     private Long id;
     private String name;
-    private List<Long> questionIDs;
+    private List<Question> questions;
     private boolean displayOnForm;
 
     /**
@@ -27,22 +27,22 @@ public class Questionnaire implements Parcelable
      */
     public Questionnaire()
     {
-        this.questionIDs = new ArrayList<>();
+        this.questions = new ArrayList<>();
         this.displayOnForm = false;
     }
 
     /**
      * Create a new Questionnaire.
      *
-     * @param id                  Unique ID of Questionnaire.
-     * @param name                Name of Questionnaire.
-     * @param questionIDs           Questions belonging to the Questionnaire.
-     * @param displayOnForm       Display this Questionnaire on registration form.
+     * @param id            Unique ID of Questionnaire.
+     * @param name          Name of Questionnaire.
+     * @param questions     Questions belonging to the Questionnaire.
+     * @param displayOnForm Display this Questionnaire on registration form.
      */
-    public Questionnaire(Long id, String name, List<Long> questionIDs, boolean displayOnForm) {
+    public Questionnaire(Long id, String name, List<Question> questions, boolean displayOnForm) {
         this.id = id;
         this.name = name;
-        this.questionIDs = questionIDs;
+        this.questions = questions;
         this.displayOnForm = displayOnForm;
     }
 
@@ -54,7 +54,7 @@ public class Questionnaire implements Parcelable
     public Questionnaire(String name)
     {
         this.name = name;
-        this.questionIDs = new ArrayList<>();
+        this.questions = new ArrayList<>();
         this.displayOnForm = false;
     }
 
@@ -67,7 +67,7 @@ public class Questionnaire implements Parcelable
     {
         this.id            = in.readLong();
         this.name          = in.readString();
-        this.questionIDs   = in.readArrayList(Long.class.getClassLoader());
+        this.questions     = in.readArrayList(Long.class.getClassLoader());
         this.displayOnForm = in.readByte() != 0;
     }
 
@@ -87,12 +87,12 @@ public class Questionnaire implements Parcelable
         this.name = name;
     }
 
-    public List<Long> getQuestionIDs() {
-        return questionIDs;
+    public List<Question> getQuestions() {
+        return questions;
     }
 
-    public void setQuestionIDs(List<Long> questionIDs) {
-        this.questionIDs = questionIDs;
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 
     public boolean isDisplayOnForm() {
@@ -101,6 +101,17 @@ public class Questionnaire implements Parcelable
 
     public void setDisplayOnForm(boolean displayOnForm) {
         this.displayOnForm = displayOnForm;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Questionnaire{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", questionIDs=" + questions +
+                ", displayOnForm=" + displayOnForm +
+                '}';
     }
 
     @Override
@@ -112,7 +123,7 @@ public class Questionnaire implements Parcelable
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
         dest.writeString(name);
-        dest.writeList(questionIDs);
+        dest.writeList(questions);
         dest.writeByte((byte) (displayOnForm ? 1 : 0));
     }
 

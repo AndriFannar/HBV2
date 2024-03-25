@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
@@ -42,6 +42,18 @@ public class UserFragment extends Fragment
             binding.userAddress.setText(loggedInUser.getAddress());
             binding.userEmail.setText(loggedInUser.getEmail());
         }
+
+        binding.updateUser.setOnClickListener(v -> changeFragment());
         return view;
     }
+
+    private void changeFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+        bundle.putParcelable(getString(R.string.edited_user), loggedInUser);
+
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+        navController.navigate(R.id.nav_edit_user, bundle);
+    }
+
 }

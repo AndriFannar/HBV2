@@ -12,9 +12,9 @@ import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
 import is.hi.afk6.hbv2.entities.Question;
-import is.hi.afk6.hbv2.entities.User;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.QuestionService;
 
@@ -30,6 +30,7 @@ public class QuestionServiceImplementation implements QuestionService
 {
     private final APIService apiService;
     private final Executor executor;
+    private final static String API_QUESTION_LOCATION = "question/";
 
     public QuestionServiceImplementation(APIService apiService, Executor executor)
     {
@@ -51,14 +52,19 @@ public class QuestionServiceImplementation implements QuestionService
     public void getAllQuestionsFromList(List<Long> questionIDs, APICallback<List<Question>> callback) {
         executor.execute(new Runnable() {
             @Override
-            public void run() {
-
-                String urlExtension = "question/getAllInList";
-
+            public void run()
+            {
                 String questions = "questionIDs=" + questionIDs.stream()
                                                             .map(Object::toString).collect(Collectors.joining(","));
 
-                JSONObject returnJson = apiService.getRequest(urlExtension, questions);
+                String[] requestParams = new String[] { questions };
+
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTION_LOCATION + "getAllInList",
+                        Request.GET,
+                        requestParams,
+                        null
+                );
 
                 if (returnJson != null && returnJson.length() > 0)
                 {

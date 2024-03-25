@@ -1,140 +1,101 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import java.time.format.DateTimeFormatter;
+
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentWaitingListRequestBinding;
-import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
-import is.hi.afk6.hbv2.entities.api.APICallback;
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
-import is.hi.afk6.hbv2.services.QuestionnaireService;
-import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.WaitingListService;
-import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 public class WaitingListRequestFragment extends Fragment
 {
     private User loggedInUser;
-    private User staff;
-    private Questionnaire questionnaire;
     private WaitingListRequest waitingListRequest;
     private WaitingListService waitingListService;
-    private QuestionnaireService questionnaireService;
-    private UserService userService;
     private FragmentWaitingListRequestBinding binding;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Get arguments.
         if (getArguments() != null) {
             loggedInUser = getArguments().getParcelable(getString(R.string.logged_in_user));
             waitingListRequest = getArguments().getParcelable(getString(R.string.waiting_list_request));
-            questionnaire = getArguments().getParcelable(getString(R.string.questionnaire));
         }
 
         APIService apiService = new APIServiceImplementation();
 
         waitingListService   = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        userService          = new UserServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
-        questionnaireService = new QuestionnaireServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         binding = FragmentWaitingListRequestBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
-        if (loggedInUser.getWaitingListRequestID() == null || loggedInUser.getWaitingListRequestID() == 0)
+        if(waitingListRequest == null && (loggedInUser.getWaitingListRequestID() != 0 || loggedInUser.getWaitingListRequestID() != null))
         {
-            goToCreate();
-            return null;
+            fetchRequest();
         }
-
-        if (waitingListRequest == null)
+        else if (waitingListRequest == null)
         {
-            waitingListService.getWaitingListRequestByID(loggedInUser.getWaitingListRequestID(), new APICallback<WaitingListRequest>()
-            {
-                @Override
-                public void onComplete(ResponseWrapper<WaitingListRequest> result)
-                {
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run()
-                        {
-                            waitingListRequest = result.getData();
-                            fetchData();
-                        }
-                    });
-                }
-            });
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+            if (loggedInUser.getRole() == UserRole.USER)
+                navigate(R.id.nav_create_waiting_list_request, bundle);
+            else
+                navigate(R.id.nav_create_waiting_list_request, bundle);
+
+            return view;
         }
         else
         {
-            fetchData();
+            setUpView();
         }
 
 
         binding.buttonDeleteRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                deleteRequest();
+                deleteRequestAlert();
             }
 
         });
-
-        binding.buttonAnswerQuestionnaire.setOnClickListener(new View.OnClickListener() {
+        binding.buttonAcceptRequest.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-
-                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
-                bundle.putParcelable(getString(R.string.questionnaire), questionnaire);
-
-                NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
-                navController.navigate(R.id.nav_answer_questionnaire, bundle);
-            }
-        });
-
-        return view;
-    }
-
-    private void fetchData()
-    {
-        userService.getUserByID(waitingListRequest.getStaffID(), new APICallback<User>()
-        {
-            @Override
-            public void onComplete(ResponseWrapper<User> result)
-            {
-                staff = result.getData();
-                questionnaireService.getQuestionnaireByID(waitingListRequest.getQuestionnaireID(), new APICallback<Questionnaire>()
-                {
+                waitingListService.updateWaitingListRequestStatus(waitingListRequest.getId(),true, new APICallback<WaitingListRequest>(){
                     @Override
-                    public void onComplete(ResponseWrapper<Questionnaire> result)
-                    {
-                        questionnaire = result.getData();
-                        requireActivity().runOnUiThread(new Runnable()
-                        {
+                    public void onComplete(ResponseWrapper<WaitingListRequest> result) {
+                        requireActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
+                                waitingListRequest.setStatus(true);
                                 setUpView();
                             }
                         });
@@ -142,22 +103,136 @@ public class WaitingListRequestFragment extends Fragment
                 });
             }
         });
+
+
+        // Navigate to AnswerQuestionnaireFragment.
+        binding.buttonAnswerQuestionnaire.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                    bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+
+                    navigate(R.id.nav_answer_questionnaire, bundle);
+            }
+        });
+
+        binding.buttonViewQuestionnaireAnswers.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+
+                navigate(R.id.nav_view_questionnaire_answers, bundle);
+            }
+        });
+
+        binding.buttonEditRequest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                bundle.putParcelable(getString(R.string.waiting_list_request), waitingListRequest);
+
+                navigate(R.id.nav_edit_waiting_list_request, bundle);
+            }
+        });
+
+        return view;
     }
 
+    /**
+     * Fetches the User's WaitingListRequest from the API.
+     */
+    private void fetchRequest()
+    {
+        waitingListService.getWaitingListRequestByID(loggedInUser.getWaitingListRequestID(), new APICallback<WaitingListRequest>()
+        {
+            @Override
+            public void onComplete(ResponseWrapper<WaitingListRequest> result)
+            {
+                if (result.getData() != null)
+                {
+                    waitingListRequest = result.getData();
+
+                    requireActivity().runOnUiThread(WaitingListRequestFragment.this::setUpView);
+                }
+            }
+        });
+    }
+
+    /**
+     * Insert all info about the WaitingListRequest into the view.
+     */
     private void setUpView()
     {
+        if(loggedInUser.getRole().isElevatedUser()){
 
+            binding.waitingListUserLinearLayout.setVisibility(View.VISIBLE);
+            binding.fragmentUser.updateUser.setVisibility(View.GONE);
+            binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
 
-        binding.waitingListDate.setText(waitingListRequest.getDateOfRequest().toString());
+            binding.fragmentUser.userName.setText(waitingListRequest.getPatient().getName());
+            binding.fragmentUser.userEmail.setText(waitingListRequest.getPatient().getEmail());
+            binding.fragmentUser.userPhoneNr.setText(waitingListRequest.getPatient().getPhoneNumber());
+            binding.fragmentUser.userAddress.setText(waitingListRequest.getPatient().getAddress());
+
+            if (waitingListRequest.isStatus())
+                binding.buttonAcceptRequest.setVisibility(View.GONE);
+
+            if (!waitingListRequest.getQuestionnaireAnswers().isEmpty())
+                binding.buttonViewQuestionnaireAnswers.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            binding.buttonAcceptRequest.setVisibility(View.GONE);
+
+            if (waitingListRequest.getQuestionnaire() == null || waitingListRequest.getQuestionnaire().getQuestions().isEmpty())
+                binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
+            else if (!waitingListRequest.getQuestionnaireAnswers().isEmpty())
+            {
+                binding.buttonAnswerQuestionnaire.setClickable(false);
+                binding.buttonAnswerQuestionnaire.setText(getString(R.string.questionnaire_answered));
+                binding.buttonAnswerQuestionnaire.setAlpha(0.5f);
+            }
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        binding.waitingListDate.setText(waitingListRequest.getDateOfRequest().format(formatter));
         binding.waitingListDescription.setText(waitingListRequest.getDescription());
-        binding.waitingListBodyPart.setText(questionnaire.getName());
-        binding.waitingListPhysiotherapist.setText(staff.getName());
+        binding.waitingListBodyPart.setText(waitingListRequest.getQuestionnaire().getName());
+        binding.waitingListPhysiotherapist.setText(waitingListRequest.getStaff().getName());
 
         binding.waitingListStatus.setText(waitingListRequest.isStatus() ? getString(R.string.waiting_list_request_accepted) : getString(R.string.waiting_list_request_pending));
-        if (waitingListRequest.getQuestionnaireID() == null || waitingListRequest.getQuestionnaireID() == 0 || !waitingListRequest.getQuestionnaireAnswers().isEmpty())
-            binding.buttonAnswerQuestionnaire.setVisibility(View.GONE);
     }
 
+    /**
+     * Shows an alert dialog to confirm the deletion of the User's request.
+     */
+    public void deleteRequestAlert()
+    {
+        Activity activity = getActivity();
+
+        if (activity != null)
+        {
+            AlertDialog.Builder build = new AlertDialog.Builder(activity);
+            build.setMessage(R.string.delete_request_warning);
+            build.setCancelable(false);
+            build.setPositiveButton(R.string.yes, (dialog, which) -> deleteRequest());
+
+            build.setNegativeButton(R.string.no, (dialog, which) -> dialog.cancel());
+
+            AlertDialog alert = build.create();
+            alert.show();
+        }
+    }
+
+    /**
+     * Delete the WaitingListRequest.
+     */
     private void deleteRequest()
     {
         waitingListService.deleteWaitingListRequestByID(waitingListRequest.getId(), new APICallback<WaitingListRequest>() {
@@ -168,8 +243,20 @@ public class WaitingListRequestFragment extends Fragment
                     @Override
                     public void run()
                     {
-                        loggedInUser.setWaitingListRequestID(0L);
-                        goToCreate();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+
+                        // Set the User's WaitingListRequestID to 0 and navigate to create fragment.
+                        if(loggedInUser.getRole().isElevatedUser())
+                        {
+                            navigate(R.id.nav_waiting_list_overview, bundle);
+                        }
+                        else
+                        {
+                            loggedInUser.setWaitingListRequestID(0L);
+
+                            navigate(R.id.nav_create_waiting_list_request, bundle);
+                        }
                     }
                 });
 
@@ -177,12 +264,12 @@ public class WaitingListRequestFragment extends Fragment
         });
     }
 
-    private void goToCreate()
+    /**
+     * Navigates to another fragment.
+     */
+    private void navigate(int navLocation, Bundle bundle)
     {
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-
         NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
-        navController.navigate(R.id.nav_create_waiting_list_request, bundle);
+        navController.navigate(navLocation, bundle);
     }
 }

@@ -19,12 +19,12 @@ import java.util.List;
 public class WaitingListRequest implements Parcelable
 {
     private Long id;
-    private Long patientID;
-    private Long staffID;
+    private User patient;
+    private User staff;
     private String description;
     private boolean status;
     private LocalDate dateOfRequest;
-    private Long questionnaireID;
+    private Questionnaire questionnaire;
     private List<Integer> questionnaireAnswers;
     private double grade;
 
@@ -40,23 +40,23 @@ public class WaitingListRequest implements Parcelable
      * Create a new WaitingListRequest.
      *
      * @param id                   Unique ID of the WaitingListRequest.
-     * @param patientID              Patient (User) making the WaitingListRequest.
-     * @param staffID                Staff member (User) assigned to the WaitingListRequest.
+     * @param patient              Patient (User) making the WaitingListRequest.
+     * @param staff                Staff member (User) assigned to the WaitingListRequest.
      * @param description          Description of Users (patient's) problem.
      * @param status               Status of WaitingListRequest.
      * @param dateOfRequest        Date of WaitingListRequest creation.
-     * @param questionnaireID        Assigned Questionnaire.
+     * @param questionnaire        Assigned Questionnaire.
      * @param questionnaireAnswers User answers to assigned Questionnaire.
      * @param grade                Priority grade of WaitingListRequest.
      */
-    public WaitingListRequest(Long id, Long patientID, Long staffID, String description, boolean status, LocalDate dateOfRequest, Long questionnaireID, List<Integer> questionnaireAnswers, double grade) {
+    public WaitingListRequest(Long id, User patient, User staff, String description, boolean status, LocalDate dateOfRequest, Questionnaire questionnaire, List<Integer> questionnaireAnswers, double grade) {
         this.id = id;
-        this.patientID = patientID;
-        this.staffID = staffID;
+        this.patient = patient;
+        this.staff = staff;
         this.description = description;
         this.status = status;
         this.dateOfRequest = dateOfRequest;
-        this.questionnaireID = questionnaireID;
+        this.questionnaire = questionnaire;
         this.questionnaireAnswers = questionnaireAnswers;
         this.grade = grade;
     }
@@ -64,16 +64,16 @@ public class WaitingListRequest implements Parcelable
     /**
      * Create a new WaitingListRequest.
      *
-     * @param patientID              Patient (User) making the WaitingListRequest.
-     * @param staffID                Staff member (User) assigned to the WaitingListRequest.
+     * @param patient              Patient (User) making the WaitingListRequest.
+     * @param staff                Staff member (User) assigned to the WaitingListRequest.
      * @param description          Description of Users (patient's) problem.
-     * @param questionnaireID        Assigned Questionnaire.
+     * @param questionnaire        Assigned Questionnaire.
      */
-    public WaitingListRequest(Long patientID, Long staffID, String description, Long questionnaireID) {
-        this.patientID = patientID;
-        this.staffID = staffID;
+    public WaitingListRequest(User patient, User staff, String description, Questionnaire questionnaire) {
+        this.patient = patient;
+        this.staff = staff;
         this.description = description;
-        this.questionnaireID = questionnaireID;
+        this.questionnaire = questionnaire;
 
         this.dateOfRequest = LocalDate.now();
         this.grade = 0;
@@ -90,12 +90,12 @@ public class WaitingListRequest implements Parcelable
     private WaitingListRequest (Parcel in)
     {
         this.id                   = in.readLong();
-        this.patientID            = in.readLong();
-        this.staffID              = in.readLong();
+        this.patient              = in.readParcelable(User.class.getClassLoader());
+        this.staff                = in.readParcelable(User.class.getClassLoader());
         this.description          = in.readString();
         this.status               = in.readByte() != 0;
         this.dateOfRequest        = LocalDate.parse(in.readString());
-        this.questionnaireID      = in.readLong();
+        this.questionnaire        = in.readParcelable(Questionnaire.class.getClassLoader());
         this.questionnaireAnswers = in.readArrayList(Integer.class.getClassLoader());
         this.grade                = in.readDouble();
     }
@@ -108,20 +108,20 @@ public class WaitingListRequest implements Parcelable
         this.id = id;
     }
 
-    public Long getPatientID() {
-        return patientID;
+    public User getPatient() {
+        return patient;
     }
 
-    public void setPatientID(Long patientID) {
-        this.patientID = patientID;
+    public void setPatient(User patient) {
+        this.patient = patient;
     }
 
-    public Long getStaffID() {
-        return staffID;
+    public User getStaff() {
+        return staff;
     }
 
-    public void setStaffID(Long staffID) {
-        this.staffID = staffID;
+    public void setStaff(User staff) {
+        this.staff = staff;
     }
 
     public String getDescription() {
@@ -148,12 +148,12 @@ public class WaitingListRequest implements Parcelable
         this.dateOfRequest = dateOfRequest;
     }
 
-    public Long getQuestionnaireID() {
-        return questionnaireID;
+    public Questionnaire getQuestionnaire() {
+        return questionnaire;
     }
 
-    public void setQuestionnaireID(Long questionnaireID) {
-        this.questionnaireID = questionnaireID;
+    public void setQuestionnaire(Questionnaire questionnaire) {
+        this.questionnaire = questionnaire;
     }
 
     public List<Integer> getQuestionnaireAnswers() {
@@ -172,16 +172,17 @@ public class WaitingListRequest implements Parcelable
         this.grade = grade;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "WaitingListRequest{" +
                 "id=" + id +
-                ", patientID=" + patientID +
-                ", staffID=" + staffID +
+                ", patient=" + patient +
+                ", staff=" + staff +
                 ", description='" + description + '\'' +
                 ", status=" + status +
                 ", dateOfRequest=" + dateOfRequest +
-                ", questionnaireID=" + questionnaireID +
+                ", questionnaireID=" + questionnaire +
                 ", questionnaireAnswers=" + questionnaireAnswers +
                 ", grade=" + grade +
                 '}';
@@ -195,12 +196,12 @@ public class WaitingListRequest implements Parcelable
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeLong(id);
-        dest.writeLong(patientID);
-        dest.writeLong(staffID);
+        dest.writeParcelable(patient, flags);
+        dest.writeParcelable(staff, flags);
         dest.writeString(description);
         dest.writeByte((byte) (status ? 1 : 0));
         dest.writeString(dateOfRequest.toString());
-        dest.writeLong(questionnaireID);
+        dest.writeParcelable(questionnaire, flags);
         dest.writeList(questionnaireAnswers);
         dest.writeDouble(grade);
     }

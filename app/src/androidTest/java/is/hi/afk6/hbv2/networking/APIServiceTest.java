@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.networking;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -13,6 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
+import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 
 @RunWith(AndroidJUnit4.class)
@@ -25,7 +25,12 @@ public class APIServiceTest {
 
         try
         {
-            object = apiService.getRequest("user/view/8", "");
+            object = apiService.makeNetworkRequest(
+                    "user/view/8",
+                    Request.GET,
+            null,
+                    ""
+            );
 
             JSONObject user = object.getJSONObject("data");
 
@@ -48,7 +53,12 @@ public class APIServiceTest {
             String logInJson = new Gson().toJson(logIn);
 
             APIServiceImplementation apiService = new APIServiceImplementation();
-            JSONObject object = apiService.postRequest("user/login", logInJson);
+            JSONObject object = apiService.makeNetworkRequest(
+                    "user/login",
+                    Request.POST,
+                    null,
+                    logInJson
+            );
 
             JSONObject user = object.getJSONObject("data");
 
