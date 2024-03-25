@@ -34,7 +34,7 @@ import is.hi.afk6.hbv2.networking.APIService;
 public class APIServiceImplementation implements APIService
 {
     // Base API URL.
-    private final String API_URL = "https://hbv1-api-development.onrender.com/api/v1/";
+    private final String API_URL = "https://hbv1-api.onrender.com/api/v1/";
     /** @noinspection SpellCheckingInspection*/
     private final String API_PASS = "Kclj6G!2$CRpnOog";
 

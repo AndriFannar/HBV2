@@ -196,8 +196,15 @@ public class EditWaitingListRequestFragment extends Fragment
         if (loggedInUser.getRole().isElevatedUser())
         {
             waitingListRequest.setStaff(staff.get(binding.staffSpinner.getSelectedItemPosition()));
-            waitingListRequest.setQuestionnaire(displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition()));
             waitingListRequest.setGrade(Double.parseDouble(String.valueOf(binding.waitingListGrade.getText())));
+
+            Questionnaire selectedQuestionnaire = displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition());
+
+            if (!Objects.equals(waitingListRequest.getQuestionnaire().getId(), selectedQuestionnaire.getId()))
+            {
+                waitingListRequest.setQuestionnaire(selectedQuestionnaire);
+                waitingListRequest.setQuestionnaireAnswers(new ArrayList<>());
+            }
         }
         else
         {

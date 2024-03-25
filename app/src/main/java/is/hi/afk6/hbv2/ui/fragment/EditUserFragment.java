@@ -233,25 +233,20 @@ public class EditUserFragment extends Fragment {
     public void deleteAccount(User deletedUser){
         userService.deleteUserByID(deletedUser.getId(), result -> {
             requireActivity().runOnUiThread(() -> {
-                if(result != null)
+                if(editedUser.getName().equals(loggedInUser.getName()))
                 {
-                    throw new RuntimeException("Error deleting user");
-                } else {
-                    if(editedUser.getName().equals(loggedInUser.getName()))
-                    {
-                        Intent intent = new Intent(getActivity(), LoginActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                        requireActivity().startActivity(intent);
-                        requireActivity().finish();
-                    } else
-                    {
-                        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                    Intent intent = new Intent(getActivity(), LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    requireActivity().startActivity(intent);
+                    requireActivity().finish();
+                } else
+                {
+                    NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
 
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
 
-                        navController.navigate(R.id.nav_users_overview, bundle);
-                    }
+                    navController.navigate(R.id.nav_users_overview, bundle);
                 }
             });
         });

@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import android.util.Log;
+
 import com.google.gson.GsonBuilder;
 
 import java.time.LocalDate;
@@ -193,6 +195,8 @@ public class WaitingListServiceImplementation implements WaitingListService
                     // Convert User class to String.
                     String requestJson = gson.toJson(updatedRequest);
 
+                    Log.d("WaitingListService", requestJson);
+
                     // Send JSON data to API, wait for a return.
                     JSONObject returnJson = apiService.makeNetworkRequest(
                             API_WAITING_LIST_LOCATION + "update",
@@ -236,6 +240,8 @@ public class WaitingListServiceImplementation implements WaitingListService
                         requestParam,
                         ""
                 );
+
+                callback.onComplete(new ResponseWrapper<>(new WaitingListRequest()));
             }
         });
     }

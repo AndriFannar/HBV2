@@ -15,6 +15,6 @@ public class WaitingListRequestGradeComparator implements Comparator<WaitingList
 {
     @Override
     public int compare(WaitingListRequest o1, WaitingListRequest o2) {
-        return Double.compare(o1.getGrade(), o2.getGrade());
+        return Double.compare(o2.getGrade(), o1.getGrade());
     }
 }
