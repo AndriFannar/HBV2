@@ -11,6 +11,9 @@
 
     <color name="pale_yellow">#FEFBDE</color>
     <color name="pale_green">#E4FEDE</color>
-    <color name="lilac">#E6D7FF</color>
+
     <color name="error_red">#F44336</color>
+    <color name="pastel_blue">#D0F8FF</color>
+    <color name="pastel_purple">#E6D7FF</color>
+    <color name="pastel_pink">#FEDFFC</color>
 </resources>

@@ -60,7 +60,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/fragment_margin"
             android:layout_marginTop="@dimen/vertical_margin"
-            android:background="@color/lilac">
+            android:background="@color/pastel_purple">
 
         </LinearLayout>
 

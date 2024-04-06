@@ -13,13 +13,22 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="horizontal"
         android:layout_gravity="center">
 
         <TextView
             android:id="@+id/user_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
+            android:textSize="@dimen/text_size"
+            android:layout_margin="@dimen/fragment_margin"
+            android:layout_weight="2"/>
+
+        <TextView
+            android:id="@+id/user_role"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size"
             android:layout_margin="@dimen/fragment_margin"
             android:layout_weight="2"/>
 
@@ -38,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_margin="@dimen/fragment_margin"
-            android:text="@string/requests_overview_delete_button_text"
+            android:text="@string/edit_confirm"
             android:layout_weight="1"/>
     </LinearLayout>
 

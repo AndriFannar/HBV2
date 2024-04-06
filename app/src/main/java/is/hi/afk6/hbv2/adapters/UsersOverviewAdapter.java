@@ -18,6 +18,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.UserOverviewCallback;
 import is.hi.afk6.hbv2.databinding.RecyclerviewAdminUserOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
+import is.hi.afk6.hbv2.entities.enums.UserRole;
 
 public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdapter.ViewHolder> implements AdapterView.OnItemSelectedListener {
 
@@ -89,9 +90,7 @@ public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdap
             @Override
             public void onClick(View v)
             {
-                User clicked = users.get(holder.getAdapterPosition());
-
-                Log.i("TAG", String.valueOf(clicked));
+                callback.onViewUserClicked(users.get(holder.getAdapterPosition()));
             }
         });
     }
@@ -102,24 +101,31 @@ public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdap
     }
 
     /**
-     * Set the view for a WaitingListRequest.
+     * Set the view for a User.
      *
-     * @param current WaitingListRequest to make view for.
+     * @param current User to make view for.
      */
     private void setView(User current)
     {
-        binding.userBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
+        if(current.getRole() == UserRole.USER){
+            binding.userBackground.setBackgroundColor(Color.parseColor("#E6D7FF"));
+        } else if(current.getRole() == UserRole.ADMIN) {
+            binding.userBackground.setBackgroundColor(Color.parseColor("#D0F8FF"));
+        } else if(current.getRole() == UserRole.PHYSIOTHERAPIST){
+            binding.userBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
+        } else {
+            binding.userBackground.setBackgroundColor(Color.parseColor("#FEDFFC"));
+        }
 
         binding.userName.setText(current.getName());
+        binding.userRole.setText(current.getRole().getDisplayString());
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 }

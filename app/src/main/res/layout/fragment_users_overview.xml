@@ -28,19 +28,6 @@
 
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/edit_user">
-
-            <LinearLayout
-                android:id="@+id/users_container"
-                style="@style/Theme.HBV2.FragmentLayoutStyle">
-
-            </LinearLayout>
-
-        </ScrollView>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

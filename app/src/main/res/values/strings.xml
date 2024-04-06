@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">HBV2</string>
+    <string name="user_logout">Skrá út</string>
 
     <string name="general_error">Villa hefur komið upp. Vinsamlegast reynið aftur.</string>
 

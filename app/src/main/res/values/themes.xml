@@ -27,15 +27,17 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginTop">@dimen/fragment_margin</item>
+        <item name="android:layout_marginBottom">@dimen/fragment_margin</item>
         <item name="android:textAllCaps">true</item>
-        <item name="android:textSize">21sp</item>
+        <item name="android:textSize">@dimen/header_text_size</item>
         <item name="android:layout_margin">@dimen/padding</item>
     </style>
 
     <style name="Theme.HBV2.TextViewStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">@dimen/touch_height</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
         <item name="android:textAlignment">center</item>
         <item name="android:layout_gravity">center</item>
         <item name="android:textColor">@color/black</item>
@@ -46,7 +48,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">@dimen/touch_height</item>
         <item name="android:layout_marginTop">@dimen/vertical_spacing</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/small_text_size</item>
         <item name="android:ems">10</item>
         <item name="android:padding">@dimen/padding</item>
     </style>
@@ -58,7 +60,7 @@
         <item name="android:inputType">textMultiLine</item>
         <item name="android:overScrollMode">always</item>
         <item name="android:lines">6</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">@dimen/text_size</item>
         <item name="android:ems">10</item>
         <item name="android:padding">@dimen/padding</item>
         <item name="android:gravity">top</item>
@@ -70,7 +72,7 @@
         <item name="android:textAlignment">center</item>
         <item name="android:textColor">@color/error_red</item>
         <item name="android:layout_marginTop">1dp</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">@dimen/text_size</item>
         <item name="android:visibility">invisible</item>
     </style>
 
@@ -111,6 +113,14 @@
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintStart_toStartOf">parent</item>
         <item name="layout_constraintVertical_bias">@dimen/vertical_bias</item>
+    </style>
+
+    <style name="Theme.HBV2.ButtonLayoutStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/padding</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:orientation">horizontal</item>
     </style>
 
 </resources>
