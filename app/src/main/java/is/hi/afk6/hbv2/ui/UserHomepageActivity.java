@@ -45,6 +45,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         if (loggedInUser.getRole() == UserRole.USER) {
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_overview).setVisible(false);
             binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+            binding.mainNav.getMenu().findItem(R.id.nav_questionnaire_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_create_waiting_list_request, R.id.nav_waiting_list_request, R.id.nav_user_fragment)

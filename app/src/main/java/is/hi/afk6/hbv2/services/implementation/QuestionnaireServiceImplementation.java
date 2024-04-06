@@ -1,8 +1,5 @@
 package is.hi.afk6.hbv2.services.implementation;
 
-import android.util.Log;
-
-import java.time.LocalDate;
 import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -16,11 +13,9 @@ import java.util.concurrent.Executor;
 
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.callbacks.APICallback;
-import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.networking.APIService;
-import is.hi.afk6.hbv2.serializers.LocalDateSerializer;
 import is.hi.afk6.hbv2.services.QuestionnaireService;
 
 /**

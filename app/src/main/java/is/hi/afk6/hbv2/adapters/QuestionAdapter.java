@@ -148,7 +148,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
         }
 
         binding.questionText.setText(current.getQuestionString());
-        binding.questionNoOfAnswers.setText(String.valueOf(current.getNumberOfAnswers()));
+        binding.questionNoOfAnswers.setText(String.valueOf(current.getQuestionAnswerGroup().getGroupName()));
         binding.questionWeight.setText(String.valueOf(current.getWeight()));
     }
 

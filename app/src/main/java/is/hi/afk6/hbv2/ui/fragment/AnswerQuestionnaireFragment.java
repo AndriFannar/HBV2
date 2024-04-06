@@ -22,6 +22,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
 import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.QuestionAnswerGroup;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -98,12 +99,14 @@ public class AnswerQuestionnaireFragment extends Fragment
 
         RadioButton answer;
 
+        List<String> questionAnswers = currentQuestion.getQuestionAnswerGroup().getQuestionAnswers();
+
         // Generate a RadioButton for each answer and add to the view.
-        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        for (String answerString : questionAnswers)
         {
             answer = new RadioButton(requireActivity());
-            answer.setId(i);
-            answer.setText(String.valueOf(i));
+            answer.setId(questionAnswers.indexOf(answerString));
+            answer.setText(answerString);
             answerGroup.addView(answer);
         }
     }
@@ -113,7 +116,7 @@ public class AnswerQuestionnaireFragment extends Fragment
         RadioButton answer;
 
         // Check what answer is correct, and add it to the list of answers.
-        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        for (int i = 0; i < currentQuestion.getQuestionAnswerGroup().getQuestionAnswers().size(); i++)
         {
             answer = answerGroup.findViewById(i);
 
