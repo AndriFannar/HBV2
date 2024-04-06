@@ -1,6 +1,7 @@
 package is.hi.afk6.hbv2.services;
 
 
+import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.QuestionAnswerGroup;
 import java.util.List;
 
@@ -17,39 +18,42 @@ public interface QuestionAnswerGroupService
      * Saves a new QuestionAnswerGroup.
      *
      * @param questionAnswerGroup QuestionAnswerGroup to save.
+     * @param callback            Callback to execute after saving has been completed.
      */
-    void saveNewQuestionAnswerGroup(QuestionAnswerGroup questionAnswerGroup);
+    void saveNewQuestionAnswerGroup(QuestionAnswerGroup questionAnswerGroup, APICallback<QuestionAnswerGroup> callback);
 
 
     /**
      * Gets all QuestionAnswerGroup objects.
      *
-     * @return List of all QuestionAnswerGroup objects.
+     * @param callback Callback to execute after fetching has been completed.
      */
-    List<QuestionAnswerGroup> getAllQuestionAnswerGroup();
+    void getAllQuestionAnswerGroup(APICallback<List<QuestionAnswerGroup>> callback);
 
 
     /**
      * Gets the QuestionAnswerGroup with the corresponding ID.
      *
      * @param questionAnswerGroupID The ID of the QuestionAnswerGroup to fetch.
-     * @return                      QuestionAnswerGroup with corresponding question ID.
+     * @param callback              Callback to execute after fetching has been completed.
      */
-    QuestionAnswerGroup getQuestionAnswerGroupById(Long questionAnswerGroupID);
+    void getQuestionAnswerGroupById(Long questionAnswerGroupID, APICallback<QuestionAnswerGroup> callback);
 
 
     /**
      * Update a matching QuestionAnswerGroup.
      *
      * @param updatedQuestionAnswerGroup Updated QuestionAnswerGroup.
+     * @param callback                   Callback to execute after updating has been completed.
      */
-    void updateQuestionAnswerGroup(QuestionAnswerGroup updatedQuestionAnswerGroup);
+    void updateQuestionAnswerGroup(QuestionAnswerGroup updatedQuestionAnswerGroup, APICallback<QuestionAnswerGroup> callback);
 
 
     /**
      * Deletes a QuestionAnswerGroup with a corresponding ID.
      *
      * @param questionAnswerGroupID ID of the QuestionAnswerGroup to delete.
+     * @param callback              Callback to execute after deletion has been completed.
      */
-    void deleteQuestionAnswerGroupByID(Long questionAnswerGroupID);
+    void deleteQuestionAnswerGroup(Long questionAnswerGroupID, APICallback<QuestionAnswerGroup> callback);
 }

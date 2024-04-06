@@ -40,14 +40,13 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/question_weight_text"
                 android:theme="@style/Theme.HBV2.TextViewStyle"
                 android:layout_marginStart="@dimen/fragment_margin"
                 android:layout_marginTop="@dimen/fragment_margin"
-                android:layout_marginBottom="@dimen/fragment_margin"
-                android:layout_weight="1.2"/>
+                android:layout_marginBottom="@dimen/fragment_margin"/>
 
             <TextView
                 android:id="@+id/question_weight"
@@ -62,14 +61,13 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/question_no_of_answers_text"
                 android:theme="@style/Theme.HBV2.TextViewStyle"
                 android:layout_marginStart="@dimen/fragment_margin"
                 android:layout_marginTop="@dimen/fragment_margin"
-                android:layout_marginBottom="@dimen/fragment_margin"
-                android:layout_weight="3.5"/>
+                android:layout_marginBottom="@dimen/fragment_margin"/>
 
             <TextView
                 android:id="@+id/question_no_of_answers"
@@ -81,7 +79,7 @@
                 android:layout_marginEnd="@dimen/fragment_margin"
                 android:layout_marginTop="@dimen/fragment_margin"
                 android:layout_marginBottom="@dimen/fragment_margin"
-                android:layout_weight="1"/>
+                android:layout_weight="3.2"/>
         </LinearLayout>
 
         <LinearLayout
@@ -91,19 +89,19 @@
             android:orientation="horizontal">
 
             <Button
-                android:id="@+id/add_question_button"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fragment_margin"
-                android:text="@string/add_question_button_text"
-                android:layout_weight="1"/>
-
-            <Button
                 android:id="@+id/view_question_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_margin"
                 android:text="@string/view_button_text"
+                android:layout_weight="1"/>
+
+            <Button
+                android:id="@+id/add_question_button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/fragment_margin"
+                android:text="@string/add_question_button_text"
                 android:layout_weight="1"/>
         </LinearLayout>
 

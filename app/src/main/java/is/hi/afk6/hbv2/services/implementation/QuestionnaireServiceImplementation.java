@@ -47,7 +47,7 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
             {
                 Gson gson = new GsonBuilder().create();
 
-                // Convert SignUp info to String.
+                // Convert Questionnaire info to String.
                 String requestJson = gson.toJson(questionnaire);
 
                 // Send info to API and get a return object.
@@ -161,7 +161,7 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
                 try {
                     Gson gson = new GsonBuilder().create();
 
-                    // Convert User class to String.
+                    // Convert Questionnaire class to String.
                     String requestJson = gson.toJson(updatedQuestionnaire);
 
                     // Send JSON data to API, wait for a return.

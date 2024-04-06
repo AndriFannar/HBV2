@@ -52,12 +52,11 @@ public interface QuestionService
     /**
      * Update a Question with corresponding unique ID.
      *
-     * @param questionID      Unique ID of Question to update.
      * @param updatedQuestion Question with updated information.
      * @param callback        Callback for when the method has updated the Question.
      *                        The callback will have the object returned from the action as a ResponseWrapper.
      */
-    void updateQuestionByID(Long questionID, Question updatedQuestion, APICallback<Question> callback);
+    void updateQuestion(Question updatedQuestion, APICallback<Question> callback);
 
     /**
      * Delete Question by unique ID.

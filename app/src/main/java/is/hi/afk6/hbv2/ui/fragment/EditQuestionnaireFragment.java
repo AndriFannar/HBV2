@@ -92,6 +92,16 @@ public class EditQuestionnaireFragment extends Fragment implements ViewCallback<
             }
         });
 
+        binding.buttonAddQuestion.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+                navController.navigate(R.id.nav_edit_question);
+            }
+        });
+
         if (!newQuestionnaire) binding.questionnaireName.setText(questionnaire.getName());
 
         populateList();
@@ -217,13 +227,5 @@ public class EditQuestionnaireFragment extends Fragment implements ViewCallback<
     private Snackbar createSnackbar(int stringResID, int length)
     {
         return Snackbar.make(binding.getRoot(), stringResID, length);
-    }
-
-    private Snackbar createActionSnackbar(int stringResID, int length, int actionResID, View.OnClickListener listener)
-    {
-        Snackbar snackbar = createSnackbar(stringResID, length);
-        snackbar.setAction(actionResID, listener);
-
-        return snackbar;
     }
 }

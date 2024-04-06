@@ -3,12 +3,109 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.fragment.EditQuestionFragment">
+    android:layout_marginTop="@dimen/touch_height"
+    tools:context=".ui.fragment.EditQuestionFragment"
+    android:background="@drawable/rounded_corners_background">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/edit_question_header_text" />
+    <LinearLayout
+        style="@style/Theme.HBV2.FragmentLayoutStyle"
+        tools:ignore="UselessParent">
 
+        <TextView
+            style="@style/Theme.HBV2.HeaderTextStyle"
+            android:text="@string/edit_question_header_text" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/vertical_spacing">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/question_text_header"
+                android:theme="@style/Theme.HBV2.TextViewStyle"
+                android:layout_marginTop="@dimen/fragment_margin"
+                />
+
+            <EditText
+                android:id="@+id/question_text"
+                style="@style/Theme.HBV2.InputTextAreaStyle"
+                android:autofillHints=""
+                android:background="@drawable/edit_text_background"
+                android:hint="@string/question_text"
+                android:inputType="textMultiLine"
+                android:lines="3"
+                android:gravity="top|start"
+                android:scrollbars="vertical"
+                android:layout_marginBottom="@dimen/fragment_margin"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/question_weight_text"
+                android:theme="@style/Theme.HBV2.TextViewStyle"
+                android:layout_marginTop="@dimen/fragment_margin"
+                />
+
+            <EditText
+                android:id="@+id/question_weight"
+                style="@style/Theme.HBV2.InputTextAreaStyle"
+                android:autofillHints=""
+                android:background="@drawable/edit_text_background"
+                android:hint="@string/question_weight"
+                android:inputType="number"
+                android:layout_marginBottom="@dimen/fragment_margin" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_margin"
+                android:text="@string/question_no_of_answers_text"
+                android:theme="@style/Theme.HBV2.TextViewStyle" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal">
+
+                <Spinner
+                    android:id="@+id/question_answer_group_spinner"
+                    style="@style/Theme.HBV2.SpinnerStyle" />
+
+                <ProgressBar
+                    android:id="@+id/question_answer_group_spinner_progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:elevation="4dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center">
+
+                <Button
+                    android:id="@+id/button_edit_confirm"
+                    style="@style/Theme.HBV2.ButtonStyle"
+                    android:text="@string/save_text" />
+
+                <ProgressBar
+                    android:id="@+id/send_request_progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:elevation="4dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </LinearLayout>
 </FrameLayout>

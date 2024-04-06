@@ -1,5 +1,7 @@
 package is.hi.afk6.hbv2.services.implementation;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -41,8 +43,33 @@ public class QuestionServiceImplementation implements QuestionService
     }
 
     @Override
-    public void saveNewQuestion(Question question, APICallback<Question> callback) {
+    public void saveNewQuestion(Question question, APICallback<Question> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                Gson gson = new GsonBuilder().create();
 
+                // Convert Question info to String.
+                String requestJson = gson.toJson(question);
+
+                // Send info to API and get a return object.
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTION_LOCATION + "create",
+                        Request.POST,
+                        null,
+                        requestJson
+                );
+
+                if (returnJson != null)
+                {
+                    // If the return object is not empty, then convert JSON data to ResponseWrapper<Question>
+                    Type responseType = new TypeToken<ResponseWrapper<Question>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override
@@ -113,8 +140,44 @@ public class QuestionServiceImplementation implements QuestionService
     }
 
     @Override
-    public void updateQuestionByID(Long questionID, Question updatedQuestion, APICallback<Question> callback) {
+    public void updateQuestion(Question updatedQuestion, APICallback<Question> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    Gson gson = new GsonBuilder().create();
 
+                    // Convert Question class to String.
+                    String requestJson = gson.toJson(updatedQuestion);
+
+                    // Send JSON data to API, wait for a return.
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_QUESTION_LOCATION + "update",
+                            Request.PUT,
+                            null,
+                            requestJson
+                    );
+
+                    if (returnJson != null && returnJson.length() > 0)
+                    {
+                        // If return is not empty, convert from JSON to ErrorResponse.
+                        Type responseType = new TypeToken<ResponseWrapper<Question>>() {}.getType();
+
+                        callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    }
+                    else
+                    {
+                        callback.onComplete(new ResponseWrapper<>(new Question()));
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override
