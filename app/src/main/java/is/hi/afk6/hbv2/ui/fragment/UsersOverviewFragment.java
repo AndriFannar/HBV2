@@ -1,6 +1,7 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,9 @@ import java.util.List;
 import java.util.Objects;
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.adapters.UsersOverviewAdapter;
+import is.hi.afk6.hbv2.adapters.WaitingListRequestReceptionAdapter;
+import is.hi.afk6.hbv2.callbacks.UserOverviewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.callbacks.APICallback;
@@ -24,7 +28,7 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
-public class UsersOverviewFragment extends Fragment {
+public class UsersOverviewFragment extends Fragment implements UserOverviewCallback {
     private FragmentUsersOverviewBinding binding;
     private UserService userService;
     private List<User> users;
@@ -58,6 +62,7 @@ public class UsersOverviewFragment extends Fragment {
      */
     public void getUsers(){
         controlView(true, "");
+        UsersOverviewFragment that = this;
         userService.getAllUsers(new APICallback<List<User>>() {
             @Override
             public void onComplete(ResponseWrapper<List<User>> result) {
@@ -68,6 +73,8 @@ public class UsersOverviewFragment extends Fragment {
                             controlView(false, "");
                             users = result.getData();
 
+                            UsersOverviewAdapter adapter = new UsersOverviewAdapter(result.getData(), that);
+                            binding.usersOverviewRecyclerView.setAdapter(adapter);
                             for (User user : users){
                                 if(!Objects.equals(user.getEmail(), loggedInUser.getEmail())){
                                     LinearLayout userContainer = createUserContainer();

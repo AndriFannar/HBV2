@@ -13,80 +13,102 @@
 
         <TextView
             style="@style/Theme.HBV2.HeaderTextStyle"
+            android:layout_marginBottom="@dimen/fragment_margin"
             android:text="@string/user_view"/>
 
         <LinearLayout
-            android:id="@+id/layout_wrapper_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/touch_height"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/layout_wrapper_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/user_info_name"
-                style="@style/Theme.HBV2.TextViewStyle"
-                android:layout_marginEnd="@dimen/padding"
-                android:text="@string/user_name" />
+                <TextView
+                    android:id="@+id/user_info_name"
+                    style="@style/Theme.HBV2.TextViewStyle"
+                    android:layout_marginEnd="@dimen/padding"
+                    android:text="@string/user_name" />
 
-            <TextView
-                android:id="@+id/user_name"
-                style="@style/Theme.HBV2.TextViewStyle" />
+                <TextView
+                    android:id="@+id/user_name"
+                    style="@style/Theme.HBV2.TextViewStyle" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_wrapper_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/user_info_emial"
+                    style="@style/Theme.HBV2.TextViewStyle"
+                    android:layout_marginEnd="@dimen/padding"
+                    android:text="@string/email" />
+
+                <TextView
+                    android:id="@+id/user_email"
+                    style="@style/Theme.HBV2.TextViewStyle" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_wrapper_phoneNr"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/fragment_margin"
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:background="@color/lilac">
 
-            <TextView
-                android:id="@+id/user_info_phoneNr"
-                style="@style/Theme.HBV2.TextViewStyle"
-                android:layout_marginEnd="@dimen/padding"
-                android:text="@string/phoneNumber" />
-
-            <TextView
-                android:id="@+id/user_phoneNr"
-                style="@style/Theme.HBV2.TextViewStyle" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/layout_wrapper_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_marginTop="@dimen/vertical_margin"
+            android:orientation="vertical">
+            <LinearLayout
+                android:id="@+id/layout_wrapper_phoneNr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/user_info_address"
-                style="@style/Theme.HBV2.TextViewStyle"
-                android:layout_marginEnd="@dimen/padding"
-                android:text="@string/address" />
+                <TextView
+                    android:id="@+id/user_info_phoneNr"
+                    style="@style/Theme.HBV2.TextViewStyle"
+                    android:layout_marginEnd="@dimen/padding"
+                    android:text="@string/phoneNumber" />
 
-            <TextView
-                android:id="@+id/user_address"
-                style="@style/Theme.HBV2.TextViewStyle" />
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/user_phoneNr"
+                    style="@style/Theme.HBV2.TextViewStyle" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layout_wrapper_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/layout_wrapper_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/user_info_emial"
-                style="@style/Theme.HBV2.TextViewStyle"
-                android:layout_marginEnd="@dimen/padding"
-                android:text="@string/email" />
+                <TextView
+                    android:id="@+id/user_info_address"
+                    style="@style/Theme.HBV2.TextViewStyle"
+                    android:layout_marginEnd="@dimen/padding"
+                    android:text="@string/address" />
 
-            <TextView
-                android:id="@+id/user_email"
-                style="@style/Theme.HBV2.TextViewStyle" />
+                <TextView
+                    android:id="@+id/user_address"
+                    style="@style/Theme.HBV2.TextViewStyle" />
+            </LinearLayout>
         </LinearLayout>
 
         <Button
             android:id="@+id/update_user"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_margin"
             android:text="@string/edit_user"/>
 
     </LinearLayout>
