@@ -15,8 +15,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import is.hi.afk6.hbv2.R;
-import is.hi.afk6.hbv2.callbacks.WaitingListDeleteCallback;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestBodyPartComparator;
+import is.hi.afk6.hbv2.callbacks.DeleteCallback;
+import is.hi.afk6.hbv2.comparators.WaitingListRequestAcceptedComparator;
 import is.hi.afk6.hbv2.comparators.WaitingListRequestDateComparator;
 import is.hi.afk6.hbv2.comparators.WaitingListRequestGradeComparator;
 import is.hi.afk6.hbv2.comparators.WaitingListRequestPatientNameComparator;
@@ -35,7 +35,7 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
     // WaitingListRequests to display
     private List<WaitingListRequest> waitingListRequests;
     private RecyclerviewReceptionWaitingListRequestBinding binding;
-    private WaitingListDeleteCallback callback;
+    private DeleteCallback<WaitingListRequest> deleteCallback;
 
     private int expandedPos = -1;
 
@@ -63,11 +63,12 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
      * Constructor for the WaitingListRequestAdapter.
      *
      * @param waitingListRequests WaitingListRequests to display.
+     * @param deleteCallback      Callback to call when a WaitingListRequest is requested to be deleted.
      */
-    public WaitingListRequestReceptionAdapter(List<WaitingListRequest> waitingListRequests, WaitingListDeleteCallback callback)
+    public WaitingListRequestReceptionAdapter(List<WaitingListRequest> waitingListRequests, DeleteCallback<WaitingListRequest> deleteCallback)
     {
         this.waitingListRequests = waitingListRequests;
-        this.callback = callback;
+        this.deleteCallback = deleteCallback;
     }
 
     @NonNull
@@ -104,7 +105,7 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
             public void onClick(View v)
             {
                 WaitingListRequest clicked = waitingListRequests.get(holder.getAdapterPosition());
-                callback.onDeleteWaitingListRequestClicked(clicked);
+                deleteCallback.onDeleteClicked(clicked);
 
                 waitingListRequests.remove(clicked);
 
@@ -121,7 +122,9 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
     private void setView(WaitingListRequest current)
     {
         if (current.isStatus())
-            binding.waitingListBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
+            binding.waitingListBackground.setBackgroundResource(R.color.pale_green);
+        else
+            binding.waitingListBackground.setBackgroundResource(R.color.pale_yellow);
 
 
         binding.waitingListPatient.setText(current.getPatient().getName().split(" ")[0]);
@@ -149,6 +152,9 @@ public class WaitingListRequestReceptionAdapter extends RecyclerView.Adapter<Wai
                 break;
             case 2:
                 waitingListRequests.sort(new WaitingListRequestPatientNameComparator());
+                break;
+            case 3:
+                waitingListRequests.sort(new WaitingListRequestAcceptedComparator());
                 break;
         }
 

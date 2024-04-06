@@ -56,13 +56,24 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
 
             if (loggedInUser.getRole() != UserRole.ADMIN)
+            {
                 binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+                binding.mainNav.getMenu().findItem(R.id.nav_questionnaire_overview).setVisible(false);
+            }
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment)
+                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment, R.id.nav_questionnaire_overview)
                     .setOpenableLayout(drawer)
                     .build();
         }
+
+        binding.mainNav.getHeaderView(0).findViewById(R.id.nav_logout).setOnClickListener(v ->
+        {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
 
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);

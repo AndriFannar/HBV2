@@ -1,6 +1,7 @@
 package is.hi.afk6.hbv2.services.implementation;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.callbacks.APICallback;
+import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.enums.Request;
 import is.hi.afk6.hbv2.networking.APIService;
@@ -44,8 +46,30 @@ public class QuestionServiceImplementation implements QuestionService
     }
 
     @Override
-    public void getAllQuestions(APICallback<List<Question>> callback) {
+    public void getAllQuestions(APICallback<List<Question>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                // Fetch all Questions from API.
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTION_LOCATION + "getAll",
+                        Request.GET,
+                        null,
+                        ""
+                );
 
+                if (returnJson != null)
+                {
+                    // Convert response from JSON to Question class if response is not null.
+                    Gson gson = new GsonBuilder().create();
+
+                    Type responseType = new TypeToken<ResponseWrapper<List<Question>>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override

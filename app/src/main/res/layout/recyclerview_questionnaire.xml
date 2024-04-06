@@ -1,5 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/waiting_list_background"
+    android:id="@+id/questionnaire_background"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/fragment_margin"
@@ -16,7 +16,7 @@
         android:layout_gravity="center">
 
         <TextView
-            android:id="@+id/waiting_list_patient"
+            android:id="@+id/questionnaire_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
@@ -24,25 +24,17 @@
             android:layout_weight="2"/>
 
         <TextView
-            android:id="@+id/waiting_list_grade"
+            android:id="@+id/questionnaire_no_of_questions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="20sp"
             android:layout_margin="@dimen/fragment_margin"
             android:layout_weight="1"/>
 
-        <TextView
-            android:id="@+id/waiting_list_questionnaire"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:layout_margin="@dimen/fragment_margin"
-            android:layout_weight="2"/>
-
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/waiting_list_overview_detail"
+        android:id="@+id/questionnaire_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="visible"
@@ -54,21 +46,13 @@
             android:layout_height="match_parent"
             android:layout_gravity="center">
 
-            <TextView
-                android:id="@+id/waiting_list_description"
+            <Button
+                android:id="@+id/show_hide_questionnaire_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textSize="20sp"
                 android:layout_margin="@dimen/fragment_margin"
-                android:layout_weight="7"/>
-
-            <TextView
-                android:id="@+id/waiting_list_date"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:textSize="20sp"
-                android:layout_margin="@dimen/fragment_margin"
-                android:layout_weight="4"/>
+                android:text="@string/questionnaire_show_button_text"
+                android:layout_weight="1"/>
 
         </LinearLayout>
 
@@ -78,7 +62,7 @@
             android:layout_gravity="center">
 
             <Button
-                android:id="@+id/view_waiting_list_button"
+                android:id="@+id/view_questionnaire_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_margin"
@@ -86,11 +70,11 @@
                 android:layout_weight="6"/>
 
             <Button
-                android:id="@+id/accept_waiting_list_button"
+                android:id="@+id/delete_questionnaire_button"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/fragment_margin"
-                android:text="@string/requests_overview_accept_button_text"
+                android:text="@string/delete_button_text"
                 android:layout_weight="5"/>
 
         </LinearLayout>

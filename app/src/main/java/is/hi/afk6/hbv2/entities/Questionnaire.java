@@ -95,6 +95,16 @@ public class Questionnaire implements Parcelable
         this.questions = questions;
     }
 
+    public void addQuestion(Question question)
+    {
+        this.questions.add(question);
+    }
+
+    public void removeQuestion(Question question)
+    {
+        this.questions.remove(question);
+    }
+
     public boolean isDisplayOnForm() {
         return displayOnForm;
     }

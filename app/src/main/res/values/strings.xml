@@ -5,6 +5,10 @@
 
     <string name="menu_change_user">Breyta Notendaupplýsingum</string>
 
+    <string name="log_out_text">Skrá út</string>
+
+    <string name="snackbar_undo">Afturkalla</string>
+
     <string name="yes">Já</string>
     <string name="no">Nei</string>
 
@@ -67,6 +71,7 @@
     <string name="edited_user">editedUser</string>
     <string name="waiting_list_request">waitingListRequest</string>
     <string name="questionnaire">questionnaire</string>
+    <string name="question">question</string>
 
     <string name="questions">Spurningar</string>
     <string name="next_question_button">Næsta spurning</string>
@@ -78,9 +83,9 @@
 
     <!-- WaitingListRequestsOverview -->
     <string name="requests_overview_header_text">Yfirlit yfir Fyrirspurnir</string>
-    <string name="requests_overview_view_button_text">Skoða</string>
+    <string name="view_button_text">Skoða</string>
     <string name="requests_overview_accept_button_text">Samþykkja</string>
-    <string name="requests_overview_delete_button_text">Eyða</string>
+    <string name="delete_button_text">Eyða</string>
     <string name="requests_overview_no_requests_text">Engar Fyrirspurnir skráðar</string>
     <string name="requests_overview_sort_spinner_hint">Raða eftir:</string>
     <string-array name="requests_overview_physio_sort_options">
@@ -88,15 +93,50 @@
         <item>Dagsetning</item>
         <item>Nafn sjúklings</item>
         <item>Líkamshluti</item>
+        <item>Staða</item>
     </string-array>
     <string-array name="requests_overview_reception_sort_options">
         <item>Forgangur</item>
         <item>Dagsetning</item>
         <item>Nafn sjúklings</item>
+        <item>Staða</item>
     </string-array>
 
     <!-- EditWaitingListRequest -->
     <string name="edit_request_title">Breyta Fyrirspurn</string>
     <string name="edit_request_priority">Forgangur</string>
     <string name="edit_request_button_text">Uppfæra</string>
+
+    <!-- QuestionnaireOverview -->
+    <string name="questionnaire_overview_header_text">Yfirlit yfir Spurningalista</string>
+    <string name="questionnaire_overview_no_questionnaires_text">Engir Spurningalistar skráðar</string>
+    <string name="questionnaire_show_button_text">Sýna á skráningarformi</string>
+    <string name="questionnaire_hide_button_text">Taka af skráningarformi</string>
+    <string name="questionnaire_deleted_snackbar_text">Spurningalista eytt</string>
+    <string name="questionnaire_displayed_snackbar_text">Spurningalisti birtur á skráningarformi</string>
+    <string name="questionnaire_not_displayed_snackbar_text">Spurningalisti tekinn af skráningarformi</string>
+    <string name="questionnaire_missing_name_error">Nafn Spurningalista vantar</string>
+    <string name="new_questionnaire_text">Nýr Spurningalisti</string>
+    <string-array name="questionnaire_overview_sort_options">
+        <item>Nafn</item>
+        <item>Fjöldi Spurninga</item>
+        <item>Birting</item>
+    </string-array>
+
+    <!-- Edit Questionnaire -->
+    <string name="edit_questionnaire_header_text">Breyta Spurningalista</string>
+    <string name="questionnaire_name_text">Nafn Spurningalista</string>
+    <string name="save_text">Vista</string>
+    <string name="add_question_button_text">Bæta við</string>
+    <string name="remove_question_button_text">Fjarlægja</string>
+    <string name="new_question_text">Ný spurning</string>
+    <string name="edit_questionnaire_no_questions_text">Engar spurningar fundust</string>
+    <string name="save_snackbar_text">Vistað</string>
+    <string name="question_weight_text">Þyngd: </string>
+    <string name="question_no_of_answers_text">Fjöldi svarmöguleika: </string>
+    <string name="question_no_of_answers_placeholder">00.0</string>
+    <string name="question_weight_placeholder">00.0</string>
+
+    <!-- EditQuestion -->
+    <string name="edit_question_header_text">Breyta Spurningu</string>
 </resources>
