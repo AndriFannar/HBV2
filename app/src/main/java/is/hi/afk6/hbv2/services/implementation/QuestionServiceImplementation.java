@@ -17,8 +17,10 @@ import java.util.stream.Collectors;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.entities.Questionnaire;
+import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.entities.enums.Request;
+import is.hi.afk6.hbv2.exceptions.APIConnectionException;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.services.QuestionService;
 
@@ -49,24 +51,33 @@ public class QuestionServiceImplementation implements QuestionService
             @Override
             public void run()
             {
-                Gson gson = new GsonBuilder().create();
-
-                // Convert Question info to String.
-                String requestJson = gson.toJson(question);
-
-                // Send info to API and get a return object.
-                JSONObject returnJson = apiService.makeNetworkRequest(
-                        API_QUESTION_LOCATION + "create",
-                        Request.POST,
-                        null,
-                        requestJson
-                );
-
-                if (returnJson != null)
+                try
                 {
-                    // If the return object is not empty, then convert JSON data to ResponseWrapper<Question>
-                    Type responseType = new TypeToken<ResponseWrapper<Question>>() {}.getType();
-                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    Gson gson = new GsonBuilder().create();
+
+                    // Convert Question info to String.
+                    String requestJson = gson.toJson(question);
+
+                    // Send info to API and get a return object.
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_QUESTION_LOCATION + "create",
+                            Request.POST,
+                            null,
+                            requestJson
+                    );
+
+                    if (returnJson != null)
+                    {
+                        // If the return object is not empty, then convert JSON data to ResponseWrapper<Question>
+                        Type responseType = new TypeToken<ResponseWrapper<Question>>() {}.getType();
+                        callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    }
+                }
+                catch (APIConnectionException e)
+                {
+                    ErrorResponse errorResponse = new ErrorResponse();
+                    errorResponse.setError(e.getMessage());
+                    callback.onComplete(new ResponseWrapper<>(errorResponse));
                 }
             }
         });
@@ -181,7 +192,21 @@ public class QuestionServiceImplementation implements QuestionService
     }
 
     @Override
-    public void deleteQuestionByID(Long questionID, APICallback<Question> callback) {
+    public void deleteQuestionByID(Long questionID, APICallback<Question> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                apiService.makeNetworkRequest(
+                        API_QUESTION_LOCATION + "delete/" + questionID,
+                        Request.DELETE,
+                        null,
+                        ""
+                );
 
+                callback.onComplete(new ResponseWrapper<>(new Question()));
+            }
+        });
     }
 }

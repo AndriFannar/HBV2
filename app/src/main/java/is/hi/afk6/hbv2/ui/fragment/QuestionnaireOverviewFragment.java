@@ -195,7 +195,6 @@ public class QuestionnaireOverviewFragment extends Fragment implements ViewCallb
                     @Override
                     public void onClick(View v)
                     {
-                        Log.d("QuestionnaireOverviewFragment", "Questionnaire restored: " + questionnaireToDelete);
                         questionnaireService.saveNewQuestionnaire(questionnaireToDelete, new APICallback<Questionnaire>()
                         {
                             @Override

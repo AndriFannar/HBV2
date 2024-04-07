@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,6 +33,8 @@ public class QuestionAnswerGroup implements Parcelable
      */
     public QuestionAnswerGroup()
     {
+        this.questionAnswers = new ArrayList<>();
+        this.questionIDs = new ArrayList<>();
     }
 
 
@@ -45,6 +48,7 @@ public class QuestionAnswerGroup implements Parcelable
     {
         this.groupName = groupName;
         this.questionAnswers = questionAnswers;
+        this.questionIDs = new ArrayList<>();
     }
 
     /**

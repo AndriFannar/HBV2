@@ -3,12 +3,15 @@ package is.hi.afk6.hbv2.ui.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -41,13 +44,12 @@ import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementatio
  * @since 06/04/2024
  * @version 1.0
  */
-public class EditQuestionFragment extends Fragment
-{
+public class EditQuestionFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     private FragmentEditQuestionBinding binding;
     private Question question;
     private QuestionService questionService;
     private QuestionAnswerGroupService questionAnswerGroupService;
-    private boolean newQuestion;
+    private boolean newQuestion = false;
     private List<QuestionAnswerGroup> questionAnswerGroups;
 
     @Override
@@ -60,9 +62,11 @@ public class EditQuestionFragment extends Fragment
             question = getArguments().getParcelable(getString(R.string.question));
         }
 
-        newQuestion = question == null;
-
-        if (newQuestion) question = new Question();
+        if (question == null)
+        {
+            question = new Question();
+            newQuestion = true;
+        }
 
         APIService apiService = new APIServiceImplementation();
         questionService = new QuestionServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
@@ -75,12 +79,23 @@ public class EditQuestionFragment extends Fragment
         binding = FragmentEditQuestionBinding.inflate(inflater, container, false);
         View view = binding.getRoot();
 
+        controlView(true, false, null);
+
         binding.buttonEditConfirm.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
                 saveQuestion();
+            }
+        });
+
+        binding.buttonDeleteQuestion.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                deleteQuestion();
             }
         });
 
@@ -103,6 +118,7 @@ public class EditQuestionFragment extends Fragment
         return view;
     }
 
+
     private void setUpView()
     {
         List<String> questionAnswerGroupStrings = new ArrayList<>();
@@ -111,6 +127,13 @@ public class EditQuestionFragment extends Fragment
         {
             binding.questionText.setText(question.getQuestionString());
             binding.questionWeight.setText(String.valueOf(question.getWeight()));
+            binding.editQuestionHeaderText.setText(R.string.edit_question_header_text);
+            binding.buttonDeleteQuestion.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            binding.editQuestionHeaderText.setText(R.string.new_question_text);
+            binding.buttonDeleteQuestion.setVisibility(View.GONE);
         }
 
         QuestionAnswerGroup currentQuestionAnswerGroup = question.getQuestionAnswerGroup();
@@ -131,6 +154,12 @@ public class EditQuestionFragment extends Fragment
 
             binding.questionAnswerGroupSpinner.setSelection(questionAnswerGroups.indexOf(currentQuestionAnswerGroup));
         }
+
+        questionAnswerGroupStrings.add(getString(R.string.new_question_answer_group));
+
+        binding.questionAnswerGroupSpinner.setOnItemSelectedListener(this);
+
+        controlView(false, false, null);
     }
 
     /**
@@ -147,28 +176,31 @@ public class EditQuestionFragment extends Fragment
         if (loading)
         {
             binding.buttonEditConfirm.setAlpha(0.7f);
+            binding.buttonDeleteQuestion.setAlpha(0.7f);
 
             if (saving)
                 binding.sendRequestProgressBar.setVisibility(View.VISIBLE);
             else
             {
                 binding.questionAnswerGroupSpinner.setAlpha(0.7f);
-                binding.questionAnswerGroupSpinner.setVisibility(View.VISIBLE);
+                binding.questionAnswerGroupSpinnerProgressBar.setVisibility(View.VISIBLE);
             }
         }
         else
         {
             binding.sendRequestProgressBar.setVisibility(View.GONE);
             binding.buttonEditConfirm.setAlpha(1f);
+            binding.buttonDeleteQuestion.setAlpha(1f);
 
             binding.questionAnswerGroupSpinner.setAlpha(1f);
-            binding.questionAnswerGroupSpinner.setVisibility(View.GONE);
+            binding.questionAnswerGroupSpinnerProgressBar.setVisibility(View.GONE);
 
             if (errorResID != null)
                 createSnackbar(errorResID, Snackbar.LENGTH_LONG).show();
         }
 
         binding.buttonEditConfirm.setClickable(!loading);
+        binding.buttonDeleteQuestion.setClickable(!loading);
         binding.questionAnswerGroupSpinner.setClickable(!loading);
         binding.questionText.setFocusableInTouchMode(!loading);
         binding.questionWeight.setFocusableInTouchMode(!loading);
@@ -176,6 +208,8 @@ public class EditQuestionFragment extends Fragment
 
     private void saveQuestion()
     {
+        controlView(false, true, null);
+
         if (binding.questionText.getText().toString().isEmpty())
         {
             createSnackbar(R.string.question_no_text_error, Snackbar.LENGTH_LONG).show();
@@ -205,7 +239,11 @@ public class EditQuestionFragment extends Fragment
                             @Override
                             public void run()
                             {
+                                question = result.getData();
+                                controlView(false, false, null);
                                 createSnackbar(R.string.save_snackbar_text, Snackbar.LENGTH_SHORT).show();
+                                newQuestion = false;
+                                setUpView();
                             }
                         });
                     }
@@ -226,6 +264,7 @@ public class EditQuestionFragment extends Fragment
                             @Override
                             public void run()
                             {
+                                controlView(false, false, null);
                                 createSnackbar(R.string.save_snackbar_text, Snackbar.LENGTH_SHORT).show();
                             }
                         });
@@ -235,8 +274,136 @@ public class EditQuestionFragment extends Fragment
         }
     }
 
+    private void deleteQuestion()
+    {
+        if (!question.getQuestionnaireIDs().isEmpty())
+        {
+            createSnackbar(R.string.question_delete_error, Snackbar.LENGTH_LONG).show();
+        }
+        else
+        {
+            controlView(false, true, null);
+            questionService.deleteQuestionByID(question.getId(), new APICallback<Question>()
+            {
+                @Override
+                public void onComplete(ResponseWrapper<Question> result)
+                {
+                    Question deletedQuestion = question;
+                    question = new Question();
+
+                    requireActivity().runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            controlView(false, false, null);
+                            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener()
+                            {
+                                @Override
+                                public void onClick(View v)
+                                {
+                                    controlView(false, true, null);
+                                    questionService.saveNewQuestion(deletedQuestion, new APICallback<Question>()
+                                    {
+                                        @Override
+                                        public void onComplete(ResponseWrapper<Question> result)
+                                        {
+                                            question = result.getData();
+                                            requireActivity().runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run()
+                                                {
+                                                    controlView(false, false, null);
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            });
+
+                            deleteSnackbar.addCallback(new Snackbar.Callback()
+                            {
+                                @Override
+                                public void onDismissed(Snackbar transientBottomBar, int event)
+                                {
+                                    super.onDismissed(transientBottomBar, event);
+
+                                    if (question.getId() == null)
+                                    {
+                                        requireActivity().runOnUiThread(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                requireActivity().getOnBackPressedDispatcher().onBackPressed();
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+
+                            deleteSnackbar.show();
+                        }
+                    });
+                }
+            });
+        }
+    }
+
     private Snackbar createSnackbar(int stringResID, int length)
     {
         return Snackbar.make(binding.getRoot(), stringResID, length);
+    }
+
+    private void navigate(Bundle bundle, int destination)
+    {
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+        navController.navigate(destination, bundle);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
+        if (position == questionAnswerGroups.size())
+        {
+            binding.buttonEditQuestionAnswerGroup.setText(R.string.new_question_answer_group);
+
+            binding.buttonEditQuestionAnswerGroup.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    navigate(null, R.id.nav_edit_question_answer_group);
+                }
+            });
+        }
+        else
+        {
+            binding.buttonEditQuestionAnswerGroup.setText(R.string.edit_question_answer_group);
+
+            binding.buttonEditQuestionAnswerGroup.setOnClickListener(new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable(getString(R.string.question_answer_group), questionAnswerGroups.get(position));
+                    navigate(bundle, R.id.nav_edit_question_answer_group);
+                }
+            });
+        }
+    }
+
+    private Snackbar createActionSnackbar(int stringResID, int length, int actionResID, View.OnClickListener listener)
+    {
+        Snackbar snackbar = createSnackbar(stringResID, length);
+        snackbar.setAction(actionResID, listener);
+
+        return snackbar;
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

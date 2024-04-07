@@ -72,6 +72,7 @@
     <string name="waiting_list_request">waitingListRequest</string>
     <string name="questionnaire">questionnaire</string>
     <string name="question">question</string>
+    <string name="question_answer_group">questionAnswerGroup</string>
 
     <string name="questions">Spurningar</string>
     <string name="next_question_button">Næsta spurning</string>
@@ -135,15 +136,31 @@
     <string name="edit_questionnaire_no_questions_text">Engar spurningar fundust</string>
     <string name="save_snackbar_text">Vistað</string>
     <string name="question_weight_text">Þyngd: </string>
-    <string name="question_no_of_answers_text">Tegund Svara:</string>
+    <string name="question_no_of_answers_text">Svarhópur:</string>
     <string name="question_no_of_answers_placeholder">XXXXX/XXXXX</string>
     <string name="question_weight_placeholder">00.0</string>
 
     <!-- EditQuestion -->
     <string name="edit_question_header_text">Breyta Spurningu</string>
+    <string name="new_question_header_text">Breyta Spurningu</string>
     <string name="question_text">Spurning</string>
     <string name="question_weight">Þyngd</string>
     <string name="question_text_header">Spurning:</string>
     <string name="question_no_text_error">Spurning má ekki vera tóm</string>
     <string name="question_no_weight_error">Þyngd má ekki vera tóm</string>
+    <string name="edit_question_answer_group">Breyta</string>
+    <string name="new_question_answer_group">Nýtt</string>
+    <string name="question_delete_error">Ekki hægt að eyða spurningu. Gaktu úr skugga um að hún sé ekki tengd öðrum spurningalistum</string>
+    <string name="question_deleted_snackbar_text">Spurningu eytt</string>
+
+    <!-- EditQuestionAnswerGroup -->
+    <string name="edit_question_answer_group_header">Breyta Svarhóp</string>
+    <string name="new_question_answer_group_header">Nýr Svarhópur</string>
+    <string name="question_answer_group_name">Nafn Hóps</string>
+    <string name="question_answer_group_answers_title">Svarmöguleikar</string>
+    <string name="question_answer_group_add_answer">Bæta við svarmöguleika</string>
+    <string name="question_answer_group_hint">Svarmöguleiki</string>
+    <string name="empty_question_answer_group_name_error">Svarmöguleiki verður að hafa nafn</string>
+    <string name="empty_question_answer_option_error">Svarmöguleiki má ekki vera tómur</string>
+    <string name="question_answer_group_deleted_snackbar_text">Svarhóp eytt</string>
 </resources>
