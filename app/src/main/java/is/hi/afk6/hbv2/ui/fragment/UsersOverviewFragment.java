@@ -1,6 +1,7 @@
 package is.hi.afk6.hbv2.ui.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +13,15 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import java.util.List;
 import java.util.Objects;
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.adapters.UsersOverviewAdapter;
+import is.hi.afk6.hbv2.adapters.WaitingListRequestReceptionAdapter;
+import is.hi.afk6.hbv2.callbacks.UserOverviewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.callbacks.APICallback;
@@ -24,10 +30,9 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
-public class UsersOverviewFragment extends Fragment {
+public class UsersOverviewFragment extends Fragment implements UserOverviewCallback {
     private FragmentUsersOverviewBinding binding;
     private UserService userService;
-    private List<User> users;
     private User loggedInUser;
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,6 +50,7 @@ public class UsersOverviewFragment extends Fragment {
     {
         binding = FragmentUsersOverviewBinding.inflate(getLayoutInflater());
         View view = binding.getRoot();
+        binding.usersOverviewRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         getUsers();
 
         return view;
@@ -58,6 +64,7 @@ public class UsersOverviewFragment extends Fragment {
      */
     public void getUsers(){
         controlView(true, "");
+        UsersOverviewFragment that = this;
         userService.getAllUsers(new APICallback<List<User>>() {
             @Override
             public void onComplete(ResponseWrapper<List<User>> result) {
@@ -66,28 +73,9 @@ public class UsersOverviewFragment extends Fragment {
                     public void run() {
                         if(result.getData() != null){
                             controlView(false, "");
-                            users = result.getData();
 
-                            for (User user : users){
-                                if(!Objects.equals(user.getEmail(), loggedInUser.getEmail())){
-                                    LinearLayout userContainer = createUserContainer();
-                                    TextView userName = createTextView(user);
-                                    Button button = createButton();
-                                    userContainer.addView(userName);
-                                    userContainer.addView(button);
-
-                                    button.setOnClickListener(v ->
-                                    {
-                                        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
-
-                                        Bundle bundle = new Bundle();
-                                        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-                                        bundle.putParcelable(getString(R.string.edited_user), user);
-                                        navController.navigate(R.id.nav_edit_user, bundle);
-                                    });
-                                    binding.usersContainer.addView(userContainer);
-                                }
-                            }
+                            UsersOverviewAdapter adapter = new UsersOverviewAdapter(result.getData(), that);
+                            binding.usersOverviewRecyclerView.setAdapter(adapter);
                         } else {
                             String error = result.getErrorResponse().getErrorDetails().get("user");
                             controlView(false, error);
@@ -98,8 +86,18 @@ public class UsersOverviewFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onViewUserClicked(User user){
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+        bundle.putParcelable(getString(R.string.edited_user), user);
+        navController.navigate(R.id.nav_edit_user, bundle);
+    }
+
     /**
-     * Controls many parts of the view of the login Activity.
+     * Controls many parts of the view of the User Overview Fragment.
      *
      * @param loading Is there data being actively fetched?
      * @param error   Error to display on UI, if any.
@@ -121,58 +119,5 @@ public class UsersOverviewFragment extends Fragment {
                 binding.usersError.setVisibility(View.VISIBLE);
             }
         }
-    }
-
-    /**
-     * Create a TextView with the users name
-     * @param user User that is used
-     * @return a TextView with that user
-     */
-    private TextView createTextView(User user){
-        TextView usersName = new TextView(requireContext());
-        usersName.setText(user.getName());
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1.0f
-        );
-        usersName.setLayoutParams(params);
-
-        return usersName;
-    }
-
-    /**
-     * Create a button that will let admin be able to update/delete
-     * User
-     * @return the Button
-     */
-    private Button createButton(){
-        Button updateButton = new Button(requireContext());
-        String BUTTON_TEXT = "Uppfæra";
-        updateButton.setText(BUTTON_TEXT);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                0,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                1.0f
-        );
-        updateButton.setLayoutParams(params);
-
-        return updateButton;
-    }
-
-    /**
-     * Creates a user layout container, so the TextView and Button will
-     * be in the same line
-     * @return the LinearLayout container
-     */
-    private LinearLayout createUserContainer(){
-        LinearLayout userContainer = new LinearLayout(requireContext());
-        userContainer.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        userContainer.setLayoutParams(layoutParams);
-        return userContainer;
     }
 }

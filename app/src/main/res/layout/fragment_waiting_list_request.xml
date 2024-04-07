@@ -1,54 +1,110 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/waiting_list_request"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
+
+        <TextView
+            style="@style/Theme.HBV2.HeaderTextStyle"
+            android:layout_marginBottom="@dimen/fragment_margin"
+            android:layout_marginTop="@dimen/fragment_margin"
+            android:text="@string/waiting_list_info"/>
+
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/Theme.HBV2.HeaderTextStyle"
-                android:text="@string/waiting_list_info"/>
-
+            android:id="@+id/waiting_list_frameLayout"
+            android:padding="@dimen/fragment_margin"
+            style="@style/Theme.HBV2.FragmentLayoutStyle">
 
             <LinearLayout
-                android:id="@+id/waiting_list_frameLayout"
-                style="@style/Theme.HBV2.FragmentLayoutStyle">
+                android:id="@+id/waiting_list_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                android:orientation="vertical" >
 
                 <LinearLayout
-                    android:id="@+id/waiting_list_container"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical" >
+                    android:orientation="vertical"
+                    android:layout_marginBottom="@dimen/fragment_margin">
 
                     <LinearLayout
                         android:id="@+id/waiting_list_date_linearLayout"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/touch_height"
+                        android:layout_height="30dp"
                         android:orientation="horizontal">
                         <TextView
                             android:id="@+id/waiting_list_info_date"
                             style="@style/Theme.HBV2.TextViewStyle"
+                            android:textSize="@dimen/tiny_text_size"
                             android:layout_marginEnd="@dimen/padding"
                             android:text="@string/waiting_list_info_date" />
 
                         <TextView
                             android:id="@+id/waiting_list_date"
+                            android:textSize="@dimen/tiny_text_size"
                             style="@style/Theme.HBV2.TextViewStyle" />
 
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/waiting_list_status_linearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/text_height"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/waiting_list_info_status"
+                            style="@style/Theme.HBV2.TextViewStyle"
+                            android:textSize="@dimen/tiny_text_size"
+                            android:layout_marginEnd="@dimen/fragment_margin"
+                            android:text="@string/waiting_list_info_status" />
+
+                        <TextView
+                            android:id="@+id/waiting_list_status"
+                            android:textSize="@dimen/tiny_text_size"
+                            style="@style/Theme.HBV2.TextViewStyle" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/pastel_purple"
+                    android:padding="@dimen/fragment_margin_side"
+                    android:orientation="vertical">
+                    <LinearLayout
+                        android:id="@+id/waiting_list_physiotherapist_linearLayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/text_height"
+                        android:layout_marginTop="@dimen/padding"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/waiting_list_info_physiotherapist"
+                            style="@style/Theme.HBV2.TextViewStyle"
+                            android:layout_marginEnd="@dimen/fragment_margin"
+                            android:text="@string/waiting_list_info_physiotherapist" />
+
+                        <TextView
+                            android:id="@+id/waiting_list_physiotherapist"
+                            style="@style/Theme.HBV2.TextViewStyle" />
                     </LinearLayout>
                     <LinearLayout
                         android:id="@+id/waiting_list_bodyPart_linearLayout"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/touch_height"
-                        android:layout_marginTop="5dp"
+                        android:layout_height="@dimen/text_height"
+                        android:layout_marginTop="@dimen/padding"
                         android:orientation="horizontal">
 
                         <TextView
@@ -65,157 +121,78 @@
                     <LinearLayout
                         android:id="@+id/waiting_list_description_linearLayout"
                         android:layout_width="wrap_content"
-                        android:layout_height="@dimen/touch_height"
-                        android:layout_marginTop="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/waiting_list_info_description"
-                            style="@style/Theme.HBV2.TextViewStyle"
-                            android:layout_marginEnd="@dimen/padding"
-                            android:text="@string/waiting_list_info_description" />
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/padding"
+                        android:orientation="vertical">
 
                         <TextView
                             android:id="@+id/waiting_list_description"
+                            android:textAlignment="textStart"
+                            android:layout_height="wrap_content"
                             style="@style/Theme.HBV2.TextViewStyle" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/waiting_list_physiotherapist_linearLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/touch_height"
-                        android:layout_marginTop="5dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/waiting_list_info_physiotherapist"
-                            style="@style/Theme.HBV2.TextViewStyle"
-                            android:layout_marginEnd="@dimen/fragment_margin"
-                            android:text="@string/waiting_list_info_physiotherapist" />
-
-                        <TextView
-                            android:id="@+id/waiting_list_physiotherapist"
-                            style="@style/Theme.HBV2.TextViewStyle" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/waiting_list_status_linearLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/touch_height"
-                        android:layout_marginTop="5dp"
-                        app:layout_constraintEnd_toStartOf="@+id/waiting_list_status"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/waiting_list_info_status"
-                            style="@style/Theme.HBV2.TextViewStyle"
-                            android:layout_marginEnd="@dimen/fragment_margin"
-                            android:text="@string/waiting_list_info_status" />
-
-                        <TextView
-                            android:id="@+id/waiting_list_status"
-                            style="@style/Theme.HBV2.TextViewStyle" />
-                    </LinearLayout>
-
                 </LinearLayout>
 
-                <LinearLayout
-                    android:id="@+id/waiting_list_buttons_linearLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toStartOf="@+id/waiting_list_container">
 
-                    <Button
-                        android:id="@+id/button_edit_request"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:text="@string/edit_confirm"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+            </LinearLayout>
 
-                    <Button
-                        android:id="@+id/button_accept_request"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:text="@string/requests_overview_accept_button_text"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        />
+            <LinearLayout
+                android:id="@+id/waiting_list_buttons_linearLayout"
+                style="@style/Theme.HBV2.ButtonLayoutStyle"
+                app:layout_constraintEnd_toStartOf="@+id/waiting_list_container">
 
-                    <Button
-                        android:id="@+id/button_delete_request"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_weight="1"
-                        android:text="@string/requests_overview_delete_button_text"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/button_edit_request"
+                    android:layout_marginEnd="@dimen/fragment_margin"
+                    android:text="@string/edit_confirm"
+                    style="@style/Theme.HBV2.ButtonStyle" />
 
-                <LinearLayout
-                    android:id="@+id/waiting_list_questionnaire_linearLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal"
-                    app:layout_constraintEnd_toStartOf="@+id/waiting_list_container">
+                <Button
+                    android:id="@+id/button_accept_request"
+                    android:layout_marginEnd="@dimen/fragment_margin"
+                    android:text="@string/requests_overview_accept_button_text"
+                    style="@style/Theme.HBV2.ButtonStyle"
+                    />
 
-                    <Button
-                        android:id="@+id/button_answer_questionnaire"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_weight="1"
-                        android:text="@string/answer_questionnaire"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:background="@color/purple_500" />
+                <Button
+                    android:id="@+id/button_delete_request"
+                    android:text="@string/requests_overview_delete_button_text"
+                    style="@style/Theme.HBV2.ButtonStyle"/>
+            </LinearLayout>
 
-                    <Button
-                        android:id="@+id/button_view_questionnaire_answers"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:layout_marginEnd="16dp"
-                        android:layout_weight="1"
-                        android:text="@string/user_questionnaire_answers_overview_header_text"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:background="@color/purple_500"
-                        android:visibility="gone"/>
+            <LinearLayout
+                android:id="@+id/waiting_list_questionnaire_linearLayout"
+                style="@style/Theme.HBV2.ButtonLayoutStyle"
+                app:layout_constraintEnd_toStartOf="@+id/waiting_list_container">
 
-                </LinearLayout>
+                <Button
+                    android:id="@+id/button_answer_questionnaire"
+                    android:text="@string/answer_questionnaire"
+                    style="@style/Theme.HBV2.ButtonStyle"/>
 
-                <LinearLayout
-                    android:id="@+id/waiting_list_user_linearLayout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginTop="@dimen/vertical_margin"
-                    android:visibility="gone">
+                <Button
+                    android:id="@+id/button_view_questionnaire_answers"
+                    android:text="@string/user_questionnaire_answers_overview_header_text"
+                    android:visibility="gone"
+                    style="@style/Theme.HBV2.ButtonStyle"/>
 
-                    <include layout="@layout/fragment_user"
-                        android:id="@+id/fragment_user">
+            </LinearLayout>
 
-                    </include>
+            <LinearLayout
+                android:id="@+id/waiting_list_user_linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/vertical_margin"
+                android:visibility="gone">
 
-                </LinearLayout>
+                <include layout="@layout/fragment_user"
+                    android:id="@+id/fragment_user">
+
+                </include>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </ScrollView>
-
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

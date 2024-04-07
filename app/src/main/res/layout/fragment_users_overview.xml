@@ -12,18 +12,22 @@
             android:id="@+id/users_overview_header"
             android:text="@string/user_overview_header_text" />
 
-        <ScrollView
+    <LinearLayout
+        android:id="@+id/users_list_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/fragment_margin"
+        android:layout_marginTop="@dimen/fragment_margin"
+        android:layout_marginEnd="@dimen/fragment_margin"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/users_overview_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:contentDescription="@string/edit_user">
+            android:layout_height="match_parent">
 
-            <LinearLayout
-                android:id="@+id/users_container"
-                style="@style/Theme.HBV2.FragmentLayoutStyle">
-
-            </LinearLayout>
-
-        </ScrollView>
+        </androidx.recyclerview.widget.RecyclerView>
+    </LinearLayout>
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
