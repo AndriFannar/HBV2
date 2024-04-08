@@ -152,6 +152,8 @@
     <string name="new_question_answer_group">Nýtt</string>
     <string name="question_delete_error">Ekki hægt að eyða spurningu. Gaktu úr skugga um að hún sé ekki tengd öðrum spurningalistum</string>
     <string name="question_deleted_snackbar_text">Spurningu eytt</string>
+    <string name="question_restored_snackbar_text">Spurning endurheimtuð</string>
+    <string name="question_no_answer_group_error">Vinsamlegast veldur svarhóp eða búðu til nýjan</string>
 
     <!-- EditQuestionAnswerGroup -->
     <string name="edit_question_answer_group_header">Breyta Svarhóp</string>
@@ -163,4 +165,6 @@
     <string name="empty_question_answer_group_name_error">Svarmöguleiki verður að hafa nafn</string>
     <string name="empty_question_answer_option_error">Svarmöguleiki má ekki vera tómur</string>
     <string name="question_answer_group_deleted_snackbar_text">Svarhóp eytt</string>
+    <string name="question_answer_group_restored_snackbar_text">Svarhópur endurheimtaður</string>
+    <string name="question_answer_group_delete_error">Ekki hægt að eyða svarhóp. Gaktu úr skugga um að hann sé ekki tengdur öðrum spurningum</string>
 </resources>

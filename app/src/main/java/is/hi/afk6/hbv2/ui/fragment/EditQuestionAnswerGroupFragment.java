@@ -86,6 +86,10 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         return view;
     }
 
+    /**
+     * Sets up the view elements with data from the QuestionAnswerGroup if editing.
+     * If creating a new QuestionAnswerGroup, the view is set up for creation with empty fields.
+     */
     private void setUpView()
     {
         binding.questionAnswersContainer.removeAllViews();
@@ -109,6 +113,11 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         controlView(false, false, null);
     }
 
+    /**
+     * Adds a field for an additional answer.
+     *
+     * @param answer The text for the answer field, if any.
+     */
     private void addAnswer(String answer)
     {
         EditText questionAnswerOption = new EditText(getContext());
@@ -125,6 +134,9 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         binding.questionAnswersContainer.addView(questionAnswerOption);
     }
 
+    /**
+     * Save a QuestionAnswerGroup.
+     */
     private void save()
     {
         controlView(false, true, null);
@@ -140,6 +152,7 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         if (!newQuestionAnswerGroup)
             questionAnswerGroup.getQuestionAnswers().clear();
 
+        // Insert all answers into the QuestionAnswerGroup.
         for (int i = 0; i < binding.questionAnswersContainer.getChildCount(); i++)
         {
             EditText questionAnswerOptionEditText = (EditText) binding.questionAnswersContainer.getChildAt(i);
@@ -153,6 +166,7 @@ public class EditQuestionAnswerGroupFragment extends Fragment
             questionAnswerGroup.getQuestionAnswers().add(questionAnswerOptionEditText.getText().toString());
         }
 
+        // If adding a new QuestionAnswerGroup, save it as a new QuestionAnswerGroup and reset the view to editing an existing QuestionAnswerGroup.
         if (newQuestionAnswerGroup)
         {
             questionAnswerGroupService.saveNewQuestionAnswerGroup(questionAnswerGroup, new APICallback<QuestionAnswerGroup>()
@@ -175,7 +189,7 @@ public class EditQuestionAnswerGroupFragment extends Fragment
                 }
             });
         }
-        else
+        else // Else, update an existing QuestionAnswerGroup.
         {
             questionAnswerGroupService.updateQuestionAnswerGroup(questionAnswerGroup, new APICallback<QuestionAnswerGroup>()
             {
@@ -196,64 +210,68 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         }
     }
 
-    private void deleteQuestionAnswerGroup() {
-        if (!questionAnswerGroup.getQuestionIDs().isEmpty()) {
-            createSnackbar(R.string.question_delete_error, Snackbar.LENGTH_LONG).show();
-        } else {
-            controlView(false, true, null);
-            questionAnswerGroupService.deleteQuestionAnswerGroup(questionAnswerGroup.getId(), new APICallback<QuestionAnswerGroup>() {
+    /**
+     * Delete a QuestionAnswerGroup with an option to restore.
+     */
+    private void deleteQuestionAnswerGroup()
+    {
+        // A QuestionAnswerGroup can't be deleted if it is being used by other Questions.
+        if (!questionAnswerGroup.getQuestionIDs().isEmpty())
+        {
+            createSnackbar(R.string.question_answer_group_delete_error, Snackbar.LENGTH_LONG).show();
+        }
+        else
+        {
+            QuestionAnswerGroup deletedQuestionAnswerGroup = questionAnswerGroup;
+            questionAnswerGroup = new QuestionAnswerGroup();
+
+            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_answer_group_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener() {
                 @Override
-                public void onComplete(ResponseWrapper<QuestionAnswerGroup> result) {
-                    QuestionAnswerGroup deletedQuestionAnswerGroup = questionAnswerGroup;
-                    questionAnswerGroup = new QuestionAnswerGroup();
-
-                    requireActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            controlView(false, false, null);
-                            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_answer_group_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    controlView(false, true, null);
-                                    questionAnswerGroupService.saveNewQuestionAnswerGroup(deletedQuestionAnswerGroup, new APICallback<QuestionAnswerGroup>() {
-                                        @Override
-                                        public void onComplete(ResponseWrapper<QuestionAnswerGroup> result) {
-                                            questionAnswerGroup = result.getData();
-                                            requireActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    controlView(false, false, null);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-
-                            deleteSnackbar.addCallback(new Snackbar.Callback() {
-                                @Override
-                                public void onDismissed(Snackbar transientBottomBar, int event) {
-                                    super.onDismissed(transientBottomBar, event);
-
-                                    if (questionAnswerGroup.getId() == null) {
-                                        requireActivity().runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                requireActivity().getOnBackPressedDispatcher().onBackPressed();
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-
-                            deleteSnackbar.show();
-                        }
-                    });
+                public void onClick(View v)
+                {
+                    questionAnswerGroup = deletedQuestionAnswerGroup;
+                    createSnackbar(R.string.question_answer_group_restored_snackbar_text, Snackbar.LENGTH_SHORT).show();
                 }
             });
+
+            deleteSnackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+
+                    if (questionAnswerGroup.getId() == null)
+                    {
+                        questionAnswerGroupService.deleteQuestionAnswerGroup(deletedQuestionAnswerGroup.getId(), new APICallback<QuestionAnswerGroup>()
+                        {
+                            @Override
+                            public void onComplete(ResponseWrapper<QuestionAnswerGroup> result)
+                            {
+                                requireActivity().runOnUiThread(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        controlView(false, false, null);
+                                        getActivity().getOnBackPressedDispatcher().onBackPressed();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            deleteSnackbar.show();
         }
     }
 
+    /**
+     * Controls the view elements based on the state of fetching and saving data.
+     *
+     * @param fetching   Adjusts the view elements based on whether data is being fetched.
+     * @param saving     Adjusts the view elements based on whether data is being saved.
+     * @param errorResID The resource ID of an error message to display.
+     */
     private void controlView(boolean fetching, boolean saving, Integer errorResID)
     {
         boolean loading = fetching || saving;
@@ -288,6 +306,15 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         }
     }
 
+    /**
+     * Creates a Snackbar with an action.
+     *
+     * @param stringResID Resource ID of the string to display.
+     * @param length      Length of the Snackbar.
+     * @param actionResID Resource ID of the action string.
+     * @param listener    Listener for the action.
+     * @return            The created Snackbar.
+     */
     private Snackbar createActionSnackbar(int stringResID, int length, int actionResID, View.OnClickListener listener)
     {
         Snackbar snackbar = createSnackbar(stringResID, length);
@@ -296,6 +323,13 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         return snackbar;
     }
 
+    /**
+     * Creates a Snackbar.
+     *
+     * @param stringResID Resource ID of the string to display.
+     * @param length      Length of the Snackbar.
+     * @return            The created Snackbar.
+     */
     private Snackbar createSnackbar(int stringResID, int length)
     {
         return Snackbar.make(binding.getRoot(), stringResID, length);

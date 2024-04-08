@@ -89,7 +89,6 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
                 saveQuestion();
             }
         });
-
         binding.buttonDeleteQuestion.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -98,7 +97,6 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
                 deleteQuestion();
             }
         });
-
         questionAnswerGroupService.getAllQuestionAnswerGroup(new APICallback<List<QuestionAnswerGroup>>() {
             @Override
             public void onComplete(ResponseWrapper<List<QuestionAnswerGroup>> result)
@@ -118,7 +116,9 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
         return view;
     }
 
-
+    /**
+     * Sets up the view elements with data from an existing Question if editing, or a new Question if creating.
+     */
     private void setUpView()
     {
         List<String> questionAnswerGroupStrings = new ArrayList<>();
@@ -138,6 +138,7 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
 
         QuestionAnswerGroup currentQuestionAnswerGroup = question.getQuestionAnswerGroup();
 
+        // Insert QuestionAnswerGroups into the spinner if they exist.
         if (questionAnswerGroups != null)
         {
             for (QuestionAnswerGroup qAG : questionAnswerGroups)
@@ -155,6 +156,7 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
             binding.questionAnswerGroupSpinner.setSelection(questionAnswerGroups.indexOf(currentQuestionAnswerGroup));
         }
 
+        // Add an option to create a new QuestionAnswerGroup.
         questionAnswerGroupStrings.add(getString(R.string.new_question_answer_group));
 
         binding.questionAnswerGroupSpinner.setOnItemSelectedListener(this);
@@ -177,6 +179,7 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
         {
             binding.buttonEditConfirm.setAlpha(0.7f);
             binding.buttonDeleteQuestion.setAlpha(0.7f);
+            binding.buttonEditQuestionAnswerGroup.setAlpha(0.7f);
 
             if (saving)
                 binding.sendRequestProgressBar.setVisibility(View.VISIBLE);
@@ -191,6 +194,7 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
             binding.sendRequestProgressBar.setVisibility(View.GONE);
             binding.buttonEditConfirm.setAlpha(1f);
             binding.buttonDeleteQuestion.setAlpha(1f);
+            binding.buttonEditQuestionAnswerGroup.setAlpha(1f);
 
             binding.questionAnswerGroupSpinner.setAlpha(1f);
             binding.questionAnswerGroupSpinnerProgressBar.setVisibility(View.GONE);
@@ -202,14 +206,16 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
         binding.buttonEditConfirm.setClickable(!loading);
         binding.buttonDeleteQuestion.setClickable(!loading);
         binding.questionAnswerGroupSpinner.setClickable(!loading);
+        binding.buttonEditQuestionAnswerGroup.setClickable(!loading);
         binding.questionText.setFocusableInTouchMode(!loading);
         binding.questionWeight.setFocusableInTouchMode(!loading);
     }
 
+    /**
+     * Saves a new Question or update an existing one.
+     */
     private void saveQuestion()
     {
-        controlView(false, true, null);
-
         if (binding.questionText.getText().toString().isEmpty())
         {
             createSnackbar(R.string.question_no_text_error, Snackbar.LENGTH_LONG).show();
@@ -220,6 +226,13 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
             createSnackbar(R.string.question_no_weight_error, Snackbar.LENGTH_LONG).show();
             return;
         }
+        else if (binding.questionAnswerGroupSpinner.getSelectedItemPosition() == questionAnswerGroups.size())
+        {
+            createSnackbar(R.string.question_no_answer_group_error, Snackbar.LENGTH_LONG).show();
+            return;
+        }
+
+        controlView(false, true, null);
 
         question.setQuestionString(binding.questionText.getText().toString());
         question.setWeight(Double.parseDouble(String.valueOf(binding.questionWeight.getText())));
@@ -274,6 +287,9 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
         }
     }
 
+    /**
+     * Delete a Question with an option to restore.
+     */
     private void deleteQuestion()
     {
         if (!question.getQuestionnaireIDs().isEmpty())
@@ -282,88 +298,94 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
         }
         else
         {
-            controlView(false, true, null);
-            questionService.deleteQuestionByID(question.getId(), new APICallback<Question>()
-            {
+            Question deletedQuestion = question;
+            question = new Question();
+
+            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener() {
                 @Override
-                public void onComplete(ResponseWrapper<Question> result)
+                public void onClick(View v)
                 {
-                    Question deletedQuestion = question;
-                    question = new Question();
-
-                    requireActivity().runOnUiThread(new Runnable()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            controlView(false, false, null);
-                            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener()
-                            {
-                                @Override
-                                public void onClick(View v)
-                                {
-                                    controlView(false, true, null);
-                                    questionService.saveNewQuestion(deletedQuestion, new APICallback<Question>()
-                                    {
-                                        @Override
-                                        public void onComplete(ResponseWrapper<Question> result)
-                                        {
-                                            question = result.getData();
-                                            requireActivity().runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run()
-                                                {
-                                                    controlView(false, false, null);
-                                                }
-                                            });
-                                        }
-                                    });
-                                }
-                            });
-
-                            deleteSnackbar.addCallback(new Snackbar.Callback()
-                            {
-                                @Override
-                                public void onDismissed(Snackbar transientBottomBar, int event)
-                                {
-                                    super.onDismissed(transientBottomBar, event);
-
-                                    if (question.getId() == null)
-                                    {
-                                        requireActivity().runOnUiThread(new Runnable()
-                                        {
-                                            @Override
-                                            public void run()
-                                            {
-                                                requireActivity().getOnBackPressedDispatcher().onBackPressed();
-                                            }
-                                        });
-                                    }
-                                }
-                            });
-
-                            deleteSnackbar.show();
-                        }
-                    });
+                    question = deletedQuestion;
+                    createSnackbar(R.string.question_restored_snackbar_text, Snackbar.LENGTH_SHORT).show();
                 }
             });
+
+            deleteSnackbar.addCallback(new Snackbar.Callback() {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+
+                    if (question.getId() == null)
+                    {
+                        questionAnswerGroupService.deleteQuestionAnswerGroup(deletedQuestion.getId(), new APICallback<QuestionAnswerGroup>()
+                        {
+                            @Override
+                            public void onComplete(ResponseWrapper<QuestionAnswerGroup> result)
+                            {
+                                requireActivity().runOnUiThread(new Runnable()
+                                {
+                                    @Override
+                                    public void run()
+                                    {
+                                        controlView(false, false, null);
+                                        getActivity().getOnBackPressedDispatcher().onBackPressed();
+                                    }
+                                });
+                            }
+                        });
+                    }
+                }
+            });
+
+            deleteSnackbar.show();
         }
     }
 
+    /**
+     * Create a new Snackbar with a string resource ID and length.
+     *
+     * @param stringResID The resource ID for the String to display on the Snackbar.
+     * @param length      The length of time to display the Snackbar.
+     * @return            The created Snackbar.
+     */
     private Snackbar createSnackbar(int stringResID, int length)
     {
         return Snackbar.make(binding.getRoot(), stringResID, length);
     }
 
+    /**
+     * Navigate to a new Fragment.
+     *
+     * @param bundle      The Bundle to pass to the new Fragment.
+     * @param destination The destination ID of the new Fragment.
+     */
     private void navigate(Bundle bundle, int destination)
     {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
         navController.navigate(destination, bundle);
     }
 
+    /**
+     * Create a new Snackbar with an action.
+     *
+     * @param stringResID The resource ID for the String to display on the Snackbar.
+     * @param length      The length of time to display the Snackbar.
+     * @param actionResID The resource ID for the String to display on the action button.
+     * @param listener    The listener for the action button.
+     * @return            The created Snackbar.
+     */
+    private Snackbar createActionSnackbar(int stringResID, int length, int actionResID, View.OnClickListener listener)
+    {
+        Snackbar snackbar = createSnackbar(stringResID, length);
+        snackbar.setAction(actionResID, listener);
+
+        return snackbar;
+    }
+
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
     {
+        // Change the behavior of the button next to the spinner based on the selected item.
         if (position == questionAnswerGroups.size())
         {
             binding.buttonEditQuestionAnswerGroup.setText(R.string.new_question_answer_group);
@@ -392,14 +414,6 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
                 }
             });
         }
-    }
-
-    private Snackbar createActionSnackbar(int stringResID, int length, int actionResID, View.OnClickListener listener)
-    {
-        Snackbar snackbar = createSnackbar(stringResID, length);
-        snackbar.setAction(actionResID, listener);
-
-        return snackbar;
     }
 
     @Override

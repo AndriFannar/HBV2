@@ -91,7 +91,6 @@ public class EditQuestionnaireFragment extends Fragment implements ViewCallback<
                 saveQuestionnaire();
             }
         });
-
         binding.buttonAddQuestion.setOnClickListener(new View.OnClickListener()
         {
             @Override
