@@ -21,8 +21,9 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.adapters.WaitingListRequestPhysioAdapter;
 import is.hi.afk6.hbv2.adapters.WaitingListRequestReceptionAdapter;
 import is.hi.afk6.hbv2.callbacks.APICallback;
-import is.hi.afk6.hbv2.callbacks.WaitingListDeleteCallback;
-import is.hi.afk6.hbv2.callbacks.WaitingListViewCallback;
+import is.hi.afk6.hbv2.callbacks.AcceptCallback;
+import is.hi.afk6.hbv2.callbacks.DeleteCallback;
+import is.hi.afk6.hbv2.callbacks.ViewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentWaitingListRequestOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
@@ -40,7 +41,8 @@ import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
  * @since 14/03/2024
  * @version 1.0
  */
-public class WaitingListRequestOverviewFragment extends Fragment implements WaitingListViewCallback, WaitingListDeleteCallback
+public class WaitingListRequestOverviewFragment extends Fragment
+        implements ViewCallback<WaitingListRequest>, DeleteCallback<WaitingListRequest>, AcceptCallback<WaitingListRequest>
 {
     private FragmentWaitingListRequestOverviewBinding binding;
     private User loggedInUser;
@@ -112,7 +114,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
                             public void run()
                             {
                                 viewControl(false, result.getData().isEmpty());
-                                WaitingListRequestPhysioAdapter adapter = new WaitingListRequestPhysioAdapter(result.getData(), that);
+                                WaitingListRequestPhysioAdapter adapter = new WaitingListRequestPhysioAdapter(result.getData(), that, that);
                                 binding.requestsOverviewSortSpinner.setOnItemSelectedListener(adapter);
                                 binding.requestOverviewRecyclerView.setAdapter(adapter);
                             }
@@ -168,7 +170,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     }
 
     @Override
-    public void onAcceptWaitingListRequestClicked(WaitingListRequest request)
+    public void onAcceptClicked(WaitingListRequest request)
     {
         waitingListService.updateWaitingListRequestStatus(request.getId(), true, new APICallback<WaitingListRequest>()
         {
@@ -180,7 +182,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     }
 
     @Override
-    public void onViewWaitingListRequestClicked(WaitingListRequest request)
+    public void onViewClicked(WaitingListRequest request)
     {
         NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
 
@@ -191,7 +193,7 @@ public class WaitingListRequestOverviewFragment extends Fragment implements Wait
     }
 
     @Override
-    public void onDeleteWaitingListRequestClicked(WaitingListRequest waitingListRequest)
+    public void onDeleteClicked(WaitingListRequest waitingListRequest)
     {
         waitingListService.deleteWaitingListRequestByID(waitingListRequest.getId(), new APICallback<WaitingListRequest>()
         {

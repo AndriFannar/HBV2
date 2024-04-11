@@ -75,7 +75,7 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
                 for (int i = 0; i < questions.size(); i++) {
                     LinearLayout answersContainer = createAnswerContainer();
                     TextView question = createQuestionTextView(questions.get(i));
-                    TextView answer = createAnswerTextView(answers.get(i));
+                    TextView answer = createAnswerTextView(questions.get(i), answers.get(i));
                     answersContainer.addView(question);
                     answersContainer.addView(answer);
                     binding.answersContainer.addView(answersContainer);
@@ -119,12 +119,14 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     /**
      * Creates a TextView for displaying a questionnaire answer.
      *
-     * @param answer The answer value to display.
+     * @param question The question object the answer belongs to.
+     * @param answer   The answer value to display.
      * @return A TextView configured to display the provided answer.
      */
-    private TextView createAnswerTextView(int answer){
+    private TextView createAnswerTextView(Question question, int answer){
         TextView questionAnswer = new TextView(requireContext());
-        questionAnswer.setText(String.valueOf(answer));
+
+        questionAnswer.setText(String.valueOf(question.getQuestionAnswerGroup().getQuestionAnswers().get(answer)));
 
         int marginInPixels = getResources().getDimensionPixelSize(R.dimen.fragment_margin);
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(

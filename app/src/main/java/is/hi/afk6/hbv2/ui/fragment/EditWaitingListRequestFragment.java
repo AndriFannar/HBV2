@@ -17,6 +17,7 @@ import java.util.Objects;
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.APICallback;
+import is.hi.afk6.hbv2.databinding.FragmentEditWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
@@ -45,7 +46,7 @@ public class EditWaitingListRequestFragment extends Fragment
     private UserService userService;
     private WaitingListService waitingListService;
     private QuestionnaireService questionnaireService;
-    private is.hi.afk6.hbv2.databinding.FragmentEditWaitingListRequestBinding binding;
+    private FragmentEditWaitingListRequestBinding binding;
 
 
     @Override

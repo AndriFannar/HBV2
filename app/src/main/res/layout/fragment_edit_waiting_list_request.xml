@@ -14,7 +14,7 @@
         <TextView
             android:id="@+id/register_waiting_list"
             style="@style/Theme.HBV2.HeaderTextStyle"
-            android:text="@string/edit_request_title" />
+            android:text="@string/edit_question_header_text" />
 
         <LinearLayout
             android:layout_width="match_parent"

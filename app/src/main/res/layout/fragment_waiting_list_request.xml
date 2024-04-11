@@ -156,7 +156,7 @@
 
                 <Button
                     android:id="@+id/button_delete_request"
-                    android:text="@string/requests_overview_delete_button_text"
+                    android:text="@string/delete_button_text"
                     style="@style/Theme.HBV2.ButtonStyle"/>
             </LinearLayout>
 

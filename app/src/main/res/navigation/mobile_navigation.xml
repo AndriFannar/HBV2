@@ -102,4 +102,51 @@
             android:name="@string/waiting_list_request"
             app:argType="is.hi.afk6.hbv2.entities.WaitingListRequest" />
     </fragment>
+
+    <fragment
+        android:id="@+id/nav_questionnaire_overview"
+        android:name="is.hi.afk6.hbv2.ui.fragment.QuestionnaireOverviewFragment"
+        android:label="@string/questionnaire_overview_header_text"
+        android:layout="@layout/fragment_questionnaire_overview">
+        <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_edit_questionnaire"
+        android:name="is.hi.afk6.hbv2.ui.fragment.EditQuestionnaireFragment"
+        android:label="@string/edit_questionnaire_header_text"
+        android:layout="@layout/fragment_edit_questionnaire">
+        <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
+        <argument
+            android:name="@string/questionnaire"
+            app:argType="is.hi.afk6.hbv2.entities.Questionnaire" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_edit_question"
+        android:name="is.hi.afk6.hbv2.ui.fragment.EditQuestionFragment"
+        android:label="@string/edit_question_header_text"
+        android:layout="@layout/fragment_edit_question">
+        <argument
+            android:name="@string/logged_in_user"
+            app:argType="is.hi.afk6.hbv2.entities.User" />
+        <argument
+            android:name="@string/question"
+            app:argType="is.hi.afk6.hbv2.entities.Question" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_edit_question_answer_group"
+        android:name="is.hi.afk6.hbv2.ui.fragment.EditQuestionAnswerGroupFragment"
+        android:label="@string/edit_question_answer_group_header"
+        android:layout="@layout/fragment_edit_question_answer_group">
+        <argument
+            android:name="@string/question_answer_group"
+            app:argType="is.hi.afk6.hbv2.entities.QuestionAnswerGroup" />
+    </fragment>
+
 </navigation>

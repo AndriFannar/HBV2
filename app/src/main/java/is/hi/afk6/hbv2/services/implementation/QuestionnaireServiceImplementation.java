@@ -2,6 +2,7 @@ package is.hi.afk6.hbv2.services.implementation;
 
 import java.util.ArrayList;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
@@ -38,13 +39,60 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
     }
 
     @Override
-    public void saveNewQuestionnaire(Questionnaire questionnaire, APICallback<Questionnaire> callback) {
+    public void saveNewQuestionnaire(Questionnaire questionnaire, APICallback<Questionnaire> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                Gson gson = new GsonBuilder().create();
 
+                // Convert Questionnaire info to String.
+                String requestJson = gson.toJson(questionnaire);
+
+                // Send info to API and get a return object.
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTIONNAIRE_LOCATION + "create",
+                        Request.POST,
+                        null,
+                        requestJson
+                );
+
+                if (returnJson != null)
+                {
+                    // If the return object is not empty, then convert JSON data to ResponseWrapper<Questionnaire>
+                    Type responseType = new TypeToken<ResponseWrapper<Questionnaire>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override
-    public void getAllQuestionnaires(APICallback<List<Questionnaire>> callback) {
+    public void getAllQuestionnaires(APICallback<List<Questionnaire>> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                // Fetch all Questionnaires from API.
+                JSONObject returnJson = apiService.makeNetworkRequest(
+                        API_QUESTIONNAIRE_LOCATION + "getAll",
+                        Request.GET,
+                        null,
+                        ""
+                );
 
+                if (returnJson != null)
+                {
+                    // Convert response from JSON to Questionnaire class if response is not null.
+                    Gson gson = new GsonBuilder().create();
+
+                    Type responseType = new TypeToken<ResponseWrapper<List<Questionnaire>>>() {}.getType();
+                    callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                }
+            }
+        });
     }
 
     @Override
@@ -104,23 +152,84 @@ public class QuestionnaireServiceImplementation implements QuestionnaireService
     }
 
     @Override
-    public void addQuestionToQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback) {
+    public void updateQuestionnaire(Questionnaire updatedQuestionnaire, APICallback<Questionnaire> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                try {
+                    Gson gson = new GsonBuilder().create();
 
+                    // Convert Questionnaire class to String.
+                    String requestJson = gson.toJson(updatedQuestionnaire);
+
+                    // Send JSON data to API, wait for a return.
+                    JSONObject returnJson = apiService.makeNetworkRequest(
+                            API_QUESTIONNAIRE_LOCATION + "update",
+                            Request.PUT,
+                            null,
+                            requestJson
+                    );
+
+                    if (returnJson != null && returnJson.length() > 0)
+                    {
+                        // If return is not empty, convert from JSON to ErrorResponse.
+                        Type responseType = new TypeToken<ResponseWrapper<Questionnaire>>() {}.getType();
+
+                        callback.onComplete(gson.fromJson(returnJson.toString(), responseType));
+                    }
+                    else
+                    {
+                        callback.onComplete(new ResponseWrapper<>(updatedQuestionnaire));
+                    }
+                }
+                catch (Exception e)
+                {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
     }
 
     @Override
-    public void removeQuestionFromQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback) {
+    public void updateDisplayQuestionnaireOnForm(Long questionnaireID, boolean display, APICallback<Questionnaire> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                String[] requestParam = new String[] { "updatedDisplay=" + display };
 
+                apiService.makeNetworkRequest(
+                        API_QUESTIONNAIRE_LOCATION + "setDisplay/" + questionnaireID,
+                        Request.PUT,
+                        requestParam,
+                        ""
+                );
+
+                callback.onComplete(new ResponseWrapper<>(new Questionnaire()));
+            }
+        });
     }
 
     @Override
-    public void toggleDisplayQuestionnaireOnForm(Long questionnaireID, APICallback<Questionnaire> callback) {
+    public void deleteQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback)
+    {
+        executor.execute(new Runnable() {
+            @Override
+            public void run()
+            {
+                apiService.makeNetworkRequest(
+                        API_QUESTIONNAIRE_LOCATION + "delete/" + questionnaireID,
+                        Request.DELETE,
+                        null,
+                        ""
+                );
 
-    }
-
-    @Override
-    public void deleteQuestionnaireByID(Long questionnaireID, APICallback<Questionnaire> callback) {
-
+                callback.onComplete(new ResponseWrapper<>(new Questionnaire()));
+            }
+        });
     }
 
 }

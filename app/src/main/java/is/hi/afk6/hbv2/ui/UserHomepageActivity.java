@@ -45,6 +45,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         if (loggedInUser.getRole() == UserRole.USER) {
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_overview).setVisible(false);
             binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+            binding.mainNav.getMenu().findItem(R.id.nav_questionnaire_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_create_waiting_list_request, R.id.nav_waiting_list_request, R.id.nav_user_fragment)
@@ -56,13 +57,24 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
 
             if (loggedInUser.getRole() != UserRole.ADMIN)
+            {
                 binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+                binding.mainNav.getMenu().findItem(R.id.nav_questionnaire_overview).setVisible(false);
+            }
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment)
+                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment, R.id.nav_questionnaire_overview)
                     .setOpenableLayout(drawer)
                     .build();
         }
+
+        binding.mainNav.getHeaderView(0).findViewById(R.id.nav_logout).setOnClickListener(v ->
+        {
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        });
 
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -113,16 +125,16 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
 
         int itemId = menuItem.getItemId();
 
-        if (itemId == R.id.nav_user_logout) {
-            // Handle logout here
-            logout();
-        } else {
-            navController.navigate(itemId, bundle);
-        }
+        navController.navigate(itemId, bundle);
 
         return true;
     }
 
+    /**
+     * Navigates to the correct Fragment based on the User's Role.
+     *
+     * @param navController NavController to navigate with.
+     */
     private void navigate(NavController navController) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);

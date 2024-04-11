@@ -22,6 +22,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.databinding.FragmentAnswerQuestionnaireBinding;
 import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.QuestionAnswerGroup;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -30,6 +31,14 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.WaitingListService;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
+/**
+ * Fragment to answer a Questionnaire assigned to a User's WaitingListRequest.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @author Friðrik Þór Ólafsson, fto2@hi.is
+ * @since 02/03/2024
+ * @version 2.0
+ */
 public class AnswerQuestionnaireFragment extends Fragment
 {
     private User loggedInUser;
@@ -98,22 +107,28 @@ public class AnswerQuestionnaireFragment extends Fragment
 
         RadioButton answer;
 
+        List<String> questionAnswers = currentQuestion.getQuestionAnswerGroup().getQuestionAnswers();
+
         // Generate a RadioButton for each answer and add to the view.
-        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        for (String answerString : questionAnswers)
         {
             answer = new RadioButton(requireActivity());
-            answer.setId(i);
-            answer.setText(String.valueOf(i));
+            answer.setId(questionAnswers.indexOf(answerString));
+            answer.setText(answerString);
             answerGroup.addView(answer);
         }
     }
 
+    /**
+     * When a question is answered, add the answer to the list of answers.
+     * Move to the next question if there is one, or navigate back to the WaitingListRequestFragment.
+     */
     private void questionAnswered()
     {
         RadioButton answer;
 
         // Check what answer is correct, and add it to the list of answers.
-        for (int i = 0; i < currentQuestion.getNumberOfAnswers(); i++)
+        for (int i = 0; i < currentQuestion.getQuestionAnswerGroup().getQuestionAnswers().size(); i++)
         {
             answer = answerGroup.findViewById(i);
 
@@ -169,7 +184,9 @@ public class AnswerQuestionnaireFragment extends Fragment
         });
     }
 
-    // Calculates the grade of the WaitingListRequest.
+    /**
+     * Calculate the grade of the Questionnaire.
+     */
     private void calculateGrade() {
         double score = 0;
 
