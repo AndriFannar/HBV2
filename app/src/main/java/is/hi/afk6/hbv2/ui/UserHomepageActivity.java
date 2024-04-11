@@ -123,7 +123,9 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         else
             bundle.putParcelable(getString(R.string.edited_user), editedUser);
 
-        navController.navigate(menuItem.getItemId(), bundle);
+        int itemId = menuItem.getItemId();
+
+        navController.navigate(itemId, bundle);
 
         return true;
     }
@@ -164,5 +166,12 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         TextView email = headerView.findViewById(R.id.nav_email);
         username.setText(loggedInUser.getName());
         email.setText(loggedInUser.getEmail());
+    }
+
+    private void logout(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }
