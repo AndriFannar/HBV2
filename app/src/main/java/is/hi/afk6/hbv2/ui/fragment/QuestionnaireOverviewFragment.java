@@ -185,6 +185,8 @@ public class QuestionnaireOverviewFragment extends Fragment implements ViewCallb
     @Override
     public void onDeleteClicked(Questionnaire questionnaireToDelete)
     {
+        //if (questionnaireToDelete.get)
+
         questionnaireService.deleteQuestionnaireByID(questionnaireToDelete.getId(), new APICallback<Questionnaire>()
         {
             @Override

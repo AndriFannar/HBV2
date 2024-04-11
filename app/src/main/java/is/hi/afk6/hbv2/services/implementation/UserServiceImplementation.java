@@ -165,7 +165,7 @@ public class UserServiceImplementation implements UserService
 
                 if (returnJson != null && returnJson.length() > 0)
                 {
-                    // If return is not empty, convert from JSON to ErrorResponse.
+                    // If return is not empty, convert from JSON to User.
                     Gson gson = new Gson();
                     Type responseType = new TypeToken<ResponseWrapper<List<User>>>() {}.getType();
 
