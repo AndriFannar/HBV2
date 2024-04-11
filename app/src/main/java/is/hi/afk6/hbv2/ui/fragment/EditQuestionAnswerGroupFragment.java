@@ -8,9 +8,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 
 import com.google.android.material.snackbar.Snackbar;
+
+import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -122,7 +126,11 @@ public class EditQuestionAnswerGroupFragment extends Fragment
      */
     private void addAnswer(String answer)
     {
+        LinearLayout linearLayout = new LinearLayout(getContext());
+        linearLayout.setOrientation(LinearLayout.HORIZONTAL);
+
         EditText questionAnswerOption = new EditText(getContext());
+        questionAnswerOption.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f));
 
         if (answer != null)
         {
@@ -133,7 +141,18 @@ public class EditQuestionAnswerGroupFragment extends Fragment
             questionAnswerOption.setHint(getString(R.string.question_answer_group_hint) + " " + (binding.questionAnswersContainer.getChildCount() + 1));
         }
 
-        binding.questionAnswersContainer.addView(questionAnswerOption);
+        linearLayout.addView(questionAnswerOption);
+
+        Button button = new Button(getContext());
+        button.setText(R.string.delete_button_text);
+        button.setOnClickListener(v ->
+        {
+            binding.questionAnswersContainer.removeView(linearLayout);
+        });
+        button.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        linearLayout.addView(button);
+
+        binding.questionAnswersContainer.addView(linearLayout);
     }
 
     /**
@@ -148,16 +167,23 @@ public class EditQuestionAnswerGroupFragment extends Fragment
             controlView(false, false, R.string.empty_question_answer_group_name_error);
             return;
         }
+        else if (binding.questionAnswersContainer.getChildCount() < 2)
+        {
+            controlView(false, false, R.string.question_answer_group_min_answers_error);
+            return;
+        }
 
         questionAnswerGroup.setGroupName(binding.questionAnswerGroupName.getText().toString());
 
         if (!newQuestionAnswerGroup)
             questionAnswerGroup.getQuestionAnswers().clear();
 
+        LinearLayout layout;
         // Insert all answers into the QuestionAnswerGroup.
         for (int i = 0; i < binding.questionAnswersContainer.getChildCount(); i++)
         {
-            EditText questionAnswerOptionEditText = (EditText) binding.questionAnswersContainer.getChildAt(i);
+            layout = (LinearLayout) binding.questionAnswersContainer.getChildAt(i);
+            EditText questionAnswerOptionEditText = (EditText) layout.getChildAt(0);
 
             if (questionAnswerOptionEditText.getText().toString().isEmpty())
             {
@@ -303,10 +329,16 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         binding.questionAnswerGroupName.setFocusableInTouchMode(!loading);
         binding.buttonAddMoreAnswers.setFocusableInTouchMode(!loading);
 
+        LinearLayout layout;
+
         for (int i = 0; i < binding.questionAnswersContainer.getChildCount(); i++)
         {
-            EditText questionAnswerOptionEditText = (EditText) binding.questionAnswersContainer.getChildAt(i);
+            layout = (LinearLayout) binding.questionAnswersContainer.getChildAt(i);
+            EditText questionAnswerOptionEditText = (EditText) layout.getChildAt(0);
+            Button deleteButton = (Button) layout.getChildAt(1);
+
             questionAnswerOptionEditText.setFocusableInTouchMode(!loading);
+            deleteButton.setClickable(!loading);
         }
     }
 

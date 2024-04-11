@@ -169,4 +169,5 @@
     <string name="question_answer_group_deleted_snackbar_text">Svarhóp eytt</string>
     <string name="question_answer_group_restored_snackbar_text">Svarhópur endurheimtaður</string>
     <string name="question_answer_group_delete_error">Ekki hægt að eyða svarhóp. Gaktu úr skugga um að hann sé ekki tengdur öðrum spurningum</string>
+    <string name="question_answer_group_min_answers_error">Ekki hægt að vista svarhóp. Það verða að vera að minnsta kosti tveir svarmöguleikar.</string>
 </resources>
