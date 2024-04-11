@@ -232,7 +232,10 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
         question.setWeight(Double.parseDouble(String.valueOf(binding.questionWeight.getText())));
 
         QuestionAnswerGroup qAG = questionAnswerGroups.get(binding.questionAnswerGroupSpinner.getSelectedItemPosition());
-        question.getQuestionAnswerGroup().removeQuestionID(question.getId());
+
+        if (question.getQuestionAnswerGroup() != null)
+            question.getQuestionAnswerGroup().removeQuestionID(question.getId());
+
         question.setQuestionAnswerGroup(qAG);
         qAG.addQuestionID(question.getId());
 
