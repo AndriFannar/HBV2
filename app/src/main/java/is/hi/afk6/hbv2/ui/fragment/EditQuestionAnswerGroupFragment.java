@@ -97,10 +97,12 @@ public class EditQuestionAnswerGroupFragment extends Fragment
         if (newQuestionAnswerGroup)
         {
             binding.headerEditQuestionAnswerGroup.setText(R.string.new_question_answer_group_header);
+            binding.buttonDeleteQuestionAnswerGroup.setVisibility(View.GONE);
             addAnswer(null);
         }
         else
         {
+            binding.buttonDeleteQuestionAnswerGroup.setVisibility(View.VISIBLE);
             binding.headerEditQuestionAnswerGroup.setText(R.string.edit_question_answer_group_header);
             binding.questionAnswerGroupName.setText(questionAnswerGroup.getGroupName());
 
@@ -212,6 +214,8 @@ public class EditQuestionAnswerGroupFragment extends Fragment
 
     /**
      * Delete a QuestionAnswerGroup with an option to restore.
+     * Does not delete the QuestionAnswerGroup if it is being used by other Questions.
+     * The QuestionAnswerGroup is not removed from the API until the Snackbar is dismissed.
      */
     private void deleteQuestionAnswerGroup()
     {

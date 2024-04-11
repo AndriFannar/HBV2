@@ -28,6 +28,8 @@ import is.hi.afk6.hbv2.callbacks.DisplayCallback;
 import is.hi.afk6.hbv2.callbacks.ViewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentQuestionnaireOverviewBinding;
 import is.hi.afk6.hbv2.databinding.FragmentWaitingListRequestOverviewBinding;
+import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.QuestionAnswerGroup;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
@@ -41,7 +43,7 @@ import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementatio
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
 /**
- * Fragment that displays an overview of a physiotherapist clinic's {@link is.hi.afk6.hbv2.entities.Questionnaire Questionnaire}.
+ * Fragment that displays an overview of a physiotherapist clinic's Questionnaires.
  *
  * @author Andri Fannar Kristjánsson, afk6@hi.is
  * @since 05/04/2024
@@ -137,6 +139,12 @@ public class QuestionnaireOverviewFragment extends Fragment implements ViewCallb
         }
     }
 
+    /**
+     * Controls the visibility of the RecyclerView, ProgressBar and Error TextView.
+     *
+     * @param loading If there is data being loaded.
+     * @param empty   If the resulting data is empty.
+     */
     private void viewControl(boolean loading, boolean empty)
     {
         if (loading)
@@ -182,47 +190,75 @@ public class QuestionnaireOverviewFragment extends Fragment implements ViewCallb
         navController.navigate(R.id.nav_edit_questionnaire, bundle);
     }
 
+    /**
+     * Deletes a Questionnaire.
+     * If the Questionnaire has associated WaitingListRequests, it will not be deleted.
+     * The Questionnaire will not be deleted unless the delete snackbar is dismissed.
+     *
+     * @param questionnaireToDelete The Object to delete.
+     */
     @Override
     public void onDeleteClicked(Questionnaire questionnaireToDelete)
     {
-        //if (questionnaireToDelete.get)
-
-        questionnaireService.deleteQuestionnaireByID(questionnaireToDelete.getId(), new APICallback<Questionnaire>()
+        if (!questionnaireToDelete.getWaitingListRequestIDs().isEmpty())
         {
-            @Override
-            public void onComplete(ResponseWrapper<Questionnaire> result)
-            {
-                createActionSnackbar(R.string.questionnaire_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener()
+            adapter.addQuestionnaire(questionnaireToDelete);
+            createSnackbar(R.string.questionnaire_delete_error, Snackbar.LENGTH_LONG).show();
+        }
+        else
+        {
+            Snackbar deleteSnackbar = createActionSnackbar(R.string.questionnaire_deleted_snackbar_text, Snackbar.LENGTH_LONG, R.string.snackbar_undo, new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
                 {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        questionnaireService.saveNewQuestionnaire(questionnaireToDelete, new APICallback<Questionnaire>()
-                        {
+                    adapter.addQuestionnaire(questionnaireToDelete);
+                    createSnackbar(R.string.question_restored_snackbar_text, Snackbar.LENGTH_SHORT).show();
+                }
+            });
+
+            deleteSnackbar.addCallback(new Snackbar.Callback()
+            {
+                @Override
+                public void onDismissed(Snackbar transientBottomBar, int event) {
+                    super.onDismissed(transientBottomBar, event);
+                    questionnaireService.deleteQuestionnaireByID(questionnaireToDelete.getId(), new APICallback<Questionnaire>() {
                             @Override
-                            public void onComplete(ResponseWrapper<Questionnaire> result)
-                            {
-                                requireActivity().runOnUiThread(new Runnable()
-                                {
+                            public void onComplete(ResponseWrapper<Questionnaire> result) {
+                                requireActivity().runOnUiThread(new Runnable() {
                                     @Override
-                                    public void run()
-                                    {
-                                        adapter.addQuestionnaire(result.getData());
+                                    public void run() {
+                                        viewControl(false, false);
                                     }
                                 });
                             }
-                        });
-                    }
-                }).show();
-            }
-        });
+                    });
+                }
+            });
+            deleteSnackbar.show();
+        }
     }
 
+    /**
+     * Creates a Snackbar with a message and length.
+     *
+     * @param stringResID The resource ID of the message.
+     * @param length      The length of the Snackbar.
+     * @return            The Snackbar.
+     */
     private Snackbar createSnackbar(int stringResID, int length)
     {
         return Snackbar.make(binding.getRoot(), stringResID, length);
     }
 
+    /**
+     * Creates a Snackbar with a message, length and an action.
+     *
+     * @param stringResID The resource ID of the message.
+     * @param length      The length of the Snackbar.
+     * @param actionResID The resource ID of the action.
+     * @param listener    The listener for the action.
+     * @return            The Snackbar.
+     */
     private Snackbar createActionSnackbar(int stringResID, int length, int actionResID, View.OnClickListener listener)
     {
         Snackbar snackbar = createSnackbar(stringResID, length);

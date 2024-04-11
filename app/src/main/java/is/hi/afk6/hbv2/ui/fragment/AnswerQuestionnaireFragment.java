@@ -31,6 +31,14 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.WaitingListService;
 import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 
+/**
+ * Fragment to answer a Questionnaire assigned to a User's WaitingListRequest.
+ *
+ * @author Andri Fannar Kristjánsson, afk6@hi.is
+ * @author Friðrik Þór Ólafsson, fto2@hi.is
+ * @since 02/03/2024
+ * @version 2.0
+ */
 public class AnswerQuestionnaireFragment extends Fragment
 {
     private User loggedInUser;
@@ -111,6 +119,10 @@ public class AnswerQuestionnaireFragment extends Fragment
         }
     }
 
+    /**
+     * When a question is answered, add the answer to the list of answers.
+     * Move to the next question if there is one, or navigate back to the WaitingListRequestFragment.
+     */
     private void questionAnswered()
     {
         RadioButton answer;
@@ -172,7 +184,9 @@ public class AnswerQuestionnaireFragment extends Fragment
         });
     }
 
-    // Calculates the grade of the WaitingListRequest.
+    /**
+     * Calculate the grade of the Questionnaire.
+     */
     private void calculateGrade() {
         double score = 0;
 

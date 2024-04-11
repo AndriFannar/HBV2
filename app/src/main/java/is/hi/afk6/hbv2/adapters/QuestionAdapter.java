@@ -99,6 +99,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
 
         setView(questions.get(holder.getAdapterPosition()));
 
+        // Add/remove Question from Questionnaire.
         binding.addQuestionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -110,10 +111,12 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
                 if (existing != null)
                 {
                     questionnaire.removeQuestion(existing);
+                    clicked.removeQuestionnaireID(questionnaire.getId());
                 }
                 else
                 {
                     questionnaire.addQuestion(clicked);
+                    clicked.addQuestionnaireID(questionnaire.getId());
                 }
 
                 notifyItemChanged(position);

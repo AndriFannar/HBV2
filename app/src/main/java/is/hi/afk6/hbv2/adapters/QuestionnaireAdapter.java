@@ -115,6 +115,7 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
 
         setView(questionnaires.get(holder.getAdapterPosition()));
 
+        // Show/hide the Questionnaire on the registration form.
         binding.showHideQuestionnaireButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
@@ -186,6 +187,9 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
         sort();
     }
 
+    /**
+     * Sort the Questionnaires.
+     */
     private void sort()
     {
         switch (sortPos)
@@ -210,6 +214,11 @@ public class QuestionnaireAdapter extends RecyclerView.Adapter<QuestionnaireAdap
 
     }
 
+    /**
+     * Add a Questionnaire to the adapter.
+     *
+     * @param questionnaire Questionnaire to add.
+     */
     public void addQuestionnaire(Questionnaire questionnaire)
     {
         questionnaires.add(questionnaire);

@@ -96,6 +96,16 @@ public class QuestionAnswerGroup implements Parcelable
         this.questionIDs = questionIDs;
     }
 
+    public void addQuestionID(Long questionID)
+    {
+        this.questionIDs.add(questionID);
+    }
+
+    public void removeQuestionID(Long questionID)
+    {
+        this.questionIDs.remove(questionID);
+    }
+
     @NonNull
     @Override
     public String toString() {

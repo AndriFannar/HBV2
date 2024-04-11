@@ -138,6 +138,12 @@ public class EditQuestionnaireFragment extends Fragment implements ViewCallback<
         });
     }
 
+    /**
+     * Controls the visibility of the RecyclerView, ProgressBar and Error TextView.
+     *
+     * @param loading If data is being loaded.
+     * @param empty   If the data is empty.
+     */
     private void viewControl(boolean loading, boolean empty)
     {
         if (loading)
@@ -169,6 +175,9 @@ public class EditQuestionnaireFragment extends Fragment implements ViewCallback<
         navController.navigate(R.id.nav_edit_question, bundle);
     }
 
+    /**
+     * Saves a new Questionnaire to the API or updates an existing one.
+     */
     private void saveQuestionnaire()
     {
         if (binding.questionnaireName.getText().toString().isEmpty())
@@ -223,6 +232,13 @@ public class EditQuestionnaireFragment extends Fragment implements ViewCallback<
         }
     }
 
+    /**
+     * Creates a Snackbar with a given string resource ID and length.
+     *
+     * @param stringResID Resource ID of the string to display.
+     * @param length      Length of the Snackbar.
+     * @return            Snackbar object.
+     */
     private Snackbar createSnackbar(int stringResID, int length)
     {
         return Snackbar.make(binding.getRoot(), stringResID, length);

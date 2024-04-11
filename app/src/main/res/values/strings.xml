@@ -120,6 +120,7 @@
     <string name="new_questionnaire_text">Nýr Spurningalisti</string>
     <string name="questionnaire_no_of_questions_text">Fjöldi Spurninga:</string>
     <string name="questionnaire_no_of_questions_placeholder">00</string>
+    <string name="questionnaire_delete_error">Ekki hægt að eyða spurningalista. Gaktu úr skugga um að hann sé ekki tengdur fyrirspurnum</string>
     <string-array name="questionnaire_overview_sort_options">
         <item>Nafn</item>
         <item>Fjöldi Spurninga</item>

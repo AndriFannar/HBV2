@@ -128,6 +128,11 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         return true;
     }
 
+    /**
+     * Navigates to the correct Fragment based on the User's Role.
+     *
+     * @param navController NavController to navigate with.
+     */
     private void navigate(NavController navController) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);

@@ -22,7 +22,6 @@ public class Question implements Parcelable
     private double weight;
     private List<Long> questionnaireIDs;
     private QuestionAnswerGroup questionAnswerGroup;
-    private Integer answer;
 
     /**
      * Create a new empty Question.
@@ -54,15 +53,13 @@ public class Question implements Parcelable
      * @param weight              Weight of the Question.
      * @param questionnaireIDs    Questionnaires that Question belongs in.
      * @param questionAnswerGroup QuestionAnswerGroup with answers for the question.
-     * @param answer              User selected answer.
      */
-     public Question(Long id, String questionString, double weight, QuestionAnswerGroup questionAnswerGroup, List<Long> questionnaireIDs, Integer answer) {
+     public Question(Long id, String questionString, double weight, QuestionAnswerGroup questionAnswerGroup, List<Long> questionnaireIDs) {
         this.id = id;
         this.questionString = questionString;
         this.weight = weight;
         this.questionnaireIDs = questionnaireIDs;
         this.questionAnswerGroup = questionAnswerGroup;
-        this.answer = answer;
     }
 
     /**
@@ -77,7 +74,6 @@ public class Question implements Parcelable
         this.weight               = in.readDouble();
         this.questionAnswerGroup  = in.readParcelable(QuestionAnswerGroup.class.getClassLoader());
         this.questionnaireIDs     = in.readArrayList(Long.class.getClassLoader());
-        this.answer               = in.readInt();
     }
 
     public Long getId() {
@@ -120,12 +116,12 @@ public class Question implements Parcelable
         this.questionnaireIDs = questionnaireIDs;
     }
 
-    public Integer getAnswer() {
-        return answer;
+    public void addQuestionnaireID(Long questionnaireID) {
+        this.questionnaireIDs.add(questionnaireID);
     }
 
-    public void setAnswer(Integer answer) {
-        this.answer = answer;
+    public void removeQuestionnaireID(Long questionnaireID) {
+        this.questionnaireIDs.remove(questionnaireID);
     }
 
     @NonNull
@@ -137,7 +133,6 @@ public class Question implements Parcelable
                 ", weight=" + weight +
                 ", questionnaireIDs=" + questionnaireIDs +
                 ", questionAnswerGroup=" + questionAnswerGroup +
-                ", answer=" + answer +
                 '}';
     }
 
@@ -153,7 +148,6 @@ public class Question implements Parcelable
         dest.writeDouble(weight);
         dest.writeParcelable(questionAnswerGroup, flags);
         dest.writeList(questionnaireIDs);
-        dest.writeInt(answer);
     }
 
 

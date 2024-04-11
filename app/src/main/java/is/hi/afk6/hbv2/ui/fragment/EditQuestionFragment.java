@@ -5,9 +5,6 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +23,6 @@ import is.hi.afk6.hbv2.callbacks.APICallback;
 import is.hi.afk6.hbv2.databinding.FragmentEditQuestionBinding;
 import is.hi.afk6.hbv2.entities.Question;
 import is.hi.afk6.hbv2.entities.QuestionAnswerGroup;
-import is.hi.afk6.hbv2.entities.Questionnaire;
-import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
 import is.hi.afk6.hbv2.networking.APIService;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
@@ -35,7 +30,6 @@ import is.hi.afk6.hbv2.services.QuestionAnswerGroupService;
 import is.hi.afk6.hbv2.services.QuestionService;
 import is.hi.afk6.hbv2.services.implementation.QuestionAnswerGroupServiceImplementation;
 import is.hi.afk6.hbv2.services.implementation.QuestionServiceImplementation;
-import is.hi.afk6.hbv2.services.implementation.QuestionnaireServiceImplementation;
 
 /**
  * A Fragment subclass for editing a Question.
@@ -212,7 +206,7 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
     }
 
     /**
-     * Saves a new Question or update an existing one.
+     * Saves a new Question or updates an existing one.
      */
     private void saveQuestion()
     {
@@ -236,7 +230,11 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
 
         question.setQuestionString(binding.questionText.getText().toString());
         question.setWeight(Double.parseDouble(String.valueOf(binding.questionWeight.getText())));
-        question.setQuestionAnswerGroup(questionAnswerGroups.get(binding.questionAnswerGroupSpinner.getSelectedItemPosition()));
+
+        QuestionAnswerGroup qAG = questionAnswerGroups.get(binding.questionAnswerGroupSpinner.getSelectedItemPosition());
+        question.getQuestionAnswerGroup().removeQuestionID(question.getId());
+        question.setQuestionAnswerGroup(qAG);
+        qAG.addQuestionID(question.getId());
 
         if (newQuestion)
         {
@@ -289,6 +287,9 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
 
     /**
      * Delete a Question with an option to restore.
+     * If the Question is associated with a Questionnaire, it cannot be deleted.
+     * The Question will not be deleted from the API until the Snackbar is dismissed.
+     * After deletion, navigate back.
      */
     private void deleteQuestion()
     {
@@ -301,7 +302,7 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
             Question deletedQuestion = question;
             question = new Question();
 
-            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_deleted_snackbar_text, Snackbar.LENGTH_SHORT, R.string.snackbar_undo, new View.OnClickListener() {
+            Snackbar deleteSnackbar = createActionSnackbar(R.string.question_deleted_snackbar_text, Snackbar.LENGTH_LONG, R.string.snackbar_undo, new View.OnClickListener() {
                 @Override
                 public void onClick(View v)
                 {
@@ -317,10 +318,10 @@ public class EditQuestionFragment extends Fragment implements AdapterView.OnItem
 
                     if (question.getId() == null)
                     {
-                        questionAnswerGroupService.deleteQuestionAnswerGroup(deletedQuestion.getId(), new APICallback<QuestionAnswerGroup>()
+                        questionService.deleteQuestionByID(deletedQuestion.getId(), new APICallback<Question>()
                         {
                             @Override
-                            public void onComplete(ResponseWrapper<QuestionAnswerGroup> result)
+                            public void onComplete(ResponseWrapper<Question> result)
                             {
                                 requireActivity().runOnUiThread(new Runnable()
                                 {
