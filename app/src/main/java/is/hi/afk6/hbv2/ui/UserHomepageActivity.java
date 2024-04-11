@@ -70,10 +70,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
 
         binding.mainNav.getHeaderView(0).findViewById(R.id.nav_logout).setOnClickListener(v ->
         {
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
+            logout();
         });
 
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
