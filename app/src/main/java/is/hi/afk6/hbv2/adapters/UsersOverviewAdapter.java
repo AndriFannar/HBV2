@@ -16,15 +16,23 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.UserOverviewCallback;
+import is.hi.afk6.hbv2.callbacks.ViewCallback;
 import is.hi.afk6.hbv2.databinding.RecyclerviewAdminUserOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 
+/**
+ *  Adapter to display list of Users.
+ *
+ *   @author Ástríður Haraldsdóttir Passauer, ahp9@hi.is
+ *   @since 13/04/2024
+ *   @version 1.0
+ */
 public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdapter.ViewHolder> implements AdapterView.OnItemSelectedListener {
 
     private List<User> users;
     private RecyclerviewAdminUserOverviewBinding binding;
-    private UserOverviewCallback callback;
+    private ViewCallback<User> callback;
 
     private int expandedPos = -1;
 
@@ -33,7 +41,6 @@ public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdap
      */
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        // Binding for each item in the RecyclerView
         private RecyclerviewAdminUserOverviewBinding binding;
 
         public ViewHolder(View view)
@@ -53,7 +60,7 @@ public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdap
      *
      * @param users users to display.
      */
-    public UsersOverviewAdapter(List<User> users, UserOverviewCallback callback)
+    public UsersOverviewAdapter(List<User> users, ViewCallback<User> callback)
     {
         this.users  = users;
         this.callback = callback;
@@ -90,7 +97,7 @@ public class UsersOverviewAdapter extends RecyclerView.Adapter<UsersOverviewAdap
             @Override
             public void onClick(View v)
             {
-                callback.onViewUserClicked(users.get(holder.getAdapterPosition()));
+                callback.onViewClicked(users.get(holder.getAdapterPosition()));
             }
         });
     }

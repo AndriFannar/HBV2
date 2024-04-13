@@ -30,6 +30,13 @@ import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
 
+/**
+ * Fragment that enables a User to edit information.
+ *
+ * @author Ástríður Haraldsdóttir Passauer, ahp9@hi.is
+ * @since 05/04/2024
+ * @version 1.0
+ */
 public class EditUserFragment extends Fragment {
     private UserService userService;
     private User loggedInUser;

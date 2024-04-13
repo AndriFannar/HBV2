@@ -22,6 +22,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.adapters.UsersOverviewAdapter;
 import is.hi.afk6.hbv2.adapters.WaitingListRequestReceptionAdapter;
 import is.hi.afk6.hbv2.callbacks.UserOverviewCallback;
+import is.hi.afk6.hbv2.callbacks.ViewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentUsersOverviewBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.callbacks.APICallback;
@@ -30,7 +31,7 @@ import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
 
-public class UsersOverviewFragment extends Fragment implements UserOverviewCallback {
+public class UsersOverviewFragment extends Fragment implements ViewCallback<User> {
     private FragmentUsersOverviewBinding binding;
     private UserService userService;
     private User loggedInUser;
@@ -86,15 +87,7 @@ public class UsersOverviewFragment extends Fragment implements UserOverviewCallb
         });
     }
 
-    @Override
-    public void onViewUserClicked(User user){
-        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
 
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
-        bundle.putParcelable(getString(R.string.edited_user), user);
-        navController.navigate(R.id.nav_edit_user, bundle);
-    }
 
     /**
      * Controls many parts of the view of the User Overview Fragment.
@@ -119,5 +112,15 @@ public class UsersOverviewFragment extends Fragment implements UserOverviewCallb
                 binding.usersError.setVisibility(View.VISIBLE);
             }
         }
+    }
+
+    @Override
+    public void onViewClicked(User user) {
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.super_fragment);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
+        bundle.putParcelable(getString(R.string.edited_user), user);
+        navController.navigate(R.id.nav_edit_user, bundle);
     }
 }

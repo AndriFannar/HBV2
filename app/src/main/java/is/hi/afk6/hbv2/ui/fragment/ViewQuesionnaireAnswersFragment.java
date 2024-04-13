@@ -5,14 +5,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import is.hi.afk6.hbv2.R;
+import is.hi.afk6.hbv2.adapters.ViewQuestionnaireAnswersAdapter;
+import is.hi.afk6.hbv2.callbacks.ViewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentViewQuesionnaireAnswersBinding;
+
+import java.util.ArrayList;
 import java.util.List;
 import is.hi.afk6.hbv2.entities.Question;
+import is.hi.afk6.hbv2.entities.QuestionAnswerPair;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
 import android.widget.LinearLayout;
@@ -62,25 +69,13 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     {
         binding = FragmentViewQuesionnaireAnswersBinding.inflate(inflater,container,false);
         View view = binding.getRoot();
+        binding.questionnaireAnswersRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         if (waitingListRequest != null)
         {
             updateUIWithWaitingListRequest(waitingListRequest);
-            List<Integer> answers = waitingListRequest.getQuestionnaireAnswers();
-            Questionnaire questionnaire = waitingListRequest.getQuestionnaire();
-            List<Question> questions = questionnaire.getQuestions();
+            createAnswers();
 
-            if (questions != null && answers.size() == questions.size())
-            {
-                for (int i = 0; i < questions.size(); i++) {
-                    LinearLayout answersContainer = createAnswerContainer();
-                    TextView question = createQuestionTextView(questions.get(i));
-                    TextView answer = createAnswerTextView(questions.get(i), answers.get(i));
-                    answersContainer.addView(question);
-                    answersContainer.addView(answer);
-                    binding.answersContainer.addView(answersContainer);
-                }
-            }
         }
         else
         {
@@ -95,49 +90,40 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
     }
 
     /**
-     * Creates a TextView for displaying a questionnaire question.
-     *
-     * @param question The number of the question.
-     * @return A TextView configured to display the question number.
+     * Create Adapter to show Users answers from Questionnaire
      */
-    private TextView createQuestionTextView(Question question) {
-        TextView questionView = new TextView(requireContext());
-        questionView.setText(String.format(question.getQuestionString()));
+    private void createAnswers(){
+        List<Integer> answers = waitingListRequest.getQuestionnaireAnswers();
+        Questionnaire questionnaire = waitingListRequest.getQuestionnaire();
+        List<Question> questions = questionnaire.getQuestions();
+        List<QuestionAnswerPair> pairs = createQuestionAnswerPair(questions, answers);
 
-        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.fragment_margin);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, marginInPixels, 0, marginInPixels);
-        params.weight = 1.0f;
-        questionView.setLayoutParams(params);
-
-        return questionView;
+        ViewQuestionnaireAnswersAdapter adapter = new ViewQuestionnaireAnswersAdapter(pairs);
+        binding.questionnaireAnswersRecyclerView.setAdapter(adapter);
     }
 
     /**
-     * Creates a TextView for displaying a questionnaire answer.
-     *
-     * @param question The question object the answer belongs to.
-     * @param answer   The answer value to display.
-     * @return A TextView configured to display the provided answer.
+     * Creates a QuestionAnswerPair out of the questions Users answered and
+     * their answers
+     * @param questions List of questions
+     * @param answers List of answers
+     * @return List of paired questions and answers
      */
-    private TextView createAnswerTextView(Question question, int answer){
-        TextView questionAnswer = new TextView(requireContext());
+    private List<QuestionAnswerPair> createQuestionAnswerPair(List<Question> questions, List<Integer> answers) {
+        List<QuestionAnswerPair> pair = new ArrayList<QuestionAnswerPair>();
+        for (int i = 0; i < questions.size(); i++) {
+            Question question = questions.get(i);
+            Integer answer = answers.get(i);
+            if(answer != null) {
+                pair.add(new QuestionAnswerPair(question, answer));
+            } else {
+                pair.add(new QuestionAnswerPair(question, -1));
+            }
+        }
 
-        questionAnswer.setText(String.valueOf(question.getQuestionAnswerGroup().getQuestionAnswers().get(answer)));
-
-        int marginInPixels = getResources().getDimensionPixelSize(R.dimen.fragment_margin);
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.setMargins(0, marginInPixels, 0, marginInPixels);
-        params.weight = 1.0f;
-        questionAnswer.setLayoutParams(params);
-        return questionAnswer;
+        return pair;
     }
+
 
     /**
      * Updates the UI elements with the information from the provided WaitingListRequest object.
@@ -155,20 +141,5 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
         }
     }
 
-    /**
-     * Creates a LinearLayout container for displaying a single answer.
-     *
-     * @return A LinearLayout configured to contain a single answer.
-     */
-    private LinearLayout createAnswerContainer(){
-        LinearLayout answerContainer = new LinearLayout(requireContext());
-        answerContainer.setOrientation(LinearLayout.HORIZONTAL);
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        answerContainer.setLayoutParams(layoutParams);
-        return answerContainer;
-    }
 }
 
