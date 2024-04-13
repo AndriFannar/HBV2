@@ -31,7 +31,7 @@ public class QuestionAdapter extends RecyclerView.Adapter<QuestionAdapter.ViewHo
     // Questions to display
     private List<Question> questions;
     private Questionnaire questionnaire;
-    private RecyclerviewQuestionBinding binding;
+    private is.hi.afk6.hbv2.databinding.RecyclerviewQuestionBinding binding;
     private ViewCallback<Question> callbackView;
 
     private int expandedPos = -1;

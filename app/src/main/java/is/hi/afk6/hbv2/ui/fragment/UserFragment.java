@@ -15,6 +15,13 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.FragmentUserBinding;
 import is.hi.afk6.hbv2.entities.User;
 
+/**
+ * Fragment that enables a User to see information.
+ *
+ * @author Ástríður Haraldsdóttir Passauer, ahp9@hi.is
+ * @since 05/04/2024
+ * @version 1.0
+ */
 public class UserFragment extends Fragment
 {
     private User loggedInUser;
