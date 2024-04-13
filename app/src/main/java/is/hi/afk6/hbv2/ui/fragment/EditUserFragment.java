@@ -17,7 +17,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
@@ -117,6 +119,15 @@ public class EditUserFragment extends Fragment {
      */
     private void validateUpdate(){
         if(loggedInUser == null){
+            return;
+        }
+
+        if (!userService.verifyAddress(binding.editAddress.getText().toString(), requireContext()))
+        {
+            Map<String, String> error = new HashMap<String, String>();
+            error.put("address", getString(R.string.invalid_address));
+
+            errorResponse_input(new ErrorResponse("signUp", error));
             return;
         }
 
