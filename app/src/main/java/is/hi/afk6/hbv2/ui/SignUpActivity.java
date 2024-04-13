@@ -7,6 +7,11 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.material.snackbar.Snackbar;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import is.hi.afk6.hbv2.HBV2Application;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivitySignUpBinding;
@@ -57,9 +62,34 @@ public class SignUpActivity extends AppCompatActivity
      */
     private void signUp()
     {
-        // Display loading & hide errors.
         controlView(true);
+        // Display loading & hide errors.
         displayErrorsOnUI(false, null);
+
+        if (binding.contentSignUp.signupName.getText().toString().isEmpty() ||
+            binding.contentSignUp.signupSsn.getText().toString().isEmpty() ||
+            binding.contentSignUp.signupPhoneNumber.getText().toString().isEmpty() ||
+            binding.contentSignUp.signupAddress.getText().toString().isEmpty() ||
+            binding.contentSignUp.signupEmail.getText().toString().isEmpty() ||
+            binding.contentSignUp.signupPassword.getText().toString().isEmpty())
+        {
+            Map<String, String> error = new HashMap<String, String>();
+            error.put("password", getString(R.string.empty_fields));
+
+            displayErrorsOnUI(true, new ErrorResponse("signUp", error));
+            controlView(false);
+            return;
+        }
+
+        if (!userService.verifyAddress(binding.contentSignUp.signupAddress.getText().toString(), this))
+        {
+            Map<String, String> error = new HashMap<String, String>();
+            error.put("address", getString(R.string.invalid_address));
+
+            displayErrorsOnUI(true, new ErrorResponse("signUp", error));
+            controlView(false);
+            return;
+        }
 
         // Create a SignUpDTO from user input.
         SignUpDTO signUpInfo = new SignUpDTO(binding.contentSignUp.signupName.getText().toString(),

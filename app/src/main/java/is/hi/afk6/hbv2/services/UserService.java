@@ -90,6 +90,15 @@ public interface UserService
     void getUsersByRole(UserRole role, boolean includeElevated, Location currentLocation, Context context, APICallback<List<User>> callback);
 
     /**
+     * Verifies if an address is valid.
+     *
+     * @param address Address to verify.
+     * @param context Context.
+     * @return        True if address is valid, false otherwise.
+     */
+    boolean verifyAddress(String address, Context context);
+
+    /**
      * Updates User.
      *
      * @param requestingUserID Unique ID of User that is performing the update.

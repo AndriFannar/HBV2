@@ -24,6 +24,8 @@
     <string name="signup_address">Heimilisfang</string>
     <string name="signup_email">Tölvupóstur</string>
     <string name="signup_password">Lykilorð</string>
+    <string name="invalid_address">Vinamlegast sláðu inn gilt heimilisfang</string>
+    <string name="empty_fields">Vinsamlegast fyllið í alla reiti</string>
 
     <!-- UserFragment -->
     <string name="user_view">Upplýsingar notanda</string>
