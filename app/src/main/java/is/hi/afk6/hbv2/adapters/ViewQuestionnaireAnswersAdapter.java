@@ -69,7 +69,7 @@ public class ViewQuestionnaireAnswersAdapter extends RecyclerView.Adapter<ViewQu
     private  void setView(QuestionAnswerPair current){
         binding.questionnaireAnswersBackground.setBackgroundResource(R.color.pastel_purple);
         binding.questionText.setText(current.getQuestion().getQuestionString());
-        if(current.getAnswer() > 0){
+        if(current.getAnswer() >= 0){
             binding.questionAnswer.setText(current.getQuestion().getQuestionAnswerGroup().getQuestionAnswers().get(current.getAnswer()));
         }
     }
