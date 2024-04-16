@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import is.hi.afk6.hbv2.HBV2Application;
@@ -46,10 +47,11 @@ public class AnswerQuestionnaireFragment extends Fragment
     private List<Question> questions;
     private int currentQuestionIndex;
     Question currentQuestion;
-    private List<Integer> answers;
+    private HashMap<Long, Integer> answers;
     private FragmentAnswerQuestionnaireBinding binding;
     private WaitingListService waitingListService;
     private RadioGroup answerGroup;
+    private double score = 0;
 
     @Override
     public  void onCreate(@Nullable Bundle saveInstanceState)
@@ -65,7 +67,7 @@ public class AnswerQuestionnaireFragment extends Fragment
 
         APIService apiService = new APIServiceImplementation();
 
-        answers = new ArrayList<>();
+        answers = new HashMap<>();
         currentQuestionIndex = 0;
 
         waitingListService = new WaitingListServiceImplementation(apiService, HBV2Application.getInstance().getExecutor());
@@ -134,7 +136,8 @@ public class AnswerQuestionnaireFragment extends Fragment
 
             if (answer.isChecked())
             {
-                answers.add(i);
+                answers.put(currentQuestion.getId(), i);
+                score += i * currentQuestion.getWeight();
                 currentQuestionIndex++;
 
                 break;
@@ -159,7 +162,7 @@ public class AnswerQuestionnaireFragment extends Fragment
     {
         waitingListRequest.setQuestionnaireAnswers(answers);
 
-        calculateGrade();
+        waitingListRequest.setGrade(score);
 
         // Send updated WaitingListRequest to API, and navigate back.
         waitingListService.updateWaitingListRequestByID(waitingListRequest, new APICallback<WaitingListRequest>() {
@@ -182,19 +185,5 @@ public class AnswerQuestionnaireFragment extends Fragment
                 });
             }
         });
-    }
-
-    /**
-     * Calculate the grade of the Questionnaire.
-     */
-    private void calculateGrade() {
-        double score = 0;
-
-        for (int i = 0; i < answers.size(); i++)
-        {
-            score += answers.get(i) * questions.get(i).getWeight();
-        }
-
-        waitingListRequest.setGrade(score);
     }
 }

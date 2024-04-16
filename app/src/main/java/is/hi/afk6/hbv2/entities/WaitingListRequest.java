@@ -1,5 +1,6 @@
 package is.hi.afk6.hbv2.entities;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -7,7 +8,9 @@ import androidx.annotation.NonNull;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Class to hold Waiting List Request information.
@@ -25,7 +28,7 @@ public class WaitingListRequest implements Parcelable
     private boolean status;
     private LocalDate dateOfRequest;
     private Questionnaire questionnaire;
-    private List<Integer> questionnaireAnswers;
+    private HashMap<Long, Integer> questionnaireAnswers;
     private double grade;
 
     /**
@@ -49,7 +52,7 @@ public class WaitingListRequest implements Parcelable
      * @param questionnaireAnswers User answers to assigned Questionnaire.
      * @param grade                Priority grade of WaitingListRequest.
      */
-    public WaitingListRequest(Long id, User patient, User staff, String description, boolean status, LocalDate dateOfRequest, Questionnaire questionnaire, List<Integer> questionnaireAnswers, double grade) {
+    public WaitingListRequest(Long id, User patient, User staff, String description, boolean status, LocalDate dateOfRequest, Questionnaire questionnaire, HashMap<Long, Integer> questionnaireAnswers, double grade) {
         this.id = id;
         this.patient = patient;
         this.staff = staff;
@@ -77,7 +80,7 @@ public class WaitingListRequest implements Parcelable
 
         this.dateOfRequest = LocalDate.now();
         this.grade = 0;
-        this.questionnaireAnswers = new ArrayList<>();
+        this.questionnaireAnswers = new HashMap<>();
         this.status = false;
     }
 
@@ -96,8 +99,10 @@ public class WaitingListRequest implements Parcelable
         this.status               = in.readByte() != 0;
         this.dateOfRequest        = LocalDate.parse(in.readString());
         this.questionnaire        = in.readParcelable(Questionnaire.class.getClassLoader());
-        this.questionnaireAnswers = in.readArrayList(Integer.class.getClassLoader());
         this.grade                = in.readDouble();
+
+        Bundle bundle = in.readBundle(getClass().getClassLoader());
+        this.questionnaireAnswers = (HashMap<Long, Integer>) bundle.getSerializable("map");
     }
 
     public Long getId() {
@@ -156,11 +161,11 @@ public class WaitingListRequest implements Parcelable
         this.questionnaire = questionnaire;
     }
 
-    public List<Integer> getQuestionnaireAnswers() {
+    public HashMap<Long, Integer> getQuestionnaireAnswers() {
         return questionnaireAnswers;
     }
 
-    public void setQuestionnaireAnswers(List<Integer> questionnaireAnswers) {
+    public void setQuestionnaireAnswers(HashMap<Long, Integer> questionnaireAnswers) {
         this.questionnaireAnswers = questionnaireAnswers;
     }
 
@@ -202,8 +207,11 @@ public class WaitingListRequest implements Parcelable
         dest.writeByte((byte) (status ? 1 : 0));
         dest.writeString(dateOfRequest.toString());
         dest.writeParcelable(questionnaire, flags);
-        dest.writeList(questionnaireAnswers);
         dest.writeDouble(grade);
+
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("map", questionnaireAnswers);
+        dest.writeBundle(bundle);
     }
 
 
