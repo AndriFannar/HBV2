@@ -8,21 +8,23 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.HashMap;
 import java.util.List;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.RecyclerviewViewQuestionnaireAnswersBinding;
-import is.hi.afk6.hbv2.entities.QuestionAnswerPair;
+import is.hi.afk6.hbv2.entities.Question;
 
 /**
  *  Adapter to display Users answers for the Questionnaire.
  *
  *   @author Ástríður Haraldsdóttir Passauer, ahp9@hi.is
  *   @since 13/04/2024
- *   @version 1.0
+ *   @version 2.0
  */
 public class ViewQuestionnaireAnswersAdapter extends RecyclerView.Adapter<ViewQuestionnaireAnswersAdapter.ViewHolder> {
-    private List<QuestionAnswerPair> questions;
+    private HashMap<Long, Integer> answers;
+    private List<Question> questions;
     private RecyclerviewViewQuestionnaireAnswersBinding binding;
 
     /**
@@ -40,10 +42,13 @@ public class ViewQuestionnaireAnswersAdapter extends RecyclerView.Adapter<ViewQu
 
     /**
      * Constructor for the ViewQuestionnaireAnswersAdapter
-     * @param questions QuestionAnswerPair to display
+     * @param questions Questions to display
+     * @param answers   Answers to the questions
      */
-    public ViewQuestionnaireAnswersAdapter(List<QuestionAnswerPair> questions){
+    public ViewQuestionnaireAnswersAdapter(List<Question> questions, HashMap<Long, Integer> answers)
+    {
         this.questions = questions;
+        this.answers = answers;
     }
 
     @NonNull
@@ -59,18 +64,28 @@ public class ViewQuestionnaireAnswersAdapter extends RecyclerView.Adapter<ViewQu
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         binding = holder.getBinding();
 
-        setView(questions.get(holder.getAdapterPosition()));
+        Question currentQuestion = questions.get(holder.getAdapterPosition());
+
+        setView(currentQuestion, answers.getOrDefault(currentQuestion.getId(), -1));
     }
 
     /**
      * Set the view for the Answers from the Questionnaire
-     * @param current QuestionAnswerPair to make view for
+     * @param question Question to make view for
+     * @param answer   Patient's answer to the question
      */
-    private  void setView(QuestionAnswerPair current){
+    private  void setView(Question question, Integer answer){
         binding.questionnaireAnswersBackground.setBackgroundResource(R.color.pastel_purple);
-        binding.questionText.setText(current.getQuestion().getQuestionString());
-        if(current.getAnswer() >= 0){
-            binding.questionAnswer.setText(current.getQuestion().getQuestionAnswerGroup().getQuestionAnswers().get(current.getAnswer()));
+        binding.questionText.setText(question.getQuestionString());
+        if(answer >= 0)
+        {
+            try
+            {
+                binding.questionAnswer.setText(question.getQuestionAnswerGroup().getQuestionAnswers().get(answer));
+            }
+            catch (IndexOutOfBoundsException ignored)
+            {
+            }
         }
     }
 

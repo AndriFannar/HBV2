@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -194,17 +195,15 @@ public class EditWaitingListRequestFragment extends Fragment
      */
     private void saveEdit(List<User> staff, List<Questionnaire> displayQuestionnaires)
     {
-        if (loggedInUser.getRole().isElevatedUser())
-        {
+        if (loggedInUser.getRole().isElevatedUser()) {
             waitingListRequest.setStaff(staff.get(binding.staffSpinner.getSelectedItemPosition()));
             waitingListRequest.setGrade(Double.parseDouble(String.valueOf(binding.waitingListGrade.getText())));
 
             Questionnaire selectedQuestionnaire = displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition());
 
-            if (!Objects.equals(waitingListRequest.getQuestionnaire().getId(), selectedQuestionnaire.getId()))
-            {
+            if (!Objects.equals(waitingListRequest.getQuestionnaire().getId(), selectedQuestionnaire.getId())) {
                 waitingListRequest.setQuestionnaire(selectedQuestionnaire);
-                waitingListRequest.setQuestionnaireAnswers(new ArrayList<>());
+                waitingListRequest.setQuestionnaireAnswers(new HashMap<>());
             }
         }
         else

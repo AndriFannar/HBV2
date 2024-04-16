@@ -7,23 +7,18 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.adapters.ViewQuestionnaireAnswersAdapter;
-import is.hi.afk6.hbv2.callbacks.ViewCallback;
 import is.hi.afk6.hbv2.databinding.FragmentViewQuesionnaireAnswersBinding;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import is.hi.afk6.hbv2.entities.Question;
-import is.hi.afk6.hbv2.entities.QuestionAnswerPair;
 import is.hi.afk6.hbv2.entities.Questionnaire;
 import is.hi.afk6.hbv2.entities.User;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
 public class ViewQuesionnaireAnswersFragment extends Fragment {
@@ -93,35 +88,12 @@ public class ViewQuesionnaireAnswersFragment extends Fragment {
      * Create Adapter to show Users answers from Questionnaire
      */
     private void createAnswers(){
-        List<Integer> answers = waitingListRequest.getQuestionnaireAnswers();
+        HashMap<Long, Integer> answers = waitingListRequest.getQuestionnaireAnswers();
         Questionnaire questionnaire = waitingListRequest.getQuestionnaire();
         List<Question> questions = questionnaire.getQuestions();
-        List<QuestionAnswerPair> pairs = createQuestionAnswerPair(questions, answers);
 
-        ViewQuestionnaireAnswersAdapter adapter = new ViewQuestionnaireAnswersAdapter(pairs);
+        ViewQuestionnaireAnswersAdapter adapter = new ViewQuestionnaireAnswersAdapter(questions, answers);
         binding.questionnaireAnswersRecyclerView.setAdapter(adapter);
-    }
-
-    /**
-     * Creates a QuestionAnswerPair out of the questions Users answered and
-     * their answers
-     * @param questions List of questions
-     * @param answers List of answers
-     * @return List of paired questions and answers
-     */
-    private List<QuestionAnswerPair> createQuestionAnswerPair(List<Question> questions, List<Integer> answers) {
-        List<QuestionAnswerPair> pair = new ArrayList<QuestionAnswerPair>();
-        for (int i = 0; i < questions.size(); i++) {
-            Question question = questions.get(i);
-            Integer answer = answers.get(i);
-            if(answer != null) {
-                pair.add(new QuestionAnswerPair(question, answer));
-            } else {
-                pair.add(new QuestionAnswerPair(question, -1));
-            }
-        }
-
-        return pair;
     }
 
 
