@@ -80,6 +80,7 @@ public class AnswerQuestionnaireFragment extends Fragment
 
         // Get the container for the answers.
         answerGroup = binding.contentAnswerQuestionnaire.questionAnswersContainer;
+        //answerGroup.setOnCheckedChangeListener(this);
 
         questions = waitingListRequest.getQuestionnaire().getQuestions();
         setUpQuestion();
@@ -127,22 +128,17 @@ public class AnswerQuestionnaireFragment extends Fragment
      */
     private void questionAnswered()
     {
-        RadioButton answer;
+        int selectedAnswer = answerGroup.getCheckedRadioButtonId();
+
+        if (selectedAnswer == -1)
+            return;
 
         // Check what answer is correct, and add it to the list of answers.
-        for (int i = 0; i < currentQuestion.getQuestionAnswerGroup().getQuestionAnswers().size(); i++)
-        {
-            answer = answerGroup.findViewById(i);
+        answers.put(currentQuestion.getId(), selectedAnswer);
+        score += selectedAnswer * currentQuestion.getWeight();
+        currentQuestionIndex++;
 
-            if (answer.isChecked())
-            {
-                answers.put(currentQuestion.getId(), i);
-                score += i * currentQuestion.getWeight();
-                currentQuestionIndex++;
-
-                break;
-            }
-        }
+        answerGroup.clearCheck();
 
         // Check if all questions have been answered
         if (currentQuestionIndex >= questions.size())

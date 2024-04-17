@@ -63,6 +63,8 @@ public class CreateWaitingListRequestFragment extends Fragment {
     private WaitingListService waitingListService;
     private QuestionnaireService questionnaireService;
     private FusedLocationProviderClient fusedLocationProviderClient;
+    private List<User> staff;
+    private List<Questionnaire> displayQuestionnaires;
 
     // Asks for Location Service permission.
     // If use of Location Services is allowed, then get last known location, otherwise have no special order.
@@ -125,93 +127,101 @@ public class CreateWaitingListRequestFragment extends Fragment {
             @Override
             public void onComplete(ResponseWrapper<List<Questionnaire>> result)
             {
-                List<Questionnaire> questionnaires = result.getData();
+                displayQuestionnaires = result.getData();
 
-                // Fetch physiotherapists from API and order by location if Location Services are enabled.
-                if (currentLocation != null)
-                {
-                    userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, currentLocation, requireContext(), new APICallback<List<User>>() {
-                        @Override
-                        public void onComplete(ResponseWrapper<List<User>> result) {
-                            requireActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setUpView(result.getData(), questionnaires);
-                                }
-                            });
-                        }
-                    });
-                }
-                else
-                {
-                    userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, new APICallback<List<User>>() {
-                        @Override
-                        public void onComplete(ResponseWrapper<List<User>> result) {
-                            requireActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setUpView(result.getData(), questionnaires);
-                                }
-                            });
-                        }
-                    });
-                }
+                requireActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        setUpView();
+                    }
+                });
             }
         });
+
+        // Fetch physiotherapists from API and order by location if Location Services are enabled.
+        if (currentLocation != null)
+        {
+            userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, currentLocation, requireContext(), new APICallback<List<User>>() {
+
+                @Override
+                public void onComplete(ResponseWrapper<List<User>> result) {
+                    staff = result.getData();
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setUpView();
+                        }
+                    });
+                }
+            });
+        }
+        else
+        {
+            userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, new APICallback<List<User>>() {
+                @Override
+                public void onComplete(ResponseWrapper<List<User>> result) {
+                    staff = result.getData();
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setUpView();
+                        }
+                    });
+                }
+            });
+        }
     }
 
 
     /**
      * Set up the registration view and populates spinners with staff and questionnaires.
-     *
-     * @param staff                 List of physiotherapists to display in spinner.
-     * @param displayQuestionnaires List of questionnaires to display in spinner.
      */
-    private void setUpView(List<User> staff, List<Questionnaire> displayQuestionnaires)
+    private void setUpView()
     {
-        List<String> physiotherapists = new ArrayList<>();
-        List<String> questionnaires = new ArrayList<>();
+        if (staff != null && displayQuestionnaires != null) {
+            List<String> physiotherapists = new ArrayList<>();
+            List<String> questionnaires = new ArrayList<>();
 
-        // Set the format for the distance.
-        DecimalFormat decimalFormat = new DecimalFormat("#.#");
-        decimalFormat.setRoundingMode(RoundingMode.CEILING);
+            // Set the format for the distance.
+            DecimalFormat decimalFormat = new DecimalFormat("#.#");
+            decimalFormat.setRoundingMode(RoundingMode.CEILING);
 
-        for (User display : staff)
-        {
-            // Insert name of Physiotherapist and their specialization.
-            StringBuilder sb = new StringBuilder(display.getName() + " - " + display.getSpecialization());
+            for (User display : staff) {
+                // Insert name of Physiotherapist and their specialization.
+                StringBuilder sb = new StringBuilder(display.getName() + " - " + display.getSpecialization());
 
-            // If the distance is greater than 0 (distance was calculated), then add the distance to the end of the string.
-            if(display.getDistance() > 0)
-                sb.append(" - ").append(decimalFormat.format(display.getDistance())).append(" km");
+                // If the distance is greater than 0 (distance was calculated), then add the distance to the end of the string.
+                if (display.getDistance() > 0)
+                    sb.append(" - ").append(decimalFormat.format(display.getDistance())).append(" km");
 
-            // Add to the list.
-            physiotherapists.add(sb.toString());
-        }
-
-        // For each Questionnaire, add its name to the list.
-        for (Questionnaire questionnaire : displayQuestionnaires) {
-            questionnaires.add(questionnaire.getName());
-        }
-
-        // Create an ArrayAdapter from the lists to insert into the spinners.
-        ArrayAdapter<String> physioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, physiotherapists);
-        ArrayAdapter<String> questionnaireAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, questionnaires);
-
-        physioAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        questionnaireAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        binding.staffSpinner.setAdapter(physioAdapter);
-        binding.questionnaireSpinner.setAdapter(questionnaireAdapter);
-
-        binding.buttonRegisterConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                register(staff, displayQuestionnaires);
+                // Add to the list.
+                physiotherapists.add(sb.toString());
             }
-        });
 
-        controlView(false, false, false);
+            // For each Questionnaire, add its name to the list.
+            for (Questionnaire questionnaire : displayQuestionnaires) {
+                questionnaires.add(questionnaire.getName());
+            }
+
+            // Create an ArrayAdapter from the lists to insert into the spinners.
+            ArrayAdapter<String> physioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, physiotherapists);
+            ArrayAdapter<String> questionnaireAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, questionnaires);
+
+            physioAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            questionnaireAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            binding.staffSpinner.setAdapter(physioAdapter);
+            binding.questionnaireSpinner.setAdapter(questionnaireAdapter);
+
+            binding.buttonRegisterConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    register(staff, displayQuestionnaires);
+                }
+            });
+
+            controlView(false, false, false);
+        }
     }
 
     /**

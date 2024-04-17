@@ -29,7 +29,9 @@ import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
 import is.hi.afk6.hbv2.networking.implementation.APIServiceImplementation;
 import is.hi.afk6.hbv2.services.UserService;
+import is.hi.afk6.hbv2.services.WaitingListService;
 import is.hi.afk6.hbv2.services.implementation.UserServiceImplementation;
+import is.hi.afk6.hbv2.services.implementation.WaitingListServiceImplementation;
 import is.hi.afk6.hbv2.ui.LoginActivity;
 
 /**
@@ -41,6 +43,7 @@ import is.hi.afk6.hbv2.ui.LoginActivity;
  */
 public class EditUserFragment extends Fragment {
     private UserService userService;
+    private WaitingListService waitingListService;
     private User loggedInUser;
     private FragmentEditUserBinding binding;
     private User editedUser;
@@ -87,6 +90,7 @@ public class EditUserFragment extends Fragment {
         }
 
         userService = new UserServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
+        waitingListService = new WaitingListServiceImplementation(new APIServiceImplementation(), HBV2Application.getInstance().getExecutor());
     }
 
     @Nullable
@@ -156,6 +160,7 @@ public class EditUserFragment extends Fragment {
                 }
             });
         });
+
     }
 
     /**
@@ -167,6 +172,12 @@ public class EditUserFragment extends Fragment {
         UserRole newRole = UserRole.fromDisplayString(desiredDisplayString);
         if (newRole != null) {
             editedUser.setRole(newRole);
+        }
+
+        if ((editedUser.getWaitingListRequestID()) != null && (editedUser.getWaitingListRequestID() != 0) && (editedUser.getRole().isStaffMember()))
+        {
+            // Delete the WaitingListRequest if the User is no longer a Patient.
+            waitingListService.deleteWaitingListRequestByID(editedUser.getWaitingListRequestID(), result -> {});
         }
 
         userService.updateUser(loggedInUser.getId(), editedUser, result -> {

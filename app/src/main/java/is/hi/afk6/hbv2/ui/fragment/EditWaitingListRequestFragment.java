@@ -195,16 +195,16 @@ public class EditWaitingListRequestFragment extends Fragment
      */
     private void saveEdit(List<User> staff, List<Questionnaire> displayQuestionnaires)
     {
+        Questionnaire selectedQuestionnaire = displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition());
+
+        if (!Objects.equals(waitingListRequest.getQuestionnaire().getId(), selectedQuestionnaire.getId())) {
+            waitingListRequest.setQuestionnaire(selectedQuestionnaire);
+            waitingListRequest.setQuestionnaireAnswers(new HashMap<>());
+        }
+
         if (loggedInUser.getRole().isElevatedUser()) {
             waitingListRequest.setStaff(staff.get(binding.staffSpinner.getSelectedItemPosition()));
             waitingListRequest.setGrade(Double.parseDouble(String.valueOf(binding.waitingListGrade.getText())));
-
-            Questionnaire selectedQuestionnaire = displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition());
-
-            if (!Objects.equals(waitingListRequest.getQuestionnaire().getId(), selectedQuestionnaire.getId())) {
-                waitingListRequest.setQuestionnaire(selectedQuestionnaire);
-                waitingListRequest.setQuestionnaireAnswers(new HashMap<>());
-            }
         }
         else
         {
@@ -217,7 +217,6 @@ public class EditWaitingListRequestFragment extends Fragment
                 return;
             }
 
-            waitingListRequest.setQuestionnaire(displayQuestionnaires.get(binding.questionnaireSpinner.getSelectedItemPosition()));
             waitingListRequest.setStatus(false);
         }
 
