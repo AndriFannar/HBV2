@@ -48,6 +48,9 @@ public class EditWaitingListRequestFragment extends Fragment
     private WaitingListService waitingListService;
     private QuestionnaireService questionnaireService;
     private FragmentEditWaitingListRequestBinding binding;
+    private List<Questionnaire> displayQuestionnaires;
+    private List<User> staff;
+
 
 
     @Override
@@ -94,97 +97,111 @@ public class EditWaitingListRequestFragment extends Fragment
     {
         // Fetch Questionnaires to show on form.
         controlView(true, false, false);
-        questionnaireService.getQuestionnairesOnForm(new APICallback<List<Questionnaire>>() {
-            @Override
-            public void onComplete(ResponseWrapper<List<Questionnaire>> result)
-            {
-                List<Questionnaire> questionnaires = result.getData();
 
-                if (loggedInUser.getRole().isElevatedUser())
-                {
-                    userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, new APICallback<List<User>>() {
+        if (loggedInUser.getRole().isElevatedUser())
+        {
+            userService.getUsersByRole(UserRole.PHYSIOTHERAPIST, true, new APICallback<List<User>>() {
+                @Override
+                public void onComplete(ResponseWrapper<List<User>> result) {
+                    staff = result.getData();
+                    requireActivity().runOnUiThread(new Runnable() {
                         @Override
-                        public void onComplete(ResponseWrapper<List<User>> result) {
-                            requireActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    setUpView(result.getData(), questionnaires);
-                                }
-                            });
+                        public void run()
+                        {
+                            setUpView();
                         }
                     });
                 }
-                else
-                {
+            });
+
+            questionnaireService.getAllQuestionnaires(new APICallback<List<Questionnaire>>() {
+                @Override
+                public void onComplete(ResponseWrapper<List<Questionnaire>> result) {
+                    displayQuestionnaires = result.getData();
+
                     requireActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setUpView(null, questionnaires);
+                            setUpView();
                         }
                     });
                 }
-            }
-        });
+            });
+        }
+        else
+        {
+            questionnaireService.getQuestionnairesOnForm(new APICallback<List<Questionnaire>>() {
+                @Override
+                public void onComplete(ResponseWrapper<List<Questionnaire>> result)
+                {
+                    displayQuestionnaires = result.getData();
+
+                    requireActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            setUpView();
+                        }
+                    });
+                }
+            });
+        }
     }
 
 
     /**
      * Set up the registration view and populates spinners with staff and questionnaires.
-     *
-     * @param staff                 List of physiotherapists to display in spinner.
-     * @param displayQuestionnaires List of questionnaires to display in spinner.
      */
-    private void setUpView(List<User> staff, List<Questionnaire> displayQuestionnaires)
+    private void setUpView()
     {
-        List<String> physiotherapists = new ArrayList<>();
-        List<String> questionnaires = new ArrayList<>();
+        if ((loggedInUser.getRole() == UserRole.USER) || (staff != null && displayQuestionnaires != null)) {
+            List<String> physiotherapists = new ArrayList<>();
+            List<String> questionnaires = new ArrayList<>();
 
-        if (staff != null)
-        {
-            User requestStaff = waitingListRequest.getStaff();
+            if (staff != null) {
+                User requestStaff = waitingListRequest.getStaff();
 
-            for (User display : staff)
-            {
-                // Add to the list.
-                physiotherapists.add(display.getName() + " - " + display.getSpecialization());
-                if (Objects.equals(display.getId(), waitingListRequest.getStaff().getId()))
-                    requestStaff = display;
+                for (User display : staff) {
+                    // Add to the list.
+                    physiotherapists.add(display.getName() + " - " + display.getSpecialization());
+                    if (Objects.equals(display.getId(), waitingListRequest.getStaff().getId()))
+                        requestStaff = display;
+                }
+
+                ArrayAdapter<String> physioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, physiotherapists);
+                physioAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                binding.staffSpinner.setAdapter(physioAdapter);
+
+                binding.staffSpinner.setSelection(staff.indexOf(requestStaff));
             }
 
-            ArrayAdapter<String> physioAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, physiotherapists);
-            physioAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            binding.staffSpinner.setAdapter(physioAdapter);
+            Questionnaire requestQuestionnaire = waitingListRequest.getQuestionnaire();
 
-            binding.staffSpinner.setSelection(staff.indexOf(requestStaff));
-        }
+            // For each Questionnaire, add its name to the list.
+            for (Questionnaire questionnaire : displayQuestionnaires) {
+                questionnaires.add(questionnaire.getName());
 
-        Questionnaire requestQuestionnaire = waitingListRequest.getQuestionnaire();
-
-        // For each Questionnaire, add its name to the list.
-        for (Questionnaire questionnaire : displayQuestionnaires) {
-            questionnaires.add(questionnaire.getName());
-
-            if (Objects.equals(questionnaire.getId(), waitingListRequest.getQuestionnaire().getId()))
-                requestQuestionnaire = questionnaire;
-        }
-
-        // Create an ArrayAdapter from the list to insert into the spinner.
-        ArrayAdapter<String> questionnaireAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, questionnaires);
-        questionnaireAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.questionnaireSpinner.setAdapter(questionnaireAdapter);
-
-        binding.waitingListGrade.setText(String.valueOf(waitingListRequest.getGrade()));
-        binding.waitingListInfo.setText(waitingListRequest.getDescription());
-        binding.questionnaireSpinner.setSelection(displayQuestionnaires.indexOf(requestQuestionnaire));
-
-        binding.buttonEditConfirm.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveEdit(staff, displayQuestionnaires);
+                if (Objects.equals(questionnaire.getId(), waitingListRequest.getQuestionnaire().getId()))
+                    requestQuestionnaire = questionnaire;
             }
-        });
 
-        controlView(false, false, false);
+            // Create an ArrayAdapter from the list to insert into the spinner.
+            ArrayAdapter<String> questionnaireAdapter = new ArrayAdapter<>(requireContext(), android.R.layout.simple_spinner_item, questionnaires);
+            questionnaireAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            binding.questionnaireSpinner.setAdapter(questionnaireAdapter);
+
+            binding.waitingListGrade.setText(String.valueOf(waitingListRequest.getGrade()));
+            binding.waitingListInfo.setText(waitingListRequest.getDescription());
+            binding.questionnaireSpinner.setSelection(displayQuestionnaires.indexOf(requestQuestionnaire));
+
+            binding.buttonEditConfirm.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveEdit(staff, displayQuestionnaires);
+                }
+            });
+
+            controlView(false, false, false);
+        }
     }
 
     /**
