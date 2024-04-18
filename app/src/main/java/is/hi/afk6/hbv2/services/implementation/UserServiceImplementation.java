@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import is.hi.afk6.hbv2.comparators.UserDistanceComparator;
+import is.hi.afk6.hbv2.comparators.userComparators.UserDistanceComparator;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -165,7 +165,7 @@ public class UserServiceImplementation implements UserService
 
                 if (returnJson != null && returnJson.length() > 0)
                 {
-                    // If return is not empty, convert from JSON to ErrorResponse.
+                    // If return is not empty, convert from JSON to User.
                     Gson gson = new Gson();
                     Type responseType = new TypeToken<ResponseWrapper<List<User>>>() {}.getType();
 
@@ -209,6 +209,20 @@ public class UserServiceImplementation implements UserService
         });
     }
 
+    @Override
+    public boolean verifyAddress(String address, Context context)
+    {
+        try
+        {
+            Address location = getLocationFromAddress(address, context);
+            return location != null;
+        }
+        catch (LocationCalculationException e)
+        {
+            return false;
+        }
+    }
+
     /**
      * Gets the location of all User in the given list from their address.
      *
@@ -217,34 +231,59 @@ public class UserServiceImplementation implements UserService
      */
     private void getUsersLocationFromAddress(List<User> users, Context context)
     {
+        // Create an empty Location object.
+        Location location;
+
+        for (User user : users)
+        {
+            // Reset the location for each User.
+            location = new Location("");
+
+            try
+            {
+                // Get the address of the User.
+                Address address = getLocationFromAddress(user.getAddress(), context);
+
+                // Set the location of the address.
+                location.setLatitude(address.getLatitude());
+                location.setLongitude(address.getLongitude());
+            }
+            catch (LocationCalculationException e)
+            {
+                // If an error occurs, do nothing.
+                // The users address will be set as the default location.
+            }
+
+            // Update the User's location.
+            user.setLocation(location);
+        }
+    }
+
+    /**
+     * Finds an Adress from a String.
+     *
+     * @param address String of an address to find.
+     * @param context Context.
+     * @return        Address object from the String.
+     */
+    private Address getLocationFromAddress(String address, Context context)
+    {
         // Create the Geocoder.
         Geocoder geocoder = new Geocoder(context);
-        Location location;
 
         try
         {
-            for (User user : users)
+            // Get the address from the String.
+            List<Address> addresses = geocoder.getFromLocationName(address, 1);
+
+            // If an address is found, return it.
+            if (addresses != null && !addresses.isEmpty())
             {
-                // Reset the location for each User and get addresses with the Geocoder.
-                location = new Location("");
-                List<Address> addresses = geocoder.getFromLocationName(user.getAddress(), 1);
-
-                if (addresses != null && !addresses.isEmpty())
-                {
-                    // If an address is found, set the location of the User to the first address.
-                    Address address = addresses.get(0);
-
-                    // Set the location of the address.
-                    location.setLatitude(address.getLatitude());
-                    location.setLongitude(address.getLongitude());
-
-                    // Update the User's location.
-                    user.setLocation(location);
-                }
-                else
-                {
-                    throw new LocationCalculationException("Could not find location for user: " + user.getName());
-                }
+                return addresses.get(0);
+            }
+            else
+            {
+                throw new LocationCalculationException("Could not find location for address: " + address);
             }
         }
         catch (IOException e)
@@ -320,10 +359,10 @@ public class UserServiceImplementation implements UserService
             public void run()
             {
                 try {
-                    // Convert LogIn data to String.
+                    // Convert logIn data to String.
                     String loginJson = new Gson().toJson(login);
 
-                    // Send LogIn data as JSON to API, wait for a return.
+                    // Send logIn data as JSON to API, wait for a return.
                     JSONObject returnJson = apiService.makeNetworkRequest(
                             API_USER_LOCATION + "login",
                             Request.POST,

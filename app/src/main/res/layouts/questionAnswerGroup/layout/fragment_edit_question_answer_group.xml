@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".ui.UserHomepageActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/header_edit_question_answer_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/Theme.HBV2.HeaderTextStyle"
+            android:layout_marginBottom="@dimen/fragment_margin"
+            android:layout_marginTop="@dimen/fragment_margin"
+            android:gravity="center"
+            android:text="@string/edit_question_answer_group_header" />
+
+        <EditText
+            android:id="@+id/question_answer_group_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/question_answer_group_name"
+            android:inputType="text"
+            android:layout_marginStart="@dimen/fragment_margin"
+            android:layout_marginTop="@dimen/fragment_margin"
+            android:layout_marginEnd="@dimen/fragment_margin"
+            android:layout_marginBottom="@dimen/fragment_margin"
+            android:gravity="center"
+            android:theme="@style/Theme.HBV2.InputTextAreaStyle"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fragment_margin_side"
+            android:textAlignment="center"
+            android:text="@string/question_answer_group_answers_title"
+            android:theme="@style/Theme.HBV2.TextViewStyle" />
+
+        <LinearLayout
+            android:id="@+id/question_answers_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/fragment_margin"
+            android:layout_marginTop="@dimen/fragment_margin"
+            android:layout_marginEnd="@dimen/fragment_margin"
+            android:orientation="vertical">
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/button_add_more_answers"
+            style="@style/Theme.HBV2.ButtonStyle"
+            android:background="@android:color/transparent"
+            android:textColor="@color/purple_500"
+            android:text="@string/question_answer_group_add_answer" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_margin="@dimen/fragment_margin">
+
+                <Button
+                    android:id="@+id/button_edit_question_answer_group_confirm"
+                    style="@style/Theme.HBV2.ButtonStyle"
+                    android:text="@string/save_text" />
+
+                <ProgressBar
+                    android:id="@+id/send_question_answer_group_progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:elevation="4dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center"
+                android:layout_margin="@dimen/fragment_margin">
+
+                <Button
+                    android:id="@+id/button_delete_question_answer_group"
+                    style="@style/Theme.HBV2.ButtonStyle"
+                    android:text="@string/delete_button_text" />
+
+                <ProgressBar
+                    android:id="@+id/delete_question_answer_group_progressBar"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:elevation="4dp"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+        </LinearLayout>
+
+        </LinearLayout>
+
+</ScrollView>

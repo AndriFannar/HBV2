@@ -21,7 +21,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
-import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
+import is.hi.afk6.hbv2.ui.fragment.user.EditUserFragment;
 
 public class UserHomepageActivity extends AppCompatActivity implements EditUserFragment.Callbacks, NavigationView.OnNavigationItemSelectedListener {
     private AppBarConfiguration mAppBarConfiguration;
@@ -36,7 +36,6 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         binding = ActivityUserHomepageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.mainDrawerLayout;
         NavigationView navigationView = binding.mainNav;
 
@@ -45,6 +44,7 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         if (loggedInUser.getRole() == UserRole.USER) {
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_overview).setVisible(false);
             binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+            binding.mainNav.getMenu().findItem(R.id.nav_questionnaire_overview).setVisible(false);
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
                     R.id.nav_create_waiting_list_request, R.id.nav_waiting_list_request, R.id.nav_user_fragment)
@@ -56,13 +56,21 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
             binding.mainNav.getMenu().findItem(R.id.nav_waiting_list_request).setVisible(false);
 
             if (loggedInUser.getRole() != UserRole.ADMIN)
+            {
                 binding.mainNav.getMenu().findItem(R.id.nav_users_overview).setVisible(false);
+                binding.mainNav.getMenu().findItem(R.id.nav_questionnaire_overview).setVisible(false);
+            }
 
             mAppBarConfiguration = new AppBarConfiguration.Builder(
-                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment)
+                    R.id.nav_waiting_list_overview, R.id.nav_users_overview, R.id.nav_user_fragment, R.id.nav_questionnaire_overview)
                     .setOpenableLayout(drawer)
                     .build();
         }
+
+        binding.mainNav.getHeaderView(0).findViewById(R.id.nav_logout).setOnClickListener(v ->
+        {
+            logout();
+        });
 
         NavController navController = Navigation.findNavController(this, R.id.super_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
@@ -111,11 +119,18 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         else
             bundle.putParcelable(getString(R.string.edited_user), editedUser);
 
-        navController.navigate(menuItem.getItemId(), bundle);
+        int itemId = menuItem.getItemId();
+
+        navController.navigate(itemId, bundle);
 
         return true;
     }
 
+    /**
+     * Navigates to the correct Fragment based on the User's Role.
+     *
+     * @param navController NavController to navigate with.
+     */
     private void navigate(NavController navController) {
         Bundle bundle = new Bundle();
         bundle.putParcelable(getString(R.string.logged_in_user), loggedInUser);
@@ -147,5 +162,12 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         TextView email = headerView.findViewById(R.id.nav_email);
         username.setText(loggedInUser.getName());
         email.setText(loggedInUser.getEmail());
+    }
+
+    private void logout(){
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
     }
 }

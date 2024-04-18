@@ -84,7 +84,7 @@ public class WaitingListServiceImplementation implements WaitingListService
             @Override
             public void run()
             {
-                // Fetch User with corresponding ID from API.
+                // Fetch all WaitingListRequests from API.
                 JSONObject returnJson = apiService.makeNetworkRequest(
                         API_WAITING_LIST_LOCATION + "getAll",
                         Request.GET,
@@ -94,7 +94,7 @@ public class WaitingListServiceImplementation implements WaitingListService
 
                 if (returnJson != null)
                 {
-                    // Convert response from JSON to User class if response is not null.
+                    // Convert response from JSON to WaitingListRequest class if response is not null.
                     Gson gson = new GsonBuilder()
                             .registerTypeAdapter(LocalDate.class, new LocalDateSerializer())
                             .create();
@@ -194,8 +194,6 @@ public class WaitingListServiceImplementation implements WaitingListService
 
                     // Convert User class to String.
                     String requestJson = gson.toJson(updatedRequest);
-
-                    Log.d("WaitingListService", requestJson);
 
                     // Send JSON data to API, wait for a return.
                     JSONObject returnJson = apiService.makeNetworkRequest(

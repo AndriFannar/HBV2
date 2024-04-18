@@ -49,33 +49,23 @@ public interface QuestionnaireService
     void getQuestionnairesOnForm(APICallback<List<Questionnaire>> callback);
 
     /**
-     * Add a Question to Questionnaire.
+     * Update an existing Questionnaire.
      *
-     * @param questionID      Unique ID of Question to add to Questionnaire.
-     * @param questionnaireID Unique ID of Questionnaire to add Question to.
-     * @param callback        Callback for when the method has added a Question to a Questionnaire.
-     *                        The callback will have the object returned from the method as a ResponseWrapper.
+     * @param updatedQuestionnaire Questionnaire with updated information.
+     * @param callback             Callback for when the method has added a Question to a Questionnaire.
+     *                             The callback will have the object returned from the method as a ResponseWrapper.
      */
-    void addQuestionToQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback);
-
-    /**
-     * Remove a Question from Questionnaire.
-     *
-     * @param questionID      Unique ID of Question to remove from Questionnaire.
-     * @param questionnaireID Unique ID of Questionnaire to remove question from.
-     * @param callback        Callback for when the method has removed a Question from Questionnaire.
-     *                        The callback will have the object returned from the method as a ResponseWrapper.
-     */
-    void removeQuestionFromQuestionnaire(Long questionID, Long questionnaireID, APICallback<Questionnaire> callback);
+    void updateQuestionnaire(Questionnaire updatedQuestionnaire, APICallback<Questionnaire> callback);
 
     /**
      * Toggle displaying Questionnaire on form.
      *
      * @param questionnaireID Unique ID of Questionnaire to toggle.
+     * @param display         True if Questionnaire should be displayed on form, false otherwise.
      * @param callback        Callback for when the method has marked the Questionnaire to be displayed on form.
      *                        The callback will have the object returned from the method as a ResponseWrapper.
      */
-    void toggleDisplayQuestionnaireOnForm(Long questionnaireID, APICallback<Questionnaire> callback);
+    void updateDisplayQuestionnaireOnForm(Long questionnaireID, boolean display, APICallback<Questionnaire> callback);
 
     /**
      * Delete a Questionnaire by unique ID.

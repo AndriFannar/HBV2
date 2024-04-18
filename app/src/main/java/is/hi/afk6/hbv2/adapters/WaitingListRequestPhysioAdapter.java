@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.adapters;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +14,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import is.hi.afk6.hbv2.R;
-import is.hi.afk6.hbv2.callbacks.WaitingListViewCallback;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestBodyPartComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestDateComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestGradeComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestPatientNameComparator;
+import is.hi.afk6.hbv2.callbacks.AcceptCallback;
+import is.hi.afk6.hbv2.callbacks.ViewCallback;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestAcceptedComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestBodyPartComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestDateComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestGradeComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestPatientNameComparator;
 import is.hi.afk6.hbv2.databinding.RecyclerviewPhysioWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
@@ -35,7 +36,8 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
     // WaitingListRequests to display
     private List<WaitingListRequest> waitingListRequests;
     private RecyclerviewPhysioWaitingListRequestBinding binding;
-    private WaitingListViewCallback callback;
+    private ViewCallback<WaitingListRequest> callbackView;
+    private AcceptCallback<WaitingListRequest> callbackAccept;
 
     private int expandedPos = -1;
 
@@ -63,11 +65,14 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
      * Constructor for the WaitingListRequestAdapter.
      *
      * @param waitingListRequests WaitingListRequests to display.
+     * @param callbackView        Callback for when a WaitingListRequest is requested to be viewed.
+     * @param acceptCallback      Callback for when a WaitingListRequest is requested to be accepted.
      */
-    public WaitingListRequestPhysioAdapter(List<WaitingListRequest> waitingListRequests, WaitingListViewCallback callback)
+    public WaitingListRequestPhysioAdapter(List<WaitingListRequest> waitingListRequests, ViewCallback<WaitingListRequest> callbackView, AcceptCallback<WaitingListRequest> acceptCallback)
     {
         this.waitingListRequests = waitingListRequests;
-        this.callback = callback;
+        this.callbackView = callbackView;
+        this.callbackAccept = acceptCallback;
     }
 
     @NonNull
@@ -104,7 +109,7 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
             public void onClick(View v)
             {
                 WaitingListRequest clicked = waitingListRequests.get(holder.getAdapterPosition());
-                callback.onAcceptWaitingListRequestClicked(clicked);
+                callbackAccept.onAcceptClicked(clicked);
                 clicked.setStatus(true);
 
                 notifyItemChanged(position);
@@ -115,7 +120,7 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
             @Override
             public void onClick(View v)
             {
-                callback.onViewWaitingListRequestClicked(waitingListRequests.get(holder.getAdapterPosition()));
+                callbackView.onViewClicked(waitingListRequests.get(holder.getAdapterPosition()));
             }
         });
     }
@@ -129,8 +134,13 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
     {
         if (current.isStatus())
         {
-            binding.waitingListBackground.setBackgroundColor(Color.parseColor("#E4FEDE"));
+            binding.waitingListBackground.setBackgroundResource(R.color.pale_green);
             binding.acceptWaitingListButton.setVisibility(View.GONE);
+        }
+        else
+        {
+            binding.waitingListBackground.setBackgroundResource(R.color.pale_yellow);
+            binding.acceptWaitingListButton.setVisibility(View.VISIBLE);
         }
 
         binding.waitingListPatient.setText(current.getPatient().getName().split(" ")[0]);
@@ -165,6 +175,9 @@ public class WaitingListRequestPhysioAdapter extends RecyclerView.Adapter<Waitin
                 break;
             case 3:
                 waitingListRequests.sort(new WaitingListRequestBodyPartComparator());
+                break;
+            case 4:
+                waitingListRequests.sort(new WaitingListRequestAcceptedComparator());
                 break;
         }
 
