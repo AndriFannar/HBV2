@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.adapters;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +15,10 @@ import java.util.List;
 
 import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.callbacks.DeleteCallback;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestAcceptedComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestDateComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestGradeComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestPatientNameComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestAcceptedComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestDateComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestGradeComparator;
+import is.hi.afk6.hbv2.comparators.waitingListComparators.WaitingListRequestPatientNameComparator;
 import is.hi.afk6.hbv2.databinding.RecyclerviewReceptionWaitingListRequestBinding;
 import is.hi.afk6.hbv2.entities.WaitingListRequest;
 

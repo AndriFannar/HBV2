@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
 
-import is.hi.afk6.hbv2.comparators.UserDistanceComparator;
+import is.hi.afk6.hbv2.comparators.userComparators.UserDistanceComparator;
 import is.hi.afk6.hbv2.entities.api.ErrorResponse;
 import is.hi.afk6.hbv2.entities.dtos.LoginDTO;
 import is.hi.afk6.hbv2.entities.api.ResponseWrapper;
@@ -359,10 +359,10 @@ public class UserServiceImplementation implements UserService
             public void run()
             {
                 try {
-                    // Convert LogIn data to String.
+                    // Convert logIn data to String.
                     String loginJson = new Gson().toJson(login);
 
-                    // Send LogIn data as JSON to API, wait for a return.
+                    // Send logIn data as JSON to API, wait for a return.
                     JSONObject returnJson = apiService.makeNetworkRequest(
                             API_USER_LOCATION + "login",
                             Request.POST,

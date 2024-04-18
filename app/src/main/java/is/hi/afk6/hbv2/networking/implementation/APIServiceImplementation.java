@@ -1,22 +1,13 @@
 package is.hi.afk6.hbv2.networking.implementation;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-
-import android.util.Log;
-
-import com.google.gson.JsonIOException;
-
-import org.jetbrains.annotations.NotNull;
 import org.json.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Objects;
 import java.util.Scanner;
 
 import is.hi.afk6.hbv2.entities.enums.Request;

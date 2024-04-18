@@ -21,7 +21,7 @@ import is.hi.afk6.hbv2.R;
 import is.hi.afk6.hbv2.databinding.ActivityUserHomepageBinding;
 import is.hi.afk6.hbv2.entities.User;
 import is.hi.afk6.hbv2.entities.enums.UserRole;
-import is.hi.afk6.hbv2.ui.fragment.EditUserFragment;
+import is.hi.afk6.hbv2.ui.fragment.user.EditUserFragment;
 
 public class UserHomepageActivity extends AppCompatActivity implements EditUserFragment.Callbacks, NavigationView.OnNavigationItemSelectedListener {
     private AppBarConfiguration mAppBarConfiguration;
@@ -36,7 +36,6 @@ public class UserHomepageActivity extends AppCompatActivity implements EditUserF
         binding = ActivityUserHomepageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        //setSupportActionBar(binding.appBarMain.toolbar);
         DrawerLayout drawer = binding.mainDrawerLayout;
         NavigationView navigationView = binding.mainNav;
 

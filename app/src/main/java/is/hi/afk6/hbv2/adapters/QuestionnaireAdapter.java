@@ -1,7 +1,6 @@
 package is.hi.afk6.hbv2.adapters;
 
 import android.annotation.SuppressLint;
-import android.graphics.Color;
 import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,25 +10,17 @@ import android.widget.AdapterView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import is.hi.afk6.hbv2.R;
-import is.hi.afk6.hbv2.callbacks.AcceptCallback;
 import is.hi.afk6.hbv2.callbacks.DeleteCallback;
 import is.hi.afk6.hbv2.callbacks.DisplayCallback;
 import is.hi.afk6.hbv2.callbacks.ViewCallback;
-import is.hi.afk6.hbv2.comparators.QuestionnaireDisplayComparator;
-import is.hi.afk6.hbv2.comparators.QuestionnaireNameComparator;
-import is.hi.afk6.hbv2.comparators.QuestionnaireSizeComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestBodyPartComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestDateComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestGradeComparator;
-import is.hi.afk6.hbv2.comparators.WaitingListRequestPatientNameComparator;
-import is.hi.afk6.hbv2.databinding.RecyclerviewPhysioWaitingListRequestBinding;
+import is.hi.afk6.hbv2.comparators.questionnaireComparators.QuestionnaireDisplayComparator;
+import is.hi.afk6.hbv2.comparators.questionnaireComparators.QuestionnaireNameComparator;
+import is.hi.afk6.hbv2.comparators.questionnaireComparators.QuestionnaireSizeComparator;
 import is.hi.afk6.hbv2.databinding.RecyclerviewQuestionnaireBinding;
 import is.hi.afk6.hbv2.entities.Questionnaire;
-import is.hi.afk6.hbv2.entities.WaitingListRequest;
 
 /**
  * Adapter to display Questionnaires.

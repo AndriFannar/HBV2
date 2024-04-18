@@ -32,6 +32,22 @@ android {
     buildFeatures {
         viewBinding = true
     }
+    sourceSets {
+        getByName("main") {
+            res {
+                srcDirs("src\\main\\res", "src\\main\\res\\layouts\\LogIn",
+                    "src\\main\\res",
+                    "src\\main\\res\\layots\\waitingListRequest", "src\\main\\res", "src\\main\\res\\layouts\\waitingListRequest",
+                    "src\\main\\res",
+                    "src\\main\\res\\layouts\\questionnaire", "src\\main\\res", "src\\main\\res\\layouts\\question",
+                    "src\\main\\res",
+                    "src\\main\\res\\layouts\\user", "src\\main\\res", "src\\main\\res\\layouts\\questionAnswerGroup",
+                    "src\\main\\res",
+                    "src\\main\\res\\layouts\\signup", "src\\main\\res", "src\\main\\res\\layouts\\navigation"
+                )
+            }
+        }
+    }
 }
 
 dependencies {

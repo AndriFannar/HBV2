@@ -5,7 +5,7 @@
 
     <fragment
         android:id="@+id/nav_user_fragment"
-        android:name="is.hi.afk6.hbv2.ui.fragment.UserFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.user.UserFragment"
         android:label="@string/user_view"
         android:layout="@layout/fragment_user">
         <argument
@@ -16,7 +16,7 @@
 
     <fragment
         android:id="@+id/nav_waiting_list_overview"
-        android:name="is.hi.afk6.hbv2.ui.fragment.WaitingListRequestOverviewFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.waitingListRequest.WaitingListRequestOverviewFragment"
         android:label="@string/requests_overview_header_text"
         android:layout="@layout/fragment_waiting_list_request_overview">
         <argument
@@ -26,7 +26,7 @@
 
     <fragment
         android:id="@+id/nav_create_waiting_list_request"
-        android:name="is.hi.afk6.hbv2.ui.fragment.CreateWaitingListRequestFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.waitingListRequest.CreateWaitingListRequestFragment"
         android:label="@string/register_waiting_list_title"
         android:layout="@layout/fragment_create_waiting_list_request">
         <argument
@@ -37,7 +37,7 @@
 
     <fragment
         android:id="@+id/nav_waiting_list_request"
-        android:name="is.hi.afk6.hbv2.ui.fragment.WaitingListRequestFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.waitingListRequest.WaitingListRequestFragment"
         android:label="@string/waiting_list_title"
         android:layout="@layout/fragment_waiting_list_request">
         <argument
@@ -51,7 +51,7 @@
 
     <fragment
         android:id="@+id/nav_edit_user"
-        android:name="is.hi.afk6.hbv2.ui.fragment.EditUserFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.user.EditUserFragment"
         android:label="@string/edit_user"
         android:layout="@layout/fragment_edit_user">
         <argument
@@ -61,7 +61,7 @@
 
     <fragment
         android:id="@+id/nav_users_overview"
-        android:name="is.hi.afk6.hbv2.ui.fragment.UsersOverviewFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.user.UsersOverviewFragment"
         android:label="@string/user_overview_header_text"
         android:layout="@layout/fragment_users_overview">
         <argument
@@ -71,7 +71,7 @@
 
     <fragment
         android:id="@+id/nav_answer_questionnaire"
-        android:name="is.hi.afk6.hbv2.ui.fragment.AnswerQuestionnaireFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.questionnaire.AnswerQuestionnaireFragment"
         android:label="@string/answer_questionnaire"
         android:layout="@layout/fragment_answer_questionnaire">
         <argument
@@ -87,12 +87,12 @@
 
     <fragment
         android:id="@+id/nav_view_questionnaire_answers"
-        android:name="is.hi.afk6.hbv2.ui.fragment.ViewQuesionnaireAnswersFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.questionnaire.ViewQuesionnaireAnswersFragment"
         android:label="@string/user_questionnaire_answers_overview_header_text" />
 
     <fragment
         android:id="@+id/nav_edit_waiting_list_request"
-        android:name="is.hi.afk6.hbv2.ui.fragment.EditWaitingListRequestFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.waitingListRequest.EditWaitingListRequestFragment"
         android:label="@string/edit_request_title"
         android:layout="@layout/fragment_edit_waiting_list_request">
         <argument
@@ -105,7 +105,7 @@
 
     <fragment
         android:id="@+id/nav_questionnaire_overview"
-        android:name="is.hi.afk6.hbv2.ui.fragment.QuestionnaireOverviewFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.questionnaire.QuestionnaireOverviewFragment"
         android:label="@string/questionnaire_overview_header_text"
         android:layout="@layout/fragment_questionnaire_overview">
         <argument
@@ -115,7 +115,7 @@
 
     <fragment
         android:id="@+id/nav_edit_questionnaire"
-        android:name="is.hi.afk6.hbv2.ui.fragment.EditQuestionnaireFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.questionnaire.EditQuestionnaireFragment"
         android:label="@string/edit_questionnaire_header_text"
         android:layout="@layout/fragment_edit_questionnaire">
         <argument
@@ -128,7 +128,7 @@
 
     <fragment
         android:id="@+id/nav_edit_question"
-        android:name="is.hi.afk6.hbv2.ui.fragment.EditQuestionFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.question.EditQuestionFragment"
         android:label="@string/edit_question_header_text"
         android:layout="@layout/fragment_edit_question">
         <argument
@@ -141,7 +141,7 @@
 
     <fragment
         android:id="@+id/nav_edit_question_answer_group"
-        android:name="is.hi.afk6.hbv2.ui.fragment.EditQuestionAnswerGroupFragment"
+        android:name="is.hi.afk6.hbv2.ui.fragment.questionAnswerGroup.EditQuestionAnswerGroupFragment"
         android:label="@string/edit_question_answer_group_header"
         android:layout="@layout/fragment_edit_question_answer_group">
         <argument
