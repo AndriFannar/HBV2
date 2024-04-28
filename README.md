@@ -27,8 +27,7 @@ To run the project, run the following command in the root directory of the proje
 
 ### Run
 After installing the app on an Android emulator, the app can be run by clicking on the app icon.
-
-Note: Since the API is hosted on a free Render server, it can take some time to spin up if it has not been contacted for some time.
+* Note: Since the API is no longer hosted online by our team, the `API_URL` in the `APIService` class will need to be changed to a valid URL where the [API](https://github.com/AndriFannar/HBV1/tree/api) is hosted so the app can be used.
 
 ### Documentation
 No documentation is currently available for the app. 
